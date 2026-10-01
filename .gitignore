@@ -1,0 +1,41 @@
+# ── Python ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+
+# ── Jupyter ─────────────────────────────────────────
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# ── Large data and model files ───────────────────────
+data/*.csv
+data/*.tif
+data/*.xlsx
+data/*.json
+models/*.joblib
+models/*.pkl
+
+# ── Environment and credentials ──────────────────────
+.env
+*.env
+venv/
+env/
+.venv/
+client_secrets.json
+credentials.json
+
+# ── React / Node ─────────────────────────────────────
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.env
+dashboard/.env.local
+
+# ── OS and IDE files ─────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
