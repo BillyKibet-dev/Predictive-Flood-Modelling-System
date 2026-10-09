@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import RequireAuth from './components/RequireAuth'
+import ProtectedRoute from './components/ProtectedRoute'
 import Toast from './components/Toast'
-import { ALERTS, MOCK_CREDENTIALS, USERS, ZONES } from './data/mockData'
+import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
+import { ALERTS, USERS, ZONES } from './data/mockData'
 import AdminPage from './pages/AdminPage'
-import AlertsPage from './pages/AlertsPage'
-import DashboardPage from './pages/DashboardPage'
+import CitizenPage from './pages/CitizenPage'
 import LoginPage from './pages/LoginPage'
-import PublicPage from './pages/PublicPage'
+import MapPage from './pages/MapPage'
+import OfficerAlertsPage from './pages/OfficerAlertsPage'
+import OfficerDashboardPage from './pages/OfficerDashboardPage'
 
-// Root component — owns all lifted application state (auth, zones, alerts, users, toasts)
-// and wires up the four top-level routes.
+// Root component — owns lifted domain state (zones, alerts, users, toasts) and wires up routing.
+// Auth and theme are provided via Context so every nested page/component can read them.
 export default function App() {
-  const [user, setUser] = useState(null)
   const [zones, setZones] = useState(ZONES)
   const [alerts, setAlerts] = useState(ALERTS)
   const [users, setUsers] = useState(USERS)
@@ -26,65 +28,43 @@ export default function App() {
     }, 3000)
   }
 
-  function handleLogin(email, password) {
-    const account = MOCK_CREDENTIALS[email]
-    if (account && account.password === password) {
-      setUser({ name: account.name, email, role: account.role })
-      return account.role
-    }
-    return null
-  }
-
-  function handleLogout() {
-    setUser(null)
-  }
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/public" replace />} />
-        <Route path="/public" element={<PublicPage zones={zones} showToast={showToast} />} />
-        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route
-          path="/dashboard"
-          element={
-            <RequireAuth user={user}>
-              <DashboardPage user={user} zones={zones} setZones={setZones} alerts={alerts} onLogout={handleLogout} />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/alerts"
-          element={
-            <RequireAuth user={user}>
-              <AlertsPage
-                user={user}
-                alerts={alerts}
-                setAlerts={setAlerts}
-                onLogout={handleLogout}
-                showToast={showToast}
-              />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <RequireAuth user={user} role="admin">
-              <AdminPage
-                user={user}
-                onLogout={handleLogout}
-                users={users}
-                setUsers={setUsers}
-                zones={zones}
-                showToast={showToast}
-              />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<Navigate to="/public" replace />} />
-      </Routes>
-      <Toast toasts={toasts} />
-    </BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MapPage zones={zones} alerts={alerts} />} />
+            <Route path="/citizen" element={<CitizenPage zones={zones} showToast={showToast} />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/officer"
+              element={
+                <ProtectedRoute role="officer">
+                  <OfficerDashboardPage zones={zones} alerts={alerts} setAlerts={setAlerts} showToast={showToast} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/officer/alerts"
+              element={
+                <ProtectedRoute role="officer">
+                  <OfficerAlertsPage alerts={alerts} setAlerts={setAlerts} showToast={showToast} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminPage users={users} setUsers={setUsers} showToast={showToast} />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <Toast toasts={toasts} />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
