@@ -28,6 +28,22 @@ class TokenResponse(BaseModel):
     user: UserResponse
 
 
+# ---------------------------------------------------------------- Users ----
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None
+    status: Optional[str] = None
+
+
 # ---------------------------------------------------------------- Zones ----
 
 class ZoneResponse(BaseModel):
@@ -119,4 +135,20 @@ class PaginatedResponse(BaseModel, Generic[T]):
     items: List[T]
     limit: int
     offset: int
+
+
+# ------------------------------------------------------- Model performance ----
+
+class ModelPerformance(BaseModel):
+    model_version: str
+    test_period: str
+    weighted_recall: float
+    weighted_f1: float
+    auc_roc: float
+    per_class_recall: dict
+    features_used: List[str]
+    known_limitations: List[str]
+
+    model_config = ConfigDict(protected_namespaces=())
+
 
