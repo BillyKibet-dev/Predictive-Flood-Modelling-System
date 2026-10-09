@@ -1,13 +1,49 @@
-# NairobiFloodWatch — Backend API
+# NairobiFloodWatch
 
-FastAPI + PostgreSQL backend for the NairobiFloodWatch real-time urban
-flash-flood prediction system (Strathmore University capstone project).
+Real-time urban flash-flood prediction system for Nairobi County, Kenya —
+a Strathmore University industry capstone project.
 
-Serves flood risk predictions (XGBoost, 4 risk levels across 8 Nairobi
-County zones), alert management, citizen flood reports, and user
-authentication to the React dashboard in `dashboard/`.
+A trained XGBoost model classifies flood risk into four levels (**Low,
+Moderate, High, Extreme**) across **8 Nairobi County zones**, using live
+weather data. Predictions, alerts, and citizen reports are served through a
+FastAPI backend to a React dashboard used by three kinds of users:
 
-## How to run locally
+- **Citizens** — view current risk per zone and submit flood condition reports, no login required
+- **Authorities (officers)** — monitor the live risk map, manage and acknowledge alerts
+- **System administrators** — manage user accounts, alert thresholds, and review model performance
+
+## Architecture
+
+```mermaid
+flowchart LR
+    W["Open-Meteo API<br/>(weather data)"] --> P["Prediction Pipeline<br/>(hourly, APScheduler)"]
+    P --> M["XGBoost Model<br/>(src/api/services/ml_service.py)"]
+    M --> DB[("PostgreSQL<br/>zones, predictions, alerts, users, reports")]
+    DB --> API["FastAPI Backend<br/>src/api/"]
+    API <--> UI["React Dashboard<br/>dashboard/"]
+```
+
+## Repository structure
+
+```
+Predictive-Flood-Modelling-System/
+├── dashboard/        React + Vite frontend (citizen, officer, and admin views)
+├── src/
+│   ├── api/          FastAPI backend (routers, services, models, utils)
+│   └── scripts/      init_db.py, run_pipeline.py
+├── models/           Trained XGBoost model + scaler + feature columns (.joblib)
+├── data/             Raw/processed data used for model training
+├── notebooks/        Model training & evaluation notebook (FloodHub.ipynb)
+├── tests/            Backend API smoke tests (pytest)
+├── requirements.txt  Backend Python dependencies
+└── .env.example      Backend environment variable template
+```
+
+## Quick start
+
+Two independent apps make up the system — run them side by side during development.
+
+### 1. Backend (FastAPI + PostgreSQL)
 
 Install dependencies:
 
@@ -68,6 +104,27 @@ Run the prediction pipeline manually:
 python -m src.scripts.run_pipeline
 ```
 
+To use your own trained model, drop these three files into `models/` (see
+`MODEL_PATH`/`SCALER_PATH`/`FEATURE_COLS_PATH` in `.env` if you rename them),
+then restart the server:
+
+```
+models/flood_model_final.joblib
+models/scaler_final.joblib
+models/feature_cols_final.joblib
+```
+
+### 2. Frontend (React dashboard)
+
+```
+cd dashboard
+npm install
+npm start
+```
+
+The dashboard runs at http://localhost:5173 with routes `/` (public map),
+`/citizen`, `/login`, `/officer`, `/officer/alerts`, and `/admin`.
+
 ## Default credentials (seeded by init_db)
 
 | Role    | Email              | Password    |
@@ -83,3 +140,6 @@ python -m src.scripts.run_pipeline
 - The hourly prediction pipeline uses county-level Open-Meteo weather data
   applied identically to all 8 zones; zone differentiation is baked into
   the model via terrain features used at training time.
+- Model performance (test set 2024–2026): AUC-ROC 0.8732, weighted recall
+  0.7880. Moderate/High recall are below target due to training data
+  scarcity — expected to improve with TAHMO ground station integration.
