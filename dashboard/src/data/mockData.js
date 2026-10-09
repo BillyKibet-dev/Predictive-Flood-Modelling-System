@@ -1,120 +1,35 @@
 // Central mock data store — simulates the backend API responses for NairobiFloodWatch
+// Covers the entire Nairobi County, organised into flood risk zones (not individual sensors).
+
+export const LAST_UPDATED = '14:00 EAT — 08 Jul 2026'
 
 export const ZONES = [
-  {
-    id: 'mathare',
-    name: 'Mathare River',
-    risk: 'Extreme',
-    riskClass: 3,
-    waterLevel: 3.2,
-    rainfall6h: 68,
-    confidence: 0.94,
-    lat: -1.260,
-    lon: 36.860,
-    lastUpdated: '14:00 EAT',
-  },
-  {
-    id: 'ngong',
-    name: 'Ngong River',
-    risk: 'High',
-    riskClass: 2,
-    waterLevel: 2.1,
-    rainfall6h: 44,
-    confidence: 0.81,
-    lat: -1.317,
-    lon: 36.783,
-    lastUpdated: '14:00 EAT',
-  },
-  {
-    id: 'nairobi_river',
-    name: 'Nairobi River',
-    risk: 'Moderate',
-    riskClass: 1,
-    waterLevel: 1.2,
-    rainfall6h: 22,
-    confidence: 0.72,
-    lat: -1.283,
-    lon: 36.822,
-    lastUpdated: '14:00 EAT',
-  },
+  { id: 'mathare', name: 'Mathare', subCounty: 'Starehe', risk: 'Extreme', riskClass: 3, rainfall24h: 68, confidence: 0.94, lat: -1.260, lon: 36.860 },
+  { id: 'kibera', name: 'Kibera', subCounty: 'Langata', risk: 'High', riskClass: 2, rainfall24h: 44, confidence: 0.81, lat: -1.314, lon: 36.784 },
+  { id: 'westlands', name: 'Westlands', subCounty: 'Westlands', risk: 'Moderate', riskClass: 1, rainfall24h: 22, confidence: 0.72, lat: -1.264, lon: 36.807 },
+  { id: 'cbd', name: 'CBD', subCounty: 'Kamuthe', risk: 'Low', riskClass: 0, rainfall24h: 8, confidence: 0.88, lat: -1.286, lon: 36.817 },
+  { id: 'kasarani', name: 'Kasarani', subCounty: 'Kasarani', risk: 'Moderate', riskClass: 1, rainfall24h: 18, confidence: 0.76, lat: -1.221, lon: 36.897 },
+  { id: 'embakasi', name: 'Embakasi', subCounty: 'Embakasi East', risk: 'High', riskClass: 2, rainfall24h: 38, confidence: 0.79, lat: -1.320, lon: 36.895 },
+  { id: 'dagoretti', name: 'Dagoretti', subCounty: 'Dagoretti North', risk: 'Low', riskClass: 0, rainfall24h: 5, confidence: 0.91, lat: -1.295, lon: 36.754 },
+  { id: 'ruaraka', name: 'Ruaraka', subCounty: 'Ruaraka', risk: 'Moderate', riskClass: 1, rainfall24h: 20, confidence: 0.74, lat: -1.241, lon: 36.876 },
 ]
 
 export const ALERTS = [
-  {
-    id: 1,
-    zone: 'Mathare River',
-    risk: 'Extreme',
-    timestamp: '14:00 EAT — 08 Jul 2026',
-    acknowledged: false,
-    acknowledgedBy: null,
-  },
-  {
-    id: 2,
-    zone: 'Ngong River',
-    risk: 'High',
-    timestamp: '13:00 EAT — 08 Jul 2026',
-    acknowledged: false,
-    acknowledgedBy: null,
-  },
-  {
-    id: 3,
-    zone: 'Mathare River',
-    risk: 'High',
-    timestamp: '08:00 EAT — 07 Jul 2026',
-    acknowledged: true,
-    acknowledgedBy: 'Billy Kibet',
-  },
-  {
-    id: 4,
-    zone: 'Nairobi River',
-    risk: 'Moderate',
-    timestamp: '06:00 EAT — 07 Jul 2026',
-    acknowledged: true,
-    acknowledgedBy: 'Billy Kibet',
-  },
+  { id: 1, zone: 'Mathare', subCounty: 'Starehe', risk: 'Extreme', timestamp: '14:00 EAT — 08 Jul 2026', acknowledged: false, acknowledgedBy: null },
+  { id: 2, zone: 'Kibera', subCounty: 'Langata', risk: 'High', timestamp: '13:00 EAT — 08 Jul 2026', acknowledged: false, acknowledgedBy: null },
+  { id: 3, zone: 'Embakasi', subCounty: 'Embakasi East', risk: 'High', timestamp: '08:00 EAT — 07 Jul 2026', acknowledged: true, acknowledgedBy: 'Jane Mwangi' },
+  { id: 4, zone: 'Westlands', subCounty: 'Westlands', risk: 'Moderate', timestamp: '06:00 EAT — 07 Jul 2026', acknowledged: true, acknowledgedBy: 'Jane Mwangi' },
 ]
 
 export const USERS = [
-  {
-    id: 1,
-    name: 'Billy Kibet',
-    email: 'billy.kibet@strathmore.edu',
-    role: 'admin',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    name: 'Jane Mwangi',
-    email: 'j.mwangi@nairobicouncil.go.ke',
-    role: 'officer',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    name: 'David Otieno',
-    email: 'd.otieno@redcross.or.ke',
-    role: 'officer',
-    status: 'Inactive',
-  },
+  { id: 1, name: 'Billy Kibet', email: 'billy.kibet@strathmore.edu', role: 'admin', status: 'Active' },
+  { id: 2, name: 'Jane Mwangi', email: 'j.mwangi@nairobicouncil.go.ke', role: 'officer', status: 'Active' },
+  { id: 3, name: 'David Otieno', email: 'd.otieno@redcross.or.ke', role: 'officer', status: 'Inactive' },
 ]
 
 export const CITIZEN_REPORTS = [
-  {
-    id: 1,
-    zone: 'Mathare River',
-    condition: 'Street flooding',
-    severity: 'Dangerous',
-    timestamp: '13:45 EAT — 08 Jul 2026',
-    description: 'Water is knee-deep on Juja Road near the bridge',
-  },
-  {
-    id: 2,
-    zone: 'Ngong River',
-    condition: 'River overflow',
-    severity: 'Serious',
-    timestamp: '12:30 EAT — 08 Jul 2026',
-    description: 'Langata Road completely submerged near junction',
-  },
+  { id: 1, zone: 'Mathare', condition: 'Street flooding', severity: 'Dangerous', timestamp: '13:45 EAT — 08 Jul 2026', description: 'Water is knee-deep on Juja Road near the bridge' },
+  { id: 2, zone: 'Kibera', condition: 'River overflow', severity: 'Serious', timestamp: '12:30 EAT — 08 Jul 2026', description: 'Langata Road completely submerged near junction' },
 ]
 
 // Mock credential map used by the login page
@@ -124,10 +39,10 @@ export const MOCK_CREDENTIALS = {
 }
 
 export const PIPELINE_LOG = [
-  { id: 1, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Ingest', status: 'Success', duration: '4.2s' },
+  { id: 1, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Fetch data', status: 'Success', duration: '4.2s' },
   { id: 2, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Preprocess', status: 'Success', duration: '2.8s' },
   { id: 3, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Inference', status: 'Success', duration: '1.1s' },
-  { id: 4, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Alerts', status: 'Success', duration: '0.6s' },
+  { id: 4, timestamp: '14:00 EAT — 08 Jul 2026', stage: 'Alert check', status: 'Success', duration: '0.6s' },
 ]
 
 export const MODEL_METRICS = [
