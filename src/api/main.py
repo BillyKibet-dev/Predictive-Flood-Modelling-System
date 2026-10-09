@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.api.config import settings
 from src.api.database import engine
 from src.api.models.db_models import Base
-from src.api.routers import auth
+from src.api.routers import alerts, auth, predictions, reports
 from src.api.services.ml_service import ml_service
 from src.api.services.pipeline import pipeline
 
@@ -48,6 +48,10 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(predictions.router, prefix="/predictions", tags=["Predictions"])
+app.include_router(predictions.dashboard_router, tags=["Predictions"])
+app.include_router(alerts.router, prefix="/alerts", tags=["Alerts"])
+app.include_router(reports.router, prefix="", tags=["Reports"])
 
 
 @app.get("/health")
