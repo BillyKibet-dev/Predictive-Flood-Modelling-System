@@ -1,17 +1,15 @@
 import { Droplets } from 'lucide-react'
 
-// Simple footer for the public citizens page
+// Dark brand footer shown at the bottom of the citizen page
 export default function Footer() {
   return (
-    <footer className="bg-white border-t mt-8">
-      <div className="max-w-6xl mx-auto px-4 py-6 text-center space-y-2">
-        <p className="text-gray-600 text-sm flex items-center justify-center gap-1">
-          <Droplets size={16} className="text-brand" />
-          NairobiFloodWatch — Powered by XGBoost ML · Strathmore University Capstone Project 2026
+    <footer className="bg-brand text-white py-10">
+      <div className="max-w-content mx-auto px-6 text-center space-y-1">
+        <p className="text-sm flex items-center justify-center gap-2 font-medium">
+          <Droplets size={16} />
+          NairobiFloodWatch — XGBoost ML · Strathmore University 2026
         </p>
-        <p className="text-green-700 font-medium text-sm">
-          ⚠ Never attempt to cross flooded roads. Turn around — don&apos;t drown.
-        </p>
+        <p className="text-xs text-white/60">Data: CHIRPS · Open-Meteo · TAHMO</p>
       </div>
     </footer>
   )
