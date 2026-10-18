@@ -1,8 +1,8 @@
 """Pydantic request/response schemas for the NairobiFloodWatch API."""
 from datetime import datetime
-from typing import Generic, List, Optional, TypeVar
+from typing import Generic, List, Literal, Optional, TypeVar
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # ---------------------------------------------------------------- Auth ----
 
@@ -108,10 +108,17 @@ class AlertAcknowledge(BaseModel):
 # --------------------------------------------------------- Citizen reports ----
 
 class ReportCreate(BaseModel):
-    zone_id: str
-    observed_condition: str
-    perceived_severity: str
-    description: Optional[str] = None
+    zone_id: str = Field(min_length=1, max_length=50)
+    observed_condition: Literal["Street flooding", "River overflow", "Blocked drainage", "Other"]
+    perceived_severity: Literal["Mild", "Serious", "Dangerous"]
+    description: Optional[str] = Field(default=None, max_length=200)
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    @field_validator("description")
+    @classmethod
+    def normalize_description(cls, value: Optional[str]) -> Optional[str]:
+        return value or None
 
 
 class ReportResponse(BaseModel):
