@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './api.js'
+
 const env = import.meta.env ?? {}
 
 function positiveMilliseconds(value, fallback) {
@@ -7,7 +9,6 @@ function positiveMilliseconds(value, fallback) {
 
 export const POLL_INTERVAL_MS = positiveMilliseconds(env.VITE_PREDICTION_POLL_INTERVAL_MS, 60_000)
 export const STALE_AFTER_MS = positiveMilliseconds(env.VITE_PREDICTION_STALE_AFTER_MS, 65 * 60_000)
-const API_BASE_URL = (env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '')
 const RISK_LEVELS = ['Low', 'Moderate', 'High', 'Extreme']
 
 // Keep the API contract at the boundary; pages share one normalized snapshot.
