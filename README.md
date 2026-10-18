@@ -125,12 +125,6 @@ npm start
 The dashboard runs at http://localhost:5173 with routes `/` (public map),
 `/citizen`, `/login`, `/officer`, `/officer/alerts`, and `/admin`.
 
-## Default credentials (seeded by init_db)
-
-| Role    | Email              | Password    |
-|---------|--------------------|-------------|
-| admin   | admin@flood.ke     | admin123    |
-| officer | officer@flood.ke   | officer123  |
 
 ## Notes
 
