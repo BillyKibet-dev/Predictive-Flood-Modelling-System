@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { RISK_ACTION_MESSAGES, riskColor } from '../constants/colors'
+import { formatConfidence, formatPredictionTime, isPredictionStale } from '../services/predictions'
 import RiskBadge from './RiskBadge'
 
 // Zone warning card for the citizen page grid — memoised to avoid re-renders on unrelated state changes
@@ -21,12 +22,14 @@ function ZoneCard({ zone, index = 0 }) {
           <RiskBadge risk={zone.risk} size="sm" />
         </div>
         <p className="text-sm text-ink">
-          24h Rainfall: <span className="font-semibold">{zone.rainfall24h}mm</span>
+          24h Rainfall: <span className="font-semibold">Unavailable</span>
         </p>
         <p className="text-sm font-medium" style={{ color }}>
           {RISK_ACTION_MESSAGES[zone.risk]}
         </p>
-        <p className="text-xs text-muted">Confidence: {Math.round(zone.confidence * 100)}%</p>
+        <p className="text-xs text-muted">Confidence: {formatConfidence(zone.confidence)}</p>
+        <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
+        {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
       </div>
     </div>
   )
