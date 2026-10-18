@@ -125,6 +125,42 @@ npm start
 The dashboard runs at http://localhost:5173 with routes `/` (public map),
 `/citizen`, `/login`, `/officer`, `/officer/alerts`, and `/admin`.
 
+### Prediction refresh (issue #9)
+
+The map, citizen risk cards, and officer risk table share one live `GET /dashboard`
+subscription. Keep the backend running alongside Vite. To change the API origin or
+refresh timing, copy `dashboard/.env.example` to `dashboard/.env.local` and restart
+Vite (or rebuild for deployment).
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITE_API_BASE_URL` | `http://localhost:8000` | Backend origin; allow the frontend origin via backend `FRONTEND_URL` |
+| `VITE_PREDICTION_POLL_INTERVAL_MS` | `60000` | Delay between completed prediction requests |
+| `VITE_PREDICTION_STALE_AFTER_MS` | `3900000` | Mark predictions older than 65 minutes as stale |
+
+Predictions are fetched immediately on page load, then every minute after the
+previous request settles. This checks saved results from the hourly backend
+pipeline; it never triggers inference. Manual refresh, returning to the tab, and
+regaining connectivity also check for updates. Requests time out after 15 seconds;
+requests do not overlap, and unmounting cancels requests and timers.
+
+Failed refreshes retain the last successful snapshot with a visible warning.
+Each zone displays its actual prediction timestamp in Africa/Nairobi time. Zones
+without predictions show **Unknown**, and empty results do not imply low risk.
+The API does not supply rainfall totals, so those fields show **Unavailable**.
+
+Only prediction data and the summary alert count are connected in this issue.
+Authentication, alert actions, user management, model/system panels, and citizen
+report submission still use the existing demo implementation and require separate
+integration work (#25 covers citizen reporting).
+
+Run the polling/response regression tests and production build from `dashboard/`:
+
+```text
+npm test
+npm run build
+```
+
 
 ## Notes
 

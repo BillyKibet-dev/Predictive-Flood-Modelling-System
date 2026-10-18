@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { useNavigate } from 'react-router-dom'
 import { RISK_OPACITY, RISK_RADIUS, riskColor } from '../constants/colors'
-import { LAST_UPDATED } from '../data/mockData'
+import { formatConfidence, formatPredictionTime, isPredictionStale } from '../services/predictions'
 import RiskBadge from './RiskBadge'
 
 // Leaflet map — every zone rendered as a coloured circle marker; Extreme zones
@@ -48,9 +48,10 @@ export default function MapView({ zones, height = '100%' }) {
                     <p className="text-xs text-muted">{zone.subCounty}</p>
                   </div>
                   <RiskBadge risk={zone.risk} size="sm" />
-                  <p className="text-sm text-ink">24h Rainfall: {zone.rainfall24h}mm</p>
-                  <p className="text-sm text-ink">Confidence: {Math.round(zone.confidence * 100)}%</p>
-                  <p className="text-xs text-muted">Updated: {LAST_UPDATED}</p>
+                  <p className="text-sm text-ink">24h Rainfall: Unavailable</p>
+                  <p className="text-sm text-ink">Confidence: {formatConfidence(zone.confidence)}</p>
+                  <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
+                  {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
                   <div className="border-t border-border pt-2 flex gap-2">
                     <button
                       onClick={() => viewDetails(zone.id)}

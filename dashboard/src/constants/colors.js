@@ -5,6 +5,7 @@ export const RISK_COLORS = {
   Moderate: '#CA8A04',
   High: '#EA580C',
   Extreme: '#DC2626',
+  Unknown: '#64748B',
 }
 
 export const RISK_RADIUS = {
@@ -12,6 +13,7 @@ export const RISK_RADIUS = {
   Moderate: 22,
   High: 25,
   Extreme: 28,
+  Unknown: 20,
 }
 
 export const RISK_OPACITY = {
@@ -19,6 +21,7 @@ export const RISK_OPACITY = {
   Moderate: 0.5,
   High: 0.6,
   Extreme: 0.7,
+  Unknown: 0.4,
 }
 
 export const RISK_ORDER = ['Low', 'Moderate', 'High', 'Extreme']
@@ -28,6 +31,7 @@ export const RISK_ACTION_MESSAGES = {
   High: 'Avoid flood-prone roads and drainage areas.',
   Moderate: 'Monitor conditions. Stay alert.',
   Low: 'Conditions normal.',
+  Unknown: 'No prediction available.',
 }
 
 // Risk colour tokens — bg/text/border read from CSS variables so dark mode applies automatically
@@ -37,6 +41,7 @@ export const getRisk = (level) =>
     Moderate: { bg: 'var(--risk-mod-bg)', text: 'var(--risk-mod)', border: '#FDE047' },
     High: { bg: 'var(--risk-high-bg)', text: 'var(--risk-high)', border: '#FDBA74' },
     Extreme: { bg: 'var(--risk-extreme-bg)', text: 'var(--risk-extreme)', border: '#FCA5A5' },
+    Unknown: { bg: 'var(--bg)', text: 'var(--text-muted)', border: 'var(--border)' },
   }[level] || {})
 
 export function riskColor(risk) {

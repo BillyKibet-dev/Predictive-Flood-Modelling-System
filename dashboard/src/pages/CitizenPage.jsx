@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, Phone } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Footer from '../components/Footer'
+import PredictionStatus from '../components/PredictionStatus'
 import TopNav from '../components/TopNav'
 import ZoneCard from '../components/ZoneCard'
 
@@ -14,7 +15,8 @@ const SEVERITY_OPTIONS = [
 const MAX_DESCRIPTION = 200
 
 // Citizens page — public flood warnings by zone + anonymous flood condition reporting
-export default function CitizenPage({ zones, showToast }) {
+export default function CitizenPage({ predictions, showToast }) {
+  const zones = predictions.data?.zones ?? []
   const warningZones = zones.filter((z) => z.risk === 'High' || z.risk === 'Extreme')
 
   const [form, setForm] = useState({
@@ -31,7 +33,7 @@ export default function CitizenPage({ zones, showToast }) {
       const el = document.getElementById(window.location.hash.slice(1))
       el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-  }, [])
+  }, [zones.length])
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -65,6 +67,7 @@ export default function CitizenPage({ zones, showToast }) {
       <section className="py-10 px-6">
         <div className="max-w-content mx-auto space-y-6">
           <h2 className="text-2xl font-semibold tracking-tight text-ink">Current Risk by Zone</h2>
+          <PredictionStatus predictions={predictions} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {zones.map((zone, i) => (
               <ZoneCard key={zone.id} zone={zone} index={i} />
