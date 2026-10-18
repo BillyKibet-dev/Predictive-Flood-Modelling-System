@@ -4,12 +4,12 @@ import { formatConfidence, formatPredictionTime, isPredictionStale } from '../se
 import RiskBadge from './RiskBadge'
 
 // Zone warning card for the citizen page grid — memoised to avoid re-renders on unrelated state changes
-function ZoneCard({ zone, index = 0 }) {
+function ZoneCard({ zone, index = 0, onReport }) {
   const color = riskColor(zone.risk)
   return (
     <div
       id={`zone-${zone.id}`}
-      className="stagger-item card-hover bg-surface border border-border rounded-card shadow-card-rest overflow-hidden"
+      className="stagger-item card-hover bg-surface border border-border rounded-card shadow-card-rest overflow-hidden scroll-mt-24"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <div style={{ backgroundColor: color, height: 4 }} />
@@ -30,6 +30,16 @@ function ZoneCard({ zone, index = 0 }) {
         <p className="text-xs text-muted">Confidence: {formatConfidence(zone.confidence)}</p>
         <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
         {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
+        {onReport && (
+          <button
+            type="button"
+            onClick={() => onReport(zone.id)}
+            aria-label={`Report conditions in ${zone.name}`}
+            className="w-full border border-border rounded-btn py-2 text-sm font-medium text-ink hover:bg-bg"
+          >
+            Report conditions
+          </button>
+        )}
       </div>
     </div>
   )

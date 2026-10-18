@@ -150,9 +150,9 @@ without predictions show **Unknown**, and empty results do not imply low risk.
 The API does not supply rainfall totals, so those fields show **Unavailable**.
 
 Only prediction data and the summary alert count are connected in this issue.
-Authentication, alert actions, user management, model/system panels, and citizen
-report submission still use the existing demo implementation and require separate
-integration work (#25 covers citizen reporting).
+Authentication, alert actions, user management, and model/system panels still use
+the existing demo implementation and require separate integration work. Citizen
+report submission is connected as described below.
 
 Run the polling/response regression tests and production build from `dashboard/`:
 
@@ -160,6 +160,41 @@ Run the polling/response regression tests and production build from `dashboard/`
 npm test
 npm run build
 ```
+
+### Public citizen warnings and reports (issue #25)
+
+At `/citizen`, residents can filter the live warning cards by zone and select
+**Report conditions** on a card to preselect that zone in the reporting form.
+Warnings with old prediction timestamps are labelled as saved warnings.
+
+The form submits anonymously to `POST /citizen-report`, using zone IDs from the
+dashboard API. Supported conditions are Street flooding, River overflow, Blocked
+drainage, and Other; severities are Mild, Serious, and Dangerous. Descriptions are
+optional, limited to 200 characters, trimmed, and stored as null when blank.
+The frontend validates entries, and the backend enforces the same values and
+length limits. Zone IDs must exist in the database; the form offers no unsupported
+"Other" zone.
+
+While submitting, the form blocks repeated submissions. Success appears only
+after HTTP 201 confirms the saved report ID and timestamp. Failures preserve the
+entered details and show a retry message or field errors. Requests time out after
+15 seconds and are cancelled when navigating away. Submissions are never retried
+automatically because a lost response can follow a successful save. Reports do
+not directly change model predictions or displayed risk levels.
+
+Reports persist in `citizen_reports` and are available through the existing
+admin-only `GET /citizen-reports` endpoint. The admin dashboard's report list still
+uses demo data pending authentication/admin API integration.
+
+Run the frontend tests/build above and the isolated report API tests from the
+project root (with the normal backend environment configured):
+
+```text
+python -m pytest tests/test_reports.py -v
+```
+
+These report tests use an in-memory SQLite database and do not write to the
+configured PostgreSQL database or start the prediction scheduler.
 
 
 ## Notes
