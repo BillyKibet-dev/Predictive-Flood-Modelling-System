@@ -27,11 +27,11 @@ export const RISK_OPACITY = {
 export const RISK_ORDER = ['Low', 'Moderate', 'High', 'Extreme']
 
 export const RISK_ACTION_MESSAGES = {
-  Extreme: 'Evacuate low-lying areas immediately.',
-  High: 'Avoid flood-prone roads and drainage areas.',
-  Moderate: 'Monitor conditions. Stay alert.',
-  Low: 'Conditions normal.',
-  Unknown: 'No prediction available.',
+  Extreme: 'Very elevated weather indication. Check official warnings and local conditions.',
+  High: 'Elevated weather indication. Check official warnings and local conditions.',
+  Moderate: 'Monitor rainfall and local conditions.',
+  Low: 'Lower weather indication. Local flooding is still possible.',
+  Unknown: 'No current indication available.',
 }
 
 // Risk colour tokens — bg/text/border read from CSS variables so dark mode applies automatically

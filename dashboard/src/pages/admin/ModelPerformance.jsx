@@ -8,7 +8,7 @@ export default function ModelPerformance() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-ink">Model Performance</h2>
-        <p className="text-muted mt-1">XGBoost Classifier — Test Set 2024–2026</p>
+        <p className="text-muted mt-1">Demo metrics preview. These values are not verified results for the loaded model.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -46,7 +46,7 @@ export default function ModelPerformance() {
           </BarChart>
         </ResponsiveContainer>
         <p className="text-xs text-muted mt-4">
-          ⚠ Moderate and High recall below target due to data scarcity. Will improve with TAHMO integration.
+          Evaluation results require a documented test dataset and matching model artefacts.
         </p>
       </div>
     </div>

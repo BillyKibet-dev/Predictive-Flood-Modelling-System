@@ -27,7 +27,7 @@ function ZoneCard({ zone, index = 0, onReport }) {
         <p className="text-sm font-medium" style={{ color }}>
           {RISK_ACTION_MESSAGES[zone.risk]}
         </p>
-        <p className="text-xs text-muted">Confidence: {formatConfidence(zone.confidence)}</p>
+        <p className="text-xs text-muted">Model score: {formatConfidence(zone.confidence)}</p>
         <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
         {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
         {onReport && (
