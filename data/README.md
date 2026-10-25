@@ -25,6 +25,31 @@ The file uses RFC 7946 longitude/latitude coordinates (WGS84 / EPSG:4326). The
 import normalizes Polygon to MultiPolygon and ring orientation in PostGIS; it
 does not simplify the boundary further or repair invalid topology silently.
 
-This county outline is separate from the application's eight monitoring-zone
-points. Neighbourhood labels such as CBD and Kibera are not county boundaries;
-no zone polygons or zone-to-admin-area assignments are inferred from this file.
+## Nairobi sub-counties
+
+`boundaries/nairobi_subcounties.geojson` contains 17 features from the
+provider-simplified Kenya ADM2 layer, `KEN-ADM2-3690345`.
+
+- Original sources: **IEBC and OCHA ROSEA**, distributed by geoBoundaries gbOpen.
+- Boundary year: **2020**. Source names and coordinates are preserved, including
+  the labels **Kilimani** and **Dagoretti**; these are dated source labels.
+- Licence: [CC BY 3.0 IGO](https://creativecommons.org/licenses/by/3.0/igo/).
+  Attribute IEBC, OCHA ROSEA, and geoBoundaries when displaying the data.
+- [Pinned download](https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson)
+  at upstream commit `9469f09`.
+- [Provider metadata](https://www.geoboundaries.org/api/gbID/KEN-ADM2-3690345/).
+
+The companion `.source.json` records upstream/extract SHA-256 hashes, the county
+extract hash, and all selected source properties. To reproduce the selection,
+use PostGIS `ST_Covers(county_geometry, ST_PointOnSurface(adm2_geometry))` against
+the committed Nairobi County outline. Preserve the selected geometry and names,
+and add the stable IDs/provenance properties in the committed extract. No
+additional simplification, clipping, or coordinate movement is applied.
+
+The application's eight monitoring points remain separate from these
+administrative areas. The boundary API assigns point IDs using `ST_Covers` on
+their coordinates, not neighbourhood labels. Consequently the existing CBD
+point falls in the source's Kilimani polygon and the Kibera point in Langata.
+The map identifies both the source boundary and contributing point names.
+Unmonitored polygons show Unknown; a coloured polygon represents the highest
+available monitored risk in that area, not a predicted flood footprint.
