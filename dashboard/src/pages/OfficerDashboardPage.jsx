@@ -55,7 +55,7 @@ export default function OfficerDashboardPage({ predictions, alerts, setAlerts, s
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-muted border-b border-border">
-                    {['Zone', 'Sub-County', 'Risk', '24h Rainfall', 'Confidence', 'Status'].map((h) => (
+                    {['Zone', 'Sub-County', 'Risk', '24h Rainfall', 'Model score', 'Status'].map((h) => (
                       <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide">
                         {h}
                       </th>

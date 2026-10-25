@@ -58,7 +58,7 @@ function BoundaryPopup({ feature, summary, viewDetails }) {
         <div key={zone.id} className="border-t border-border pt-2 space-y-1">
           <button type="button" onClick={() => viewDetails(zone.id)} className="text-sm font-semibold text-ink underline">{zone.name}</button>
           <div><RiskBadge risk={zone.risk} size="sm" /></div>
-          <p className="text-xs text-muted">Confidence: {formatConfidence(zone.confidence)}</p>
+          <p className="text-xs text-muted">Model score: {formatConfidence(zone.confidence)}</p>
           <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
         </div>
       ))}
@@ -128,7 +128,7 @@ export default function MapView({ zones, boundaries, boundaryRevision, showPolyg
                   </div>
                   <RiskBadge risk={zone.risk} size="sm" />
                   <p className="text-sm text-ink">24h Rainfall: Unavailable</p>
-                  <p className="text-sm text-ink">Confidence: {formatConfidence(zone.confidence)}</p>
+                  <p className="text-sm text-ink">Model score: {formatConfidence(zone.confidence)}</p>
                   <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
                   {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
                   <div className="border-t border-border pt-2 flex gap-2">

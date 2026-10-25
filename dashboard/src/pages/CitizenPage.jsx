@@ -107,15 +107,14 @@ export default function CitizenPage({ predictions, showToast }) {
       >
         <div className="max-w-content mx-auto space-y-4">
           <h1 className="text-4xl font-bold tracking-tight">Nairobi County Flood Warnings</h1>
-          <p className="text-white/80">View the latest saved warnings and report conditions in your area. Predictions run hourly.</p>
+          <p className="text-white/80">View the latest weather-based risk indications and report conditions in your area. Predictions run hourly.</p>
           <a href="#report" className="inline-flex rounded-btn border border-white/50 px-4 py-2 text-sm font-semibold hover:bg-white/10">
             Report a flood condition
           </a>
 
           {warningZones.length > 0 && (
             <div className="bg-red-600 rounded-card px-4 py-3 text-sm font-medium inline-block">
-              {hasOldWarnings ? 'LATEST SAVED WARNING' : 'ACTIVE WARNING'} — {warningZones.map((z) => z.name).join(' and ')}{' '}
-              {warningZones.length > 1 ? 'are' : 'is'} at elevated flood risk. Follow instructions below.
+              {hasOldWarnings ? 'LATEST SAVED INDICATION' : 'ELEVATED WEATHER INDICATION'} — displayed for {warningZones.map((z) => z.name).join(', ')}.
             </div>
           )}
         </div>
