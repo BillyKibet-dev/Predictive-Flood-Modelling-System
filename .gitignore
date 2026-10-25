@@ -25,6 +25,7 @@ models/*.pkl
 venv/
 env/
 .venv/
+.venv-evaluation/
 client_secrets.json
 credentials.json
 

@@ -3,6 +3,12 @@
 Recorded 25 October 2026. First implementation step under issue #19; the issue
 remains open for local data collection, retraining and validation.
 
+After this initial artefact inspection, the user restored both training CSVs
+and supplied candidate source scripts. See the
+[dataset replay report](dataset-evaluation.md) for source fingerprints, actual
+coverage, observed metrics, and the separate snapshot compatibility failure.
+The baseline below remains the record of the initial inspection.
+
 ## Current capability
 
 The packaged v2 classifier produces a **shared Nairobi weather-based risk

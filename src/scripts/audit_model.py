@@ -108,7 +108,7 @@ def audit_model(model_dir: Path, notebook_path: Path) -> dict:
             "The runoff-change feature is derived from rainfall used to construct the proxy labels.",
             "Preprocessing occurs before the temporal split; training data is needed to assess contamination.",
             "No validated forecast lead time, street-level accuracy or probability calibration.",
-            "Original data and a compatible re-export are required before metrics can be reproduced.",
+            "Source-backed daily replay and library compatibility checks are separate from this artefact-only inspection.",
         ],
     }
 
