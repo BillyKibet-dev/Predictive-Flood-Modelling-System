@@ -1,0 +1,3 @@
+# Keep committed boundary checksums stable across Windows and Unix checkouts.
+data/boundaries/*.geojson text eol=lf
+data/boundaries/*.source.json text eol=lf
