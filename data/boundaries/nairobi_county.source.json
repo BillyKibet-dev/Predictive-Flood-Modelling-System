@@ -1,0 +1,21 @@
+{
+  "provider": "geoBoundaries gbOpen",
+  "boundary_id": "KEN-ADM1-32016919",
+  "metadata_url": "https://www.geoboundaries.org/api/gbID/KEN-ADM1-32016919/",
+  "download_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM1/geoBoundaries-KEN-ADM1_simplified.geojson",
+  "upstream_commit": "9469f09",
+  "source": "RCMRD GeoPortal, Africa GeoPortal",
+  "source_license": "Public Domain",
+  "boundary_year": 2020,
+  "retrieved_on": "2026-10-25",
+  "selection": {
+    "shapeName": "Nairobi",
+    "shapeISO": "KE-30",
+    "shapeID": "32016919B57908315498598",
+    "shapeGroup": "KEN",
+    "shapeType": "ADM1"
+  },
+  "processing": "Extracted the single Nairobi feature from the provider-simplified ADM1 layer. Geometry coordinates unchanged. Added application ID and provenance properties.",
+  "upstream_sha256": "4d9e1b8a6d305ee2b2bbeeeb4dd6ec3cc52e44884f0f6065d14d255810f9eae4",
+  "geojson_sha256": "f79fad15d7c82f36e4d03957c0e0bd903dfb7ba76be10f86e63edc4a7b591533"
+}
