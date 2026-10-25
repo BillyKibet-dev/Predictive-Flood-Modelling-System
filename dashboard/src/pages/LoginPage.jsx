@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const FEATURES = [
-  'XGBoost ML model with AUC-ROC 0.8732',
+  'Weather-based risk indications across Nairobi',
   'Eight monitored zones across Nairobi County',
   'Automated alerts for High and Extreme risk',
 ]

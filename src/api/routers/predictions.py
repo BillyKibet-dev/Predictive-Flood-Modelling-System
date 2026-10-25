@@ -1,6 +1,5 @@
 """Flood prediction and dashboard endpoints (all public / read-only)."""
 import logging
-from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
@@ -15,6 +14,7 @@ from src.api.models.schemas import (
     ZoneWithPrediction,
 )
 from src.api.services.pipeline import pipeline
+from src.api.services.model_contract import PREDICTION_CONTEXT
 from src.api.utils.security import get_current_user
 
 logger = logging.getLogger("nairobifloodwatch.predictions")
@@ -115,12 +115,12 @@ def get_dashboard(db: Session = Depends(get_db)):
         zones = db.query(Zone).all()
 
         zone_items = []
-        highest_risk = "Low"
+        highest_risk = "Unknown"
         for zone in zones:
             pred = latest_by_zone.get(zone.id)
-            risk_level = pred.risk_level if pred else "Low"
-            risk_class = pred.risk_class if pred else 0
-            if RISK_ORDER.index(risk_level) > RISK_ORDER.index(highest_risk):
+            risk_level = pred.risk_level if pred else "Unknown"
+            risk_class = pred.risk_class if pred else None
+            if pred and (highest_risk == "Unknown" or RISK_ORDER.index(risk_level) > RISK_ORDER.index(highest_risk)):
                 highest_risk = risk_level
             zone_items.append(
                 ZoneWithPrediction(
@@ -139,9 +139,10 @@ def get_dashboard(db: Session = Depends(get_db)):
 
         return DashboardResponse(
             zones=zone_items,
-            last_updated=last_updated or datetime.now(timezone.utc),
+            last_updated=last_updated,
             active_alerts=active_alerts,
             highest_risk=highest_risk,
+            prediction_context=dict(PREDICTION_CONTEXT),
         )
     except Exception as exc:  # noqa: BLE001
         logger.error("get_dashboard failed: %s", exc)

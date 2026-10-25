@@ -38,7 +38,7 @@ test('missing predictions do not become Low or inherit the API current-time fall
 
 test('empty results stay empty, with no invented last-updated time', () => {
   assert.deepEqual(normalizeDashboard(dashboard({ zones: [], active_alerts: 0 })), {
-    zones: [], lastUpdated: null, activeAlerts: 0,
+    zones: [], lastUpdated: null, activeAlerts: 0, predictionContext: null,
   })
 })
 
@@ -99,4 +99,14 @@ test('fetches only the public dashboard, bypassing caches and forwarding cancell
 test('rejects HTTP errors so polling can preserve the previous snapshot', async (t) => {
   t.mock.method(globalThis, 'fetch', async () => ({ ok: false, status: 503 }))
   await assert.rejects(fetchDashboard(), /503/)
+})
+
+test('declares the shared weather scope without interpreting model scores as flood probabilities', () => {
+  const context = { spatial_scope: 'shared_nairobi_weather', label_basis: 'rainfall_soil_moisture_proxy',
+    temporal_scope: 'current_conditions', location_specific: false, confidence_interpretation: 'uncalibrated_class_score' }
+  assert.deepEqual(normalizeDashboard(dashboard({ prediction_context: context })).predictionContext, {
+    spatialScope: 'shared_nairobi_weather', locationSpecific: false, calibratedProbability: false,
+  })
+  assert.equal(normalizeDashboard(dashboard()).predictionContext, null)
+  assert.throws(() => normalizeDashboard(dashboard({ prediction_context: { ...context, location_specific: true } })), /context/)
 })

@@ -1,0 +1,131 @@
+{
+  "audit_status": "review_required",
+  "artifact_contract_valid": true,
+  "contract_errors": [],
+  "prediction_context": {
+    "spatial_scope": "shared_nairobi_weather",
+    "label_basis": "rainfall_soil_moisture_proxy",
+    "temporal_scope": "current_conditions",
+    "location_specific": false,
+    "confidence_interpretation": "uncalibrated_class_score"
+  },
+  "serving_version": "v2_final_inputs_v1",
+  "artifacts": {
+    "flood_model_final.joblib": {
+      "sha256": "aa131e3bda3b06b3349cd36d9e5ad6454d5c7831e02a4084bb7dfad230f25027",
+      "size_bytes": 2973764
+    },
+    "scaler_final.joblib": {
+      "sha256": "f5f03f7b0e9fa668d8f1d0b2529f66272c95cc629666d7b4a11461eafbae0c02",
+      "size_bytes": 1039
+    },
+    "feature_cols_final.joblib": {
+      "sha256": "843a856cd34a8074afaf754f2a3a6e7c85d9d4df838aa961ebbe7d5dbe291eff",
+      "size_bytes": 173
+    }
+  },
+  "features": [
+    "delta_water_level",
+    "temperature_2m",
+    "relative_humidity_2m",
+    "wind_speed_10m",
+    "is_long_rains",
+    "is_short_rains",
+    "day_of_year",
+    "month",
+    "soil_moisture_0_to_7cm"
+  ],
+  "feature_ranges": {
+    "delta_water_level": {
+      "training_min": -1.1815343381502974,
+      "training_max": 1.1815343381502974
+    },
+    "temperature_2m": {
+      "training_min": 14.887500000000001,
+      "training_max": 23.620833333333334
+    },
+    "relative_humidity_2m": {
+      "training_min": 38.458333333333336,
+      "training_max": 94.875
+    },
+    "wind_speed_10m": {
+      "training_min": 2.65,
+      "training_max": 16.579166666666666
+    },
+    "is_long_rains": {
+      "training_min": 0.0,
+      "training_max": 1.0
+    },
+    "is_short_rains": {
+      "training_min": 0.0,
+      "training_max": 1.0
+    },
+    "day_of_year": {
+      "training_min": 1.0,
+      "training_max": 366.0
+    },
+    "month": {
+      "training_min": 1.0,
+      "training_max": 12.0
+    },
+    "soil_moisture_0_to_7cm": {
+      "training_min": 0.11329166666666668,
+      "training_max": 0.43116666666666664
+    }
+  },
+  "model_feature_count": 9,
+  "scaler_feature_count": 9,
+  "compatibility_warnings": [
+    {
+      "category": "UserWarning",
+      "message": "Library warning while loading serialized artefacts; review export compatibility."
+    },
+    {
+      "category": "InconsistentVersionWarning",
+      "serialized_version": "1.6.1",
+      "installed_version": "1.4.2"
+    }
+  ],
+  "environment": {
+    "python": "3.12.1",
+    "numpy": "1.26.4",
+    "pandas": "2.2.1",
+    "scikit-learn": "1.4.2",
+    "xgboost": "2.0.3",
+    "joblib": "1.4.0"
+  },
+  "notebook_evidence": {
+    "sha256": "f0b954be3fec384433473a971af7e71f21bb719015e686ab9a34d3cbee39b458",
+    "feature_list_in_code": [
+      "delta_water_level",
+      "temperature_2m",
+      "relative_humidity_2m",
+      "wind_speed_10m",
+      "is_long_rains",
+      "is_short_rains",
+      "day_of_year",
+      "month"
+    ],
+    "conditional_soil_moisture_feature": true,
+    "saved_merged_date_range": [
+      "2016-01-01",
+      "2025-12-31"
+    ],
+    "saved_test_metrics": {
+      "weighted_recall": 0.7962,
+      "weighted_f1": 0.7746,
+      "auc_roc_weighted": 0.8769
+    },
+    "metrics_reproduced": false,
+    "note": "Saved notebook outputs may be stale; no original training CSVs or training-time artefact manifest are packaged."
+  },
+  "unresolved": [
+    "No location, drainage, terrain or impervious-surface inputs in the final feature list.",
+    "Labels are same-day rainfall/soil-moisture proxies, not observed local flood events.",
+    "Training daily aggregates and CHIRPS rainfall differ from live hourly weather and partial-day rainfall.",
+    "The runoff-change feature is derived from rainfall used to construct the proxy labels.",
+    "Preprocessing occurs before the temporal split; training data is needed to assess contamination.",
+    "No validated forecast lead time, street-level accuracy or probability calibration.",
+    "Original data and a compatible re-export are required before metrics can be reproduced."
+  ]
+}

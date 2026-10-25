@@ -1,3 +1,6 @@
 # Keep committed boundary checksums stable across Windows and Unix checkouts.
 data/boundaries/*.geojson text eol=lf
 data/boundaries/*.source.json text eol=lf
+
+# Keep the audited notebook fingerprint reproducible across checkouts.
+notebooks/*.ipynb text eol=lf

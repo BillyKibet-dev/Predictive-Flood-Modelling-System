@@ -15,13 +15,20 @@ export default function PredictionStatus({ predictions }) {
 
   const warning = Boolean(error || stale || missing || (data && !data.zones.length))
   return (
-    <div className="bg-surface border border-border rounded-card px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-sm shadow-card-rest">
-      <p role="status" className={warning ? 'text-risk-mod' : 'text-muted'}>{message}</p>
+    <div className="bg-surface border border-border rounded-card px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm shadow-card-rest">
+      <div className="flex-1 space-y-1">
+        <p role="status" className={warning ? 'text-risk-mod' : 'text-muted'}>{message}</p>
+        {data && <p className="text-xs text-muted">
+          {data.predictionContext?.spatialScope === 'shared_nairobi_weather'
+            ? 'Shared Nairobi weather indication. Street-level flooding and local drainage are not assessed. Model scores are not calibrated flood probabilities.'
+            : 'Prediction coverage has not been specified by the API.'}
+        </p>}
+      </div>
       <button
         type="button"
         onClick={refresh}
         disabled={isRefreshing}
-        className="shrink-0 border border-border rounded-btn px-3 py-1.5 font-medium text-ink hover:bg-bg disabled:opacity-50 disabled:cursor-wait"
+        className="shrink-0 self-start sm:self-auto border border-border rounded-btn px-3 py-1.5 font-medium text-ink hover:bg-bg disabled:opacity-50 disabled:cursor-wait"
       >
         {isRefreshing ? 'Refreshing...' : 'Refresh predictions'}
       </button>

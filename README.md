@@ -1,11 +1,12 @@
 # NairobiFloodWatch
 
-Real-time urban flash-flood prediction system for Nairobi County, Kenya —
+Flood-risk monitoring prototype for Nairobi County, Kenya —
 a Strathmore University industry capstone project.
 
-A trained XGBoost model classifies flood risk into four levels (**Low,
-Moderate, High, Extreme**) across **8 Nairobi County zones**, using live
-weather data. Predictions, alerts, and citizen reports are served through a
+A trained XGBoost model classifies weather-based risk into four levels (**Low,
+Moderate, High, Extreme**). One shared Nairobi weather indication is displayed
+against **8 monitoring locations** and summarised by sub-county. Street-level
+flooding and local drainage are not assessed. Predictions, alerts, and citizen reports are served through a
 FastAPI backend to a React dashboard used by three kinds of users:
 
 - **Citizens** — view current risk per zone and submit flood condition reports, no login required
@@ -237,7 +238,7 @@ Dashed outlines and popup messages identify old predictions; partial coverage
 is stated in the popup. This aggregation describes monitored risk within an
 administrative area; it does not estimate flood extent across the polygon.
 
-Popups show contributing monitoring points, confidence, update times, source
+Popups show contributing monitoring points, model scores, update times, source
 year, and licence. **Sub-county risk** and **Monitoring points** toggle the two
 layers; **Fit county** restores the county view. Prediction refreshes preserve
 the current map position. Boundaries load independently of predictions: a failed
@@ -266,14 +267,49 @@ otherwise the configured database is used. The connection needs CREATE SCHEMA
 permission and an already enabled PostGIS extension.
 
 
+## Model input audit (issue #19, first step)
+
+See [docs/model-input-audit.md](docs/model-input-audit.md) for the exact feature
+contract, proxy labels, training/serving mismatches, conflicting saved metrics
+and the staged plan for local flood evidence and validation. Reproduce the
+artefact inspection without network/database access:
+
+```text
+python -m src.scripts.audit_model
+python -m pytest tests/test_model_inputs.py tests/test_prediction_pipeline.py tests/test_model_audit.py -v
+```
+
+The live pipeline requires complete recent weather and compatible model files.
+Failed runs preserve prior data and create no new predictions/alerts. The
+dashboard's `prediction_context` declares shared Nairobi coverage, same-day
+proxy labels and uncalibrated class scores. Missing predictions return Unknown
+with null timestamps. A missing/invalid model evaluation report returns 503
+instead of hard-coded performance values. The audit's structural checks do not
+establish street-level accuracy or resolve the documented daily/hourly mismatch.
+
+The original CSVs have now been inspected locally. Their common period ends in
+2025; the candidate export scripts sample one central Nairobi point. Replay the
+daily proxy task with:
+
+```text
+python -m src.scripts.evaluate_proxy_model --output docs/dataset-evaluation.json
+```
+
+See [docs/dataset-evaluation.md](docs/dataset-evaluation.md) for data provenance,
+the actual metric comparisons and the frozen snapshot's load failure under its
+recorded library versions. `requirements-evaluation.txt` defines a separate
+diagnostic environment; application dependencies and deployed model weights are
+unchanged. An optional `--reference-fit` runs the documented recipe in memory
+and never exports a model. These checks do not establish local flood accuracy.
+
 ## Notes
 
-- If `models/flood_model_final.joblib` (and its scaler/feature-columns
-  companions) are missing, the API still starts — `MLService` falls back
-  to mock "Moderate" predictions and logs a warning.
-- The hourly prediction pipeline uses county-level Open-Meteo weather data
-  applied identically to all 8 zones; zone differentiation is baked into
-  the model via terrain features used at training time.
-- Model performance (test set 2024–2026): AUC-ROC 0.8732, weighted recall
-  0.7880. Moderate/High recall are below target due to training data
-  scarcity — expected to improve with TAHMO ground station integration.
+- If the model/scaler/feature files are missing or their input contract does not
+  match, the API still starts and reports the model as unavailable. The pipeline
+  does not save placeholder predictions.
+- The final nine model inputs exclude location, terrain and drainage features.
+  All zones share the same weather indication; administrative polygons do not
+  increase model resolution.
+- Original training data and a compatible re-export are needed to reproduce
+  evaluation. Saved notebook metrics describe proxy-label classification, not
+  validated street flooding probabilities.
