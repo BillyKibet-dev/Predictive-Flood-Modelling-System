@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 from src.api.config import settings
-from src.api.services.model_contract import ModelInputError, finite_number, validate_feature_row
+from src.api.services.model_contract import ModelInputError, finite_number, scs_wl, validate_feature_row
 
 logger = logging.getLogger("nairobifloodwatch.weather_service")
 NAIROBI_TZ = ZoneInfo("Africa/Nairobi")
@@ -18,15 +18,6 @@ EXPECTED_UNITS = {
     "temperature_2m": "°C", "relative_humidity_2m": "%", "precipitation": "mm",
     "wind_speed_10m": "km/h", "soil_moisture_0_to_7cm": "m³/m³",
 }
-
-
-def scs_wl(r: float, sl: float = 3.63, im: float = 0.72, sm: float = 0.5) -> float:
-    """Notebook's runoff-derived index; this is not a measured water depth."""
-    cn = 85 + (im * 7)
-    s = (25400 / cn) - 254
-    ia = 0.2 * s
-    q = ((r - ia) ** 2 / (r - ia + s)) if r > ia else 0
-    return 0.3 + q * 0.012 * (1 + sm * 0.5) / (1 + sl * 0.05)
 
 
 def parse_weather_response(payload: dict, now: datetime | None = None) -> dict:

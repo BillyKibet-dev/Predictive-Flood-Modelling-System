@@ -1,4 +1,11 @@
-# Boundary data
+# Data provenance
+
+Training CSVs restored locally are documented in
+[docs/dataset-evaluation.md](../docs/dataset-evaluation.md). They remain ignored
+by Git. Candidate source scripts supplied by the user are preserved under
+[provenance/](provenance/candidate-export-scripts.md), with their uncertainty
+stated explicitly. They describe single-point sampling, rather than county or
+sub-county averages.
 
 `boundaries/nairobi_county.geojson` contains one **Nairobi County** polygon,
 extracted from the provider-simplified Kenya ADM1 layer in geoBoundaries gbOpen.

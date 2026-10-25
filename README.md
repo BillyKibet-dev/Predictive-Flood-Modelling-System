@@ -287,6 +287,21 @@ with null timestamps. A missing/invalid model evaluation report returns 503
 instead of hard-coded performance values. The audit's structural checks do not
 establish street-level accuracy or resolve the documented daily/hourly mismatch.
 
+The original CSVs have now been inspected locally. Their common period ends in
+2025; the candidate export scripts sample one central Nairobi point. Replay the
+daily proxy task with:
+
+```text
+python -m src.scripts.evaluate_proxy_model --output docs/dataset-evaluation.json
+```
+
+See [docs/dataset-evaluation.md](docs/dataset-evaluation.md) for data provenance,
+the actual metric comparisons and the frozen snapshot's load failure under its
+recorded library versions. `requirements-evaluation.txt` defines a separate
+diagnostic environment; application dependencies and deployed model weights are
+unchanged. An optional `--reference-fit` runs the documented recipe in memory
+and never exports a model. These checks do not establish local flood accuracy.
+
 ## Notes
 
 - If the model/scaler/feature files are missing or their input contract does not

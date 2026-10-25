@@ -24,6 +24,15 @@ class ModelUnavailableError(RuntimeError):
     """No compatible model artefacts are loaded."""
 
 
+def scs_wl(r: float, sl: float = 3.63, im: float = 0.72, sm: float = 0.5) -> float:
+    """Notebook's runoff-derived index; this is not a measured water depth."""
+    cn = 85 + (im * 7)
+    s = (25400 / cn) - 254
+    ia = 0.2 * s
+    q = ((r - ia) ** 2 / (r - ia + s)) if r > ia else 0
+    return 0.3 + q * 0.012 * (1 + sm * 0.5) / (1 + sl * 0.05)
+
+
 def finite_number(value, name: str) -> float:
     if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
         raise ModelInputError(f"{name} must be a finite number")
