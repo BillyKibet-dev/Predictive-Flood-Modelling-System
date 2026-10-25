@@ -198,7 +198,8 @@ configured PostgreSQL database or start the prediction scheduler.
 
 ### Nairobi administrative boundary (issue #16)
 
-With the backend environment configured, load the committed county boundary:
+With the backend environment configured, load the committed county and 17
+sub-county boundaries:
 
 ```text
 python -m src.scripts.load_boundaries
@@ -212,7 +213,7 @@ API features can start without this optional spatial setup.
 
 The importer validates the GeoJSON, stores a valid non-empty MultiPolygon with
 SRID 4326 and a GiST index, and retains source/licence/year metadata. Repeat runs
-update the same boundary ID; the entire import is transactional. To use another
+update the same 18 boundary IDs; the entire import is transactional. To use another
 file with the same feature/property contract, pass `--path path/to/file.geojson`.
 
 Public GeoJSON endpoints:
@@ -221,9 +222,29 @@ Public GeoJSON endpoints:
 - `GET /boundaries/nairobi-county` — the county Feature.
 
 Unknown boundary IDs return 404; unavailable spatial setup returns 503. The data
-is the provider-simplified **2020 Nairobi County** outline, not eight zone
-polygons. See [data/README.md](data/README.md) for provenance and attribution.
-Map rendering and zone-boundary mapping belong to issue #4.
+uses provider-simplified **2020 administrative boundaries**. Each sub-county
+includes `monitoring_zone_ids`, calculated from monitoring coordinates with
+PostGIS `ST_Covers`, rather than matching neighbourhood names. See
+[data/README.md](data/README.md) for provenance and attribution.
+
+### Sub-county risk map (issue #4)
+
+The public map fetches `/boundaries` on entry and draws the county outline and
+17 sub-county polygons. Colours follow the highest available prediction among
+monitoring points inside each polygon and update with the existing prediction
+polling. Areas without a point or an available prediction show **Unknown**.
+Dashed outlines and popup messages identify old predictions; partial coverage
+is stated in the popup. This aggregation describes monitored risk within an
+administrative area; it does not estimate flood extent across the polygon.
+
+Popups show contributing monitoring points, confidence, update times, source
+year, and licence. **Sub-county risk** and **Monitoring points** toggle the two
+layers; **Fit county** restores the county view. Prediction refreshes preserve
+the current map position. Boundaries load independently of predictions: a failed
+initial request leaves monitoring points available with a retry button, and a
+failed reload retains the previous outlines. Boundary requests time out after
+15 seconds and are cancelled on navigation. Attribution stays visible below
+the map controls, including on mobile.
 
 Run boundary validation/API tests plus existing report tests:
 
