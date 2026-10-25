@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_BOUNDARY_PATH = PROJECT_ROOT / "data/boundaries/nairobi_county.geojson"
+DEFAULT_SUBCOUNTY_PATH = PROJECT_ROOT / "data/boundaries/nairobi_subcounties.geojson"
 MIGRATION_PATH = PROJECT_ROOT / "src/api/migrations/001_administrative_boundaries.sql"
 PROPERTY_LIMITS = {
     "name": 100, "country_code": 3, "source": 500, "source_url": 2000,
@@ -107,18 +108,22 @@ def get_boundaries(db, boundary_id: str | None = None) -> dict:
     )).scalar():
         raise BoundariesUnavailable()
     rows = db.execute(text("""
-        SELECT id, name, admin_level, country_code, source, source_url,
-               source_license, source_year, source_feature_id,
-               ST_AsGeoJSON(ST_ForcePolygonCCW(geometry), 9, 0) AS geometry
-        FROM administrative_boundaries
-        WHERE (:boundary_id IS NULL OR id = :boundary_id)
-        ORDER BY id
+        SELECT b.id, b.name, b.admin_level, b.country_code, b.source, b.source_url,
+               b.source_license, b.source_year, b.source_feature_id,
+               ST_AsGeoJSON(ST_ForcePolygonCCW(b.geometry), 9, 0) AS geometry,
+               CASE WHEN b.admin_level = 2 THEN COALESCE((
+                   SELECT json_agg(z.id ORDER BY z.id) FROM zones z
+                   WHERE ST_Covers(b.geometry, ST_SetSRID(ST_MakePoint(z.longitude, z.latitude), 4326))
+               ), '[]'::json) ELSE '[]'::json END AS monitoring_zone_ids
+        FROM administrative_boundaries b
+        WHERE (:boundary_id IS NULL OR b.id = :boundary_id)
+        ORDER BY b.id
     """), {"boundary_id": boundary_id}).mappings()
     return {
         "type": "FeatureCollection",
         "features": [
             {"type": "Feature", "id": row["id"], "geometry": json.loads(row["geometry"]),
-             "properties": {key: row[key] for key in (*PROPERTY_LIMITS, "admin_level")}}
+             "properties": {key: row[key] for key in (*PROPERTY_LIMITS, "admin_level", "monitoring_zone_ids")}}
             for row in rows
         ],
     }

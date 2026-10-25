@@ -17,6 +17,7 @@ from src.api.database import get_db
 from src.api.routers import boundaries
 from src.api.services.boundary_service import (
     DEFAULT_BOUNDARY_PATH,
+    DEFAULT_SUBCOUNTY_PATH,
     get_boundaries,
     load_boundaries,
     validate_feature_collection,
@@ -108,6 +109,7 @@ def postgis_connection():
     connection = engine.connect()
     transaction = connection.begin()
     connection.execute(text(f'SET LOCAL search_path TO "{schema}", public'))
+    connection.execute(text("CREATE TABLE zones (id VARCHAR(50) PRIMARY KEY, latitude FLOAT NOT NULL, longitude FLOAT NOT NULL)"))
     try:
         yield connection
     finally:
@@ -193,3 +195,30 @@ def test_configured_but_empty_spatial_table_returns_empty_collection(postgis_con
     postgis_connection.execute(text("DELETE FROM administrative_boundaries"))
     with Session(bind=postgis_connection, join_transaction_mode="create_savepoint") as db:
         assert get_boundaries(db) == {"type": "FeatureCollection", "features": []}
+
+
+def test_subcounty_extract_preserves_provenance_and_17_source_features():
+    metadata = json.loads(DEFAULT_SUBCOUNTY_PATH.with_suffix(".source.json").read_text(encoding="utf-8"))
+    assert hashlib.sha256(DEFAULT_SUBCOUNTY_PATH.read_bytes()).hexdigest() == metadata["geojson_sha256"]
+    features = validate_feature_collection(json.loads(DEFAULT_SUBCOUNTY_PATH.read_text(encoding="utf-8")))
+    assert len(features) == 17
+    assert all(feature["properties"]["admin_level"] == 2 for feature in features)
+    assert {feature["properties"]["source_feature_id"] for feature in features} == {item["shapeID"] for item in metadata["selection"]}
+
+
+def test_subcounty_monitoring_ids_use_point_location_not_labels(postgis_connection):
+    connection = postgis_connection
+    load_boundaries(connection)
+    load_boundaries(connection, DEFAULT_SUBCOUNTY_PATH)
+    connection.execute(text("""
+        INSERT INTO zones (id, latitude, longitude) VALUES
+        ('arbitrary-name', -1.26, 36.86), ('outside-county', 0, 0)
+    """))
+    with Session(bind=connection, join_transaction_mode="create_savepoint") as db:
+        features = get_boundaries(db)["features"]
+    matches = [feature for feature in features if "arbitrary-name" in feature["properties"]["monitoring_zone_ids"]]
+    assert len(matches) == 1
+    assert matches[0]["properties"]["admin_level"] == 2
+    assert matches[0]["properties"]["name"] == "Mathare"
+    assert all("outside-county" not in feature["properties"]["monitoring_zone_ids"] for feature in features)
+    assert next(feature for feature in features if feature["id"] == "nairobi-county")["properties"]["monitoring_zone_ids"] == []
