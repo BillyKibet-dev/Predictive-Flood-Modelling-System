@@ -1,0 +1,136 @@
+{
+  "provider": "geoBoundaries gbOpen",
+  "boundary_id": "KEN-ADM2-3690345",
+  "metadata_url": "https://www.geoboundaries.org/api/gbID/KEN-ADM2-3690345/",
+  "download_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
+  "upstream_commit": "9469f09",
+  "source": "IEBC, OCHA ROSEA",
+  "source_license": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+  "boundary_year": 2020,
+  "retrieved_on": "2026-10-25",
+  "selection": [
+    {
+      "shapeName": "Dagoretti",
+      "shapeISO": "",
+      "shapeID": "3690345B98870582025559",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Embakasi Central",
+      "shapeISO": "",
+      "shapeID": "3690345B7468433818255",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Embakasi East",
+      "shapeISO": "",
+      "shapeID": "3690345B74983117878970",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Embakasi North",
+      "shapeISO": "",
+      "shapeID": "3690345B82574132257993",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Embakasi South",
+      "shapeISO": "",
+      "shapeID": "3690345B30654338580609",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Embakasi West",
+      "shapeISO": "",
+      "shapeID": "3690345B73871814801291",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Kamukunji",
+      "shapeISO": "",
+      "shapeID": "3690345B2174573011329",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Kasarani",
+      "shapeISO": "",
+      "shapeID": "3690345B25272410242240",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Kibra",
+      "shapeISO": "",
+      "shapeID": "3690345B3888847045998",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Kilimani",
+      "shapeISO": "",
+      "shapeID": "3690345B60954938722766",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Langata",
+      "shapeISO": "",
+      "shapeID": "3690345B52672237617144",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Makadara",
+      "shapeISO": "",
+      "shapeID": "3690345B46803652809232",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Mathare",
+      "shapeISO": "",
+      "shapeID": "3690345B9508025131966",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Roysambu",
+      "shapeISO": "",
+      "shapeID": "3690345B88472168203612",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Ruaraka",
+      "shapeISO": "",
+      "shapeID": "3690345B35970113576502",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Starehe",
+      "shapeISO": "",
+      "shapeID": "3690345B38564256693946",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    },
+    {
+      "shapeName": "Westlands",
+      "shapeISO": "",
+      "shapeID": "3690345B99886458952319",
+      "shapeGroup": "KEN",
+      "shapeType": "ADM2"
+    }
+  ],
+  "processing": "Selected the 17 ADM2 features whose ST_PointOnSurface is covered by the committed Nairobi County outline. Geometry coordinates and source names are unchanged; added application IDs and provenance properties.",
+  "county_geojson_sha256": "f79fad15d7c82f36e4d03957c0e0bd903dfb7ba76be10f86e63edc4a7b591533",
+  "upstream_sha256": "1330f031cf0fd00c7a0ef29ab09d0544da12482094a85d60165a1534e45d84ad",
+  "geojson_sha256": "923dabba4fd48a243cd9758fed51729bb7a6bdaf0d6d186b5eee942e01aa5c8c"
+}
