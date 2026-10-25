@@ -196,6 +196,54 @@ python -m pytest tests/test_reports.py -v
 These report tests use an in-memory SQLite database and do not write to the
 configured PostgreSQL database or start the prediction scheduler.
 
+### Nairobi administrative boundary (issue #16)
+
+With the backend environment configured, load the committed county boundary:
+
+```text
+python -m src.scripts.load_boundaries
+```
+
+The command enables the PostGIS extension and applies
+`src/api/migrations/001_administrative_boundaries.sql`. PostgreSQL must have
+PostGIS installed, and the database user needs permission to enable it (a database
+administrator can run `CREATE EXTENSION IF NOT EXISTS postgis` first). Existing
+API features can start without this optional spatial setup.
+
+The importer validates the GeoJSON, stores a valid non-empty MultiPolygon with
+SRID 4326 and a GiST index, and retains source/licence/year metadata. Repeat runs
+update the same boundary ID; the entire import is transactional. To use another
+file with the same feature/property contract, pass `--path path/to/file.geojson`.
+
+Public GeoJSON endpoints:
+
+- `GET /boundaries` — administrative FeatureCollection.
+- `GET /boundaries/nairobi-county` — the county Feature.
+
+Unknown boundary IDs return 404; unavailable spatial setup returns 503. The data
+is the provider-simplified **2020 Nairobi County** outline, not eight zone
+polygons. See [data/README.md](data/README.md) for provenance and attribution.
+Map rendering and zone-boundary mapping belong to issue #4.
+
+Run boundary validation/API tests plus existing report tests:
+
+```text
+python -m pytest tests/test_boundaries.py tests/test_reports.py -v
+```
+
+After importing, enable native PostGIS tests in PowerShell:
+
+```powershell
+$env:RUN_POSTGIS_TESTS = "1"
+python -m pytest tests/test_boundaries.py tests/test_reports.py -v
+Remove-Item Env:RUN_POSTGIS_TESTS
+```
+
+Spatial tests use and remove a UUID-named temporary schema. They leave application
+tables intact. Set `POSTGIS_TEST_DATABASE_URL` to use a separate test database;
+otherwise the configured database is used. The connection needs CREATE SCHEMA
+permission and an already enabled PostGIS extension.
+
 
 ## Notes
 
