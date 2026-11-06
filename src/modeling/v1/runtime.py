@@ -15,7 +15,27 @@ PACKAGE_MANIFEST = Path(__file__).with_name("package_manifest.json")
 
 
 def package_manifest() -> dict:
-    return json.loads(PACKAGE_MANIFEST.read_text(encoding="utf-8"))
+    try:
+        manifest = json.loads(PACKAGE_MANIFEST.read_text(encoding="utf-8"))
+        if (not isinstance(manifest, dict) or manifest.get("schema_version") != 1 or
+                manifest.get("model_version") != MODEL_VERSION or
+                manifest.get("feature_columns") != list(FEATURE_COLUMNS) or
+                manifest.get("classes") != list(CLASS_NAMES) or
+                not isinstance(manifest.get("evaluation"), dict) or
+                not isinstance(manifest.get("source_files"), dict)):
+            raise ValueError("Invalid registry schema")
+        files = manifest["files"]
+        if not isinstance(files, dict) or manifest["artifact_filename"] not in files:
+            raise ValueError("Invalid registry file list")
+        for name, entry in {**files, **manifest["source_files"]}.items():
+            if (Path(name).name != name or "\\" in name or not isinstance(entry, dict) or
+                    not isinstance(entry.get("size_bytes"), int) or entry["size_bytes"] < 1 or
+                    not isinstance(entry.get("sha256"), str) or len(entry["sha256"]) != 64 or
+                    any(c not in "0123456789abcdef" for c in entry["sha256"])):
+                raise ValueError("Invalid registry file metadata")
+        return manifest
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        raise V1ArtifactError("MODEL_REGISTRY_INVALID") from exc
 
 
 def verify_files(directory: Path, expected: dict) -> None:
@@ -77,9 +97,13 @@ class NativeV1Model:
             result = json.loads(process.stdout)
         except (OSError, subprocess.TimeoutExpired, ValueError) as exc:
             raise V1ArtifactError("ISOLATED_MODEL_RUNTIME_FAILED") from exc
+        if not isinstance(result, dict):
+            raise V1ArtifactError("ISOLATED_MODEL_RUNTIME_CONTRACT_MISMATCH")
         if process.returncode != 0 or result.get("error"):
             raise V1ArtifactError("ISOLATED_MODEL_RUNTIME_INCOMPATIBLE")
-        if (result.get("runtime", {}).get("xgboost") != RUNTIME_XGBOOST_VERSION or
+        if (not isinstance(result.get("runtime"), dict) or
+                not isinstance(result.get("feature_names"), list) or
+                result["runtime"].get("xgboost") != RUNTIME_XGBOOST_VERSION or
                 tuple(result.get("feature_names", [])) != FEATURE_COLUMNS or
                 result.get("feature_count") != 20 or result.get("rounds") != 496):
             raise V1ArtifactError("ISOLATED_MODEL_RUNTIME_CONTRACT_MISMATCH")
@@ -87,17 +111,21 @@ class NativeV1Model:
         return result
 
     def info(self) -> dict:
-        manifest = package_manifest()
         result = {"model_version": MODEL_VERSION, "model_task_type": TASK_TYPE,
-                  "artifact_hash": manifest["files"][manifest["artifact_filename"]]["sha256"],
+                  "artifact_hash": None,
                   "loaded": False, "status": "MODEL_UNAVAILABLE", "feature_count": 20,
-                  "classes": list(CLASS_NAMES), "evaluation": manifest["evaluation"],
+                  "classes": list(CLASS_NAMES), "evaluation": {},
                   "operational_status": "INSUFFICIENT_DATA", "blockers": list(LIVE_BLOCKERS),
                   "limitations": list(LIMITATIONS), "emergency_alert_delivery_enabled": False,
                   "runtime": {"required_xgboost": RUNTIME_XGBOOST_VERSION}}
         try:
+            manifest = package_manifest()
+            result.update(artifact_hash=manifest["files"][manifest["artifact_filename"]]["sha256"],
+                          evaluation=manifest["evaluation"])
             # Check file integrity even if runtime metadata is already cached.
             self._verify()
+            if not self.python_executable.is_file():
+                raise V1ArtifactError("ISOLATED_MODEL_RUNTIME_MISSING")
             if self._verified_runtime is None:
                 self._worker("inspect")
             result.update(loaded=True, status="AVAILABLE", runtime=self._verified_runtime)

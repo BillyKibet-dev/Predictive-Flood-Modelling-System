@@ -148,3 +148,46 @@ def test_real_selected_native_artifact_matches_every_frozen_test_row():
     assert np.isfinite(scores).all() and (scores >= 0).all() and (scores <= 1).all()
     assert before == {name: hashlib.sha256((model.model_dir / name).read_bytes()).hexdigest()
                       for name in package_manifest()["files"]}
+
+
+@pytest.mark.parametrize("document", ["not json", "{}", "[]"])
+def test_corrupt_registry_returns_unavailable_metadata(tmp_path, monkeypatch, document):
+    path = tmp_path / "registry.json"
+    path.write_text(document)
+    monkeypatch.setattr("src.modeling.v1.runtime.PACKAGE_MANIFEST", path)
+    info = NativeV1Model().info()
+    assert info["loaded"] is False and info["reason_code"] == "MODEL_REGISTRY_INVALID"
+    assert info["evaluation"] == {} and info["artifact_hash"] is None
+
+
+@pytest.mark.parametrize("document", [[], {"runtime": []}, {"runtime": {}, "feature_names": None}])
+def test_malformed_worker_response_is_a_controlled_artifact_error(row, monkeypatch, document):
+    from types import SimpleNamespace
+    import sys
+    model = NativeV1Model(python_executable=Path(sys.executable))
+    monkeypatch.setattr(model, "_verify", lambda: package_manifest())
+    monkeypatch.setattr(subprocess, "run", lambda *args, **kwargs:
+                        SimpleNamespace(returncode=0, stdout=json.dumps(document)))
+    with pytest.raises(V1ArtifactError, match="CONTRACT_MISMATCH"):
+        model.predict(row)
+
+
+def test_cached_model_info_does_not_hide_missing_runtime(tmp_path, monkeypatch):
+    model = NativeV1Model(python_executable=tmp_path / "missing-python")
+    model._verified_runtime = {"xgboost": "3.1.3"}
+    monkeypatch.setattr(model, "_verify", lambda: package_manifest())
+    assert model.info()["loaded"] is False
+    assert model.info()["reason_code"] == "ISOLATED_MODEL_RUNTIME_MISSING"
+
+
+def test_failed_copy_is_not_promoted_or_reported_as_installed(tmp_path, monkeypatch):
+    source, destination = tmp_path / "source", tmp_path / "destination"
+    source.mkdir()
+    (source / "model.json").write_bytes(b"trusted")
+    expected = {"model.json": {"size_bytes": 7, "sha256": hashlib.sha256(b"trusted").hexdigest()}}
+    monkeypatch.setattr("src.scripts.package_model_v1.shutil.copyfile",
+                        lambda source, target: Path(target).write_bytes(b"bad-copy"))
+    with pytest.raises(V1ArtifactError, match="COPY_INTEGRITY"):
+        install_files(source, destination, expected)
+    assert not (destination / "model.json").exists()
+    assert list(destination.iterdir()) == []
