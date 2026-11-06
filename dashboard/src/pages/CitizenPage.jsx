@@ -4,7 +4,8 @@ import Footer from '../components/Footer'
 import PredictionStatus from '../components/PredictionStatus'
 import TopNav from '../components/TopNav'
 import ZoneCard from '../components/ZoneCard'
-import { formatPredictionTime, isPredictionStale } from '../services/predictions'
+import { formatPredictionTime } from '../services/predictions'
+import { isZonePredictionStale } from '../services/proxyPredictions'
 import { MAX_DESCRIPTION_LENGTH, REPORT_CONDITIONS, submitCitizenReport, validateCitizenReport } from '../services/reports'
 
 const SEVERITY_OPTIONS = [
@@ -17,8 +18,10 @@ const EMPTY_FORM = { zone_id: '', observed_condition: 'Street flooding', perceiv
 // Citizens page — public flood warnings by zone + anonymous flood condition reporting
 export default function CitizenPage({ predictions, showToast }) {
   const zones = predictions.data?.zones ?? []
+  const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
+  const isReplay = predictions.selection?.view === 'v1_replay'
   const warningZones = zones.filter((z) => z.risk === 'High' || z.risk === 'Extreme')
-  const hasOldWarnings = warningZones.some((zone) => isPredictionStale(zone.timestamp))
+  const hasOldWarnings = warningZones.some((zone) => isZonePredictionStale(zone))
   const [zoneFilter, setZoneFilter] = useState('')
   const filteredZone = zones.find((zone) => zone.id === zoneFilter)
   const visibleZones = filteredZone ? [filteredZone] : zones
@@ -106,16 +109,17 @@ export default function CitizenPage({ predictions, showToast }) {
         style={{ background: 'linear-gradient(135deg, #0F2D5C 0%, #1E4080 100%)' }}
       >
         <div className="max-w-content mx-auto space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Nairobi County Flood Warnings</h1>
-          <p className="text-white/80">View the latest saved warnings and report conditions in your area. Predictions run hourly.</p>
+          <h1 className="text-4xl font-bold tracking-tight">{isProxy ? 'Nairobi Environmental Risk Research' : 'Nairobi County Weather Indications'}</h1>
+          <p className="text-white/80">{isProxy
+            ? 'Explore next-day environmental proxy classes and report conditions you observe now. Historical replays are not current flood warnings.'
+            : 'View saved weather-based risk indications and report conditions in your area. Check update times and official warnings.'}</p>
           <a href="#report" className="inline-flex rounded-btn border border-white/50 px-4 py-2 text-sm font-semibold hover:bg-white/10">
             Report a flood condition
           </a>
 
           {warningZones.length > 0 && (
             <div className="bg-red-600 rounded-card px-4 py-3 text-sm font-medium inline-block">
-              {hasOldWarnings ? 'LATEST SAVED WARNING' : 'ACTIVE WARNING'} — {warningZones.map((z) => z.name).join(' and ')}{' '}
-              {warningZones.length > 1 ? 'are' : 'is'} at elevated flood risk. Follow instructions below.
+              {isReplay ? 'HISTORICAL RESEARCH CLASSES' : hasOldWarnings ? 'LATEST SAVED INDICATION' : 'ELEVATED WEATHER INDICATION'} — displayed for {warningZones.map((z) => z.name).join(', ')}.
             </div>
           )}
         </div>
@@ -124,7 +128,7 @@ export default function CitizenPage({ predictions, showToast }) {
       {/* Zone grid */}
       <section id="warnings" className="py-10 px-6 scroll-mt-20">
         <div className="max-w-content mx-auto space-y-6">
-          <h2 className="text-2xl font-semibold tracking-tight text-ink">Current Risk by Zone</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">{isReplay ? 'Historical Proxy Classes by Monitoring Zone' : 'Saved Indications by Monitoring Zone'}</h2>
           <PredictionStatus predictions={predictions} />
           {zones.length > 0 && (
             <div className="max-w-sm">
@@ -157,6 +161,7 @@ export default function CitizenPage({ predictions, showToast }) {
               <p className="text-muted mt-1">
                 Tell us what you see in a monitored zone. No account is required. Reports do not directly change the warnings above.
               </p>
+              {isReplay && <p className="text-sm text-muted">This form records conditions reported now. Selecting a historical replay does not backdate a citizen report.</p>}
             </div>
 
             {submittedReport ? (

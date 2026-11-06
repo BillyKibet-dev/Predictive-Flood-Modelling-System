@@ -74,9 +74,17 @@ class PredictionResponse(BaseModel):
 class ZoneWithPrediction(BaseModel):
     zone: ZoneResponse
     risk_level: str
-    risk_class: int
+    risk_class: Optional[int] = None
     confidence_score: Optional[float] = None
     timestamp: Optional[datetime] = None
+
+
+class PredictionContext(BaseModel):
+    spatial_scope: Literal["shared_nairobi_weather"]
+    label_basis: Literal["rainfall_soil_moisture_proxy"]
+    temporal_scope: Literal["current_conditions"]
+    location_specific: Literal[False]
+    confidence_interpretation: Literal["uncalibrated_class_score"]
 
 
 class DashboardResponse(BaseModel):
@@ -84,6 +92,7 @@ class DashboardResponse(BaseModel):
     last_updated: Optional[datetime] = None
     active_alerts: int
     highest_risk: str
+    prediction_context: PredictionContext
 
 
 # ---------------------------------------------------------------- Alerts ----

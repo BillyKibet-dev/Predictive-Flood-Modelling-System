@@ -1,6 +1,8 @@
 import { memo } from 'react'
 import { RISK_ACTION_MESSAGES, riskColor } from '../constants/colors'
-import { formatConfidence, formatPredictionTime, isPredictionStale } from '../services/predictions'
+import { formatPredictionTime } from '../services/predictions'
+import { formatZoneScore, isZonePredictionStale, PROXY_TASK } from '../services/proxyPredictions'
+import ProxyForecastDetails from './ProxyForecastDetails'
 import RiskBadge from './RiskBadge'
 
 // Zone warning card for the citizen page grid — memoised to avoid re-renders on unrelated state changes
@@ -25,11 +27,14 @@ function ZoneCard({ zone, index = 0, onReport }) {
           24h Rainfall: <span className="font-semibold">Unavailable</span>
         </p>
         <p className="text-sm font-medium" style={{ color }}>
-          {RISK_ACTION_MESSAGES[zone.risk]}
+          {zone.modelTaskType === PROXY_TASK
+            ? (zone.mode === 'historical_replay' ? 'Historical proxy-label research. Not a current warning.' : 'Operational v1 indications are unavailable.')
+            : RISK_ACTION_MESSAGES[zone.risk]}
         </p>
-        <p className="text-xs text-muted">Confidence: {formatConfidence(zone.confidence)}</p>
+        <p className="text-xs text-muted">Model class score: {formatZoneScore(zone)}</p>
         <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
-        {isPredictionStale(zone.timestamp) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
+        {isZonePredictionStale(zone) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
+        <ProxyForecastDetails zone={zone} />
         {onReport && (
           <button
             type="button"

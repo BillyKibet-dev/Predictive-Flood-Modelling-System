@@ -11,6 +11,17 @@ export const POLL_INTERVAL_MS = positiveMilliseconds(env.VITE_PREDICTION_POLL_IN
 export const STALE_AFTER_MS = positiveMilliseconds(env.VITE_PREDICTION_STALE_AFTER_MS, 65 * 60_000)
 const RISK_LEVELS = ['Low', 'Moderate', 'High', 'Extreme']
 
+function normalizePredictionContext(context) {
+  if (context == null) return null // Older API snapshots have no declared coverage.
+  if (context.spatial_scope !== 'shared_nairobi_weather' ||
+      context.label_basis !== 'rainfall_soil_moisture_proxy' ||
+      context.temporal_scope !== 'current_conditions' || context.location_specific !== false ||
+      context.confidence_interpretation !== 'uncalibrated_class_score') {
+    throw new Error('Unsupported prediction context')
+  }
+  return { spatialScope: context.spatial_scope, locationSpecific: false, calibratedProbability: false }
+}
+
 // Keep the API contract at the boundary; pages share one normalized snapshot.
 export function normalizeDashboard(payload) {
   if (!Array.isArray(payload?.zones) || !Number.isInteger(payload.active_alerts) || payload.active_alerts < 0) {
@@ -35,7 +46,7 @@ export function normalizeDashboard(payload) {
       subCounty: zone.sub_county,
       lat: zone.latitude,
       lon: zone.longitude,
-      // The API defaults missing predictions to Low. A missing timestamp means unknown risk.
+      // A missing timestamp means unknown risk, including snapshots from older APIs.
       risk: timestamp === null ? 'Unknown' : entry.risk_level,
       confidence: timestamp === null ? null : (entry.confidence_score ?? null),
       timestamp,
@@ -48,7 +59,8 @@ export function normalizeDashboard(payload) {
     : null
 
   // Derive this from actual zone predictions, not the API's current-time fallback.
-  return { zones, lastUpdated, activeAlerts: payload.active_alerts }
+  return { zones, lastUpdated, activeAlerts: payload.active_alerts,
+    predictionContext: normalizePredictionContext(payload.prediction_context) }
 }
 
 export async function fetchDashboard({ signal } = {}) {

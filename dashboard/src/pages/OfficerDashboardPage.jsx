@@ -4,12 +4,15 @@ import RiskBadge from '../components/RiskBadge'
 import PredictionStatus from '../components/PredictionStatus'
 import TopNav from '../components/TopNav'
 import { RISK_ORDER, riskColor } from '../constants/colors'
-import { formatConfidence, formatPredictionTime, isPredictionStale } from '../services/predictions'
+import { formatPredictionTime } from '../services/predictions'
+import { formatTargetDate, formatZoneScore, PROXY_TASK, zoneStatusLabel } from '../services/proxyPredictions'
+import ProxyForecastDetails from '../components/ProxyForecastDetails'
 
 // Officer dashboard — county-wide summary, zone risk table, and recent alerts
 export default function OfficerDashboardPage({ predictions, alerts, setAlerts, showToast }) {
   const { data } = predictions
   const zones = data?.zones ?? []
+  const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
   const activeAlerts = data?.activeAlerts ?? 0
 
   const sortedZones = useMemo(
@@ -40,22 +43,22 @@ export default function OfficerDashboardPage({ predictions, alerts, setAlerts, s
           {/* Summary cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <SummaryCard label="Zones Monitored" value={data ? zones.length : '—'} color="var(--brand)" />
-            <SummaryCard label="Active Alerts" value={data?.activeAlerts ?? '—'} color="var(--risk-extreme)" />
+            <SummaryCard label={isProxy ? 'v1 emergency delivery' : 'Active Alerts'} value={isProxy ? 'Disabled' : data?.activeAlerts ?? '—'} color="var(--risk-extreme)" />
             <SummaryCard label="Highest Risk" value={highestRiskZone?.risk.toUpperCase() ?? 'UNAVAILABLE'} color={riskColor(highestRiskZone?.risk)} />
-            <SummaryCard label="Last Updated" value={formatPredictionTime(data?.lastUpdated)} color="var(--text-muted)" />
+            <SummaryCard label={isProxy ? 'Target calendar day' : 'Last Updated'} value={isProxy ? formatTargetDate(data?.forecastTargetDate) : formatPredictionTime(data?.lastUpdated)} color="var(--text-muted)" />
           </div>
 
           {/* Zone risk overview */}
           <section className="space-y-4">
             <div className="flex items-baseline justify-between">
-              <h2 className="text-2xl font-semibold tracking-tight text-ink">Zone Risk Overview</h2>
+              <h2 className="text-2xl font-semibold tracking-tight text-ink">{isProxy ? 'Zone-associated Proxy Class Overview' : 'Zone Risk Overview'}</h2>
               <span className="text-sm text-muted">Nairobi County</span>
             </div>
             <div className="bg-surface border border-border rounded-card overflow-x-auto shadow-card-rest">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-muted border-b border-border">
-                    {['Zone', 'Sub-County', 'Risk', '24h Rainfall', 'Confidence', 'Status'].map((h) => (
+                    {['Zone', 'Sub-County', 'Risk', '24h Rainfall', 'Model score', 'Status'].map((h) => (
                       <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide">
                         {h}
                       </th>
@@ -83,8 +86,8 @@ export default function OfficerDashboardPage({ predictions, alerts, setAlerts, s
                         </td>
                         <td className="px-4 py-3 w-36">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-ink">{formatConfidence(zone.confidence)}</span>
-                            {zone.confidence !== null && (
+                            <span className="text-xs text-ink">{formatZoneScore(zone)}</span>
+                            {zone.confidence !== null && zone.modelTaskType !== PROXY_TASK && (
                               <div className="flex-1 h-1.5 rounded-full bg-border overflow-hidden">
                                 <div
                                   className="h-full rounded-full"
@@ -95,8 +98,9 @@ export default function OfficerDashboardPage({ predictions, alerts, setAlerts, s
                           </div>
                         </td>
                         <td className="px-4 py-3 text-muted text-xs">
-                          {zone.timestamp ? (isPredictionStale(zone.timestamp) ? 'Older than expected' : 'Available') : 'Awaiting prediction'}
+                          {zoneStatusLabel(zone)}
                           <p>{formatPredictionTime(zone.timestamp)}</p>
+                          <ProxyForecastDetails zone={zone} />
                         </td>
                       </tr>
                     )
