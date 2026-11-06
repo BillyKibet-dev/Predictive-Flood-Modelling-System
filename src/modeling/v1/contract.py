@@ -83,6 +83,8 @@ def validate_issue_context(input_date: date, issued_at: datetime) -> datetime:
     """A complete-day input may be issued only on its following Nairobi date."""
     if isinstance(input_date, datetime) or not isinstance(input_date, date):
         raise V1InputError("input_date must be a calendar date")
+    if input_date == date.max:
+        raise V1InputError("input_date must have a representable next calendar day")
     if not isinstance(issued_at, datetime) or issued_at.tzinfo is None or issued_at.utcoffset() is None:
         raise V1InputError("issued_at must include an explicit timezone")
     local = issued_at.astimezone(NAIROBI)
