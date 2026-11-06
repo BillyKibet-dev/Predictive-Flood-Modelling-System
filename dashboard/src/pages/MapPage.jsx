@@ -16,6 +16,8 @@ export default function MapPage({ predictions }) {
   const [showMarkers, setShowMarkers] = useState(true)
   const [fitRequest, setFitRequest] = useState(0)
   const { data } = predictions
+  const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
+  const isReplay = predictions.selection?.view === 'v1_replay'
   const zones = data?.zones ?? []
   const highestRiskZone = zones.filter((zone) => zone.timestamp).sort(
     (a, b) => RISK_ORDER.indexOf(b.risk) - RISK_ORDER.indexOf(a.risk)
@@ -29,14 +31,15 @@ export default function MapPage({ predictions }) {
         <BoundaryControls boundaries={boundaries} showPolygons={showPolygons} setShowPolygons={setShowPolygons}
           showMarkers={showMarkers} setShowMarkers={setShowMarkers} fitCounty={() => setFitRequest((value) => value + 1)} />
       </div>
-      <div className="relative flex-1 min-h-0">
+      <div className="relative flex-1 min-h-[280px] sm:min-h-0">
         <MapView zones={zones} boundaries={boundaries.data} boundaryRevision={boundaries.revision}
           showPolygons={showPolygons} showMarkers={showMarkers} fitRequest={fitRequest} />
 
         {/* Legend */}
         <details className="absolute top-4 right-4 z-[1000] bg-surface shadow-card-hover rounded-card p-3 text-xs">
-          <summary className="font-semibold text-ink cursor-pointer">Risk legend</summary>
-          <p className="text-muted mt-2 mb-2 max-w-44">Sub-county colour: highest monitored risk.</p>
+          <summary className="font-semibold text-ink cursor-pointer">{isReplay ? 'Historical proxy-class legend' : 'Advisory indication legend'}</summary>
+          <p className="text-muted mt-2 mb-2 max-w-48">Administrative colour: highest available monitoring-point indication. No flood depth or inundation extent.</p>
+          {isProxy && <p className="text-muted mb-2 max-w-48">Environmental proxy classes, not observed flooding. {isReplay ? 'Historical replay only.' : 'Unavailable live inputs show Unknown.'}</p>}
           {[...RISK_ORDER, 'Unknown'].map((risk) => (
             <div key={risk} className="flex items-center gap-2 text-sm text-ink">
               <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: riskColor(risk) }} />
@@ -62,12 +65,12 @@ export default function MapPage({ predictions }) {
             <span className="text-xs text-center tracking-[0.08em] font-semibold">LAST UPDATED {formatPredictionTime(data?.lastUpdated)}</span>
           </div>
           <div className="flex flex-col items-center justify-center px-2">
-            <span className="text-xs tracking-[0.08em] font-semibold">{data?.activeAlerts ?? '—'} ACTIVE ALERTS</span>
+            <span className="text-xs tracking-[0.08em] font-semibold">{isProxy ? 'v1 EMERGENCY DELIVERY DISABLED' : `${data?.activeAlerts ?? '—'} ACTIVE ALERTS`}</span>
           </div>
           <div className="flex flex-col items-center justify-center px-2">
             <span className="text-xs tracking-[0.08em] font-semibold"
               style={highestRiskZone?.risk === 'Extreme' ? { textShadow: '0 0 8px rgba(220,38,38,0.9)', color: '#FCA5A5' } : undefined}>
-              HIGHEST RISK: {highestRiskZone ? `${highestRiskZone.risk.toUpperCase()} — ${highestRiskZone.name.toUpperCase()}` : 'UNAVAILABLE'}
+              {isReplay ? 'HISTORICAL CLASS' : 'HIGHEST INDICATION'}: {highestRiskZone ? `${highestRiskZone.risk.toUpperCase()} — ${highestRiskZone.name.toUpperCase()}` : 'UNAVAILABLE'}
             </span>
           </div>
         </div>

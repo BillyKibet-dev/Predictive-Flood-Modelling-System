@@ -2,10 +2,11 @@ import { BellOff } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import RiskBadge from '../components/RiskBadge'
 import TopNav from '../components/TopNav'
+import PredictionStatus from '../components/PredictionStatus'
 import { RISK_ORDER, riskColor } from '../constants/colors'
 
 // Officer alert management — filter, acknowledge, and (mock) export flood alerts
-export default function OfficerAlertsPage({ alerts, setAlerts, showToast }) {
+export default function OfficerAlertsPage({ alerts, setAlerts, showToast, predictions }) {
   const [zoneFilter, setZoneFilter] = useState('All')
   const [riskFilter, setRiskFilter] = useState('All')
   const [dateFilter, setDateFilter] = useState('')
@@ -46,8 +47,10 @@ export default function OfficerAlertsPage({ alerts, setAlerts, showToast }) {
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-content mx-auto px-6 py-10 space-y-6">
+          {predictions && <PredictionStatus predictions={predictions} />}
+          <p className="text-sm text-muted">The alert list and acknowledgement controls below are legacy demo data. v1 research outputs do not send emergency notifications.</p>
           <div className="flex items-center justify-between">
-            <h1 className="text-4xl font-bold tracking-tight text-ink">Alert Management</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-ink">Alert Management (Demo)</h1>
             <button
               onClick={exportCsv}
               className="text-sm font-medium border border-border rounded-btn px-4 h-11 hover:bg-bg transition-colors"
