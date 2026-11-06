@@ -27,9 +27,14 @@ def install_files(source: Path, destination: Path, files: dict) -> None:
             temporary = Path(handle.name)
         try:
             shutil.copyfile(source / filename, temporary)
+            blob = temporary.read_bytes()
+            if (len(blob) != files[filename]["size_bytes"] or
+                    hashlib.sha256(blob).hexdigest() != files[filename]["sha256"]):
+                raise V1ArtifactError("INSTALLED_COPY_INTEGRITY_FAILURE")
             temporary.replace(target)
         finally:
             temporary.unlink(missing_ok=True)
+    verify_files(destination, files)
 
 
 def install_package(handoff: Path, source_dir: Path | None, model_dir: Path, data_dir: Path) -> dict:
