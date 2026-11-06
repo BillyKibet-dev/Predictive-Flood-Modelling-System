@@ -11,6 +11,7 @@ from src.api.config import settings
 from src.api.database import engine
 from src.api.models.db_models import Base
 from src.api.routers import admin, alerts, auth, boundaries, predictions, proxy_v1, reports
+from src.api.routers import environmental
 from src.api.services.ml_service import ml_service
 from src.api.services.pipeline import pipeline
 
@@ -92,6 +93,7 @@ app.include_router(reports.router, prefix="", tags=["Reports"])
 app.include_router(boundaries.router, prefix="/boundaries", tags=["Administrative boundaries"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(proxy_v1.router, prefix="/api/v1", tags=["Research next-day proxy risk"])
+app.include_router(environmental.router)
 
 
 @app.get("/health")
