@@ -1,0 +1,56 @@
+{
+  "offline": {
+    "status": "PASSED",
+    "model_version": "nairobi_xgboost_nextday_proxy_v1",
+    "artifact_sha256": "b185eced1e8887b0fdbcb539567ea4f7d485583848c81c81eacc2979d8c728bb",
+    "runtime": {
+      "python": "3.12.1",
+      "xgboost": "3.1.3",
+      "numpy": "1.26.4"
+    },
+    "rows": 5848,
+    "zones": 8,
+    "max_feature_abs_difference": 8.526512829121202e-14,
+    "max_score_abs_difference": 2.980194091506405e-08,
+    "class_mismatches": 0,
+    "raw_hourly_case_max_abs_difference": 1.021405182655144e-14,
+    "proxy_test_metrics": {
+      "accuracy": 0.8117305061559508,
+      "balanced_accuracy": 0.6452557070944354,
+      "macro_f1": 0.6481525953286972,
+      "weighted_f1": 0.816837238590005,
+      "macro_precision": 0.6726171244885479,
+      "macro_recall": 0.6452557070944354,
+      "high_recall": 0.6262975778546713,
+      "extreme_recall": 0.3377777777777778,
+      "severe_macro_recall": 0.48203767781622453,
+      "proxy_multiclass_log_loss": 0.5720827522546521,
+      "proxy_multiclass_brier": 0.30204004247639277
+    },
+    "operational_promotion": false,
+    "emergency_alert_delivery": false
+  },
+  "postgres_replay": {
+    "status": "PASSED",
+    "schema_kind": "disposable_isolated_postgresql",
+    "zone_count": 8,
+    "input_date": "2024-04-30",
+    "target_date": "2024-05-01",
+    "rerun_idempotent": true,
+    "persisted_runs": 1,
+    "persisted_zone_results": 8,
+    "live_known_classes": 0,
+    "case_proxy_classes": {
+      "cbd": "Extreme",
+      "dagoretti": "Extreme",
+      "embakasi": "Extreme",
+      "kasarani": "Extreme",
+      "kibera": "Extreme",
+      "mathare": "Extreme",
+      "ruaraka": "Extreme",
+      "westlands": "Extreme"
+    },
+    "observed_flood_validation": false,
+    "alerts_written": false
+  }
+}

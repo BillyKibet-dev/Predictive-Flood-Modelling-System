@@ -90,4 +90,17 @@ Official provider references checked 6 November: [CHIRPS2 FAQ](https://wiki.chc.
 
 ## Final state
 
-Implementation and verification results will be recorded here and in `model_v1_validation.md` after the above units complete. No operational readiness is implied by this audit/plan.
+**Research replay gate passed; operational gate remains blocked.** See [validation](model_v1_validation.md) and aggregate [parity evidence](model_v1_parity.json).
+
+| Area | Implemented after audit | Verified result / remaining restriction |
+| --- | --- | --- |
+| Model package | Separate ignored native package; pinned XGBoost3.1.3 worker; exact schema/integrity and output validation | All5,848 frozen classes match; max score error2.98e−8. Legacy dependencies/artifact bytes preserved. No selected-joblib deserialization or training. |
+| Feature construction | Typed full-day hourly aggregation, recomputed zone CHIRPS history, persisted terrain/provenance, input-day seasons | All5,848 feature rows match; max difference8.53e−14. Raw CBD April30 aggregation differs at most1.03e−14. Missing/expired inputs have no invented observation timestamp. |
+| Source scope | Original matched integrated CSV, frozen input rows, original notebook and small raw slice recovered read-only | Three shared weather grid coordinates/eight approximate areas; original release times/day alignment and underlying terrain extraction remain unverified. |
+| Database | Three additive companion tables; immutable terrain versions; atomic/idempotent per-zone results and history | Native migration/concurrency/rollback tests pass. Local loopback development migration applied; one eight-zone labelled replay stored. Existing legacy counts unchanged. |
+| API | Separate typed v1 model/dashboard/history/admin-run routes; null flood probability with explicit reason; no v1 alerts | Actual local model/live/replay/history reads and frontend normalization passed. Anonymous/officer triggers rejected; invalid inputs422, conflicts409, missing storage503. |
+| Scheduler/startup | Schema creation and legacy scheduler opt-in/off by default; optional scheduler protected by PostgreSQL advisory lock/hour dedup | Startup side-effect and cross-worker tests pass. V1 is not scheduled; this does not establish a continuous service or operational model. |
+| Frontend | Explicit preserved legacy view, v1 live Unknown and historical date selection; target/issue/output/freshness and scientific caveats; actual evaluation/status panels | 55 tests/build and desktop1440/mobile390 browser checks pass. Recorded real API reads were rendered with simulated outage and all browser writes blocked. |
+| Full validation | Isolated SQLite plus disposable PostgreSQL/PostGIS tests and real artifacts | 297 passed,0skipped,1diagnostic-fitting test deliberately deselected. Existing dependency warnings remain documented. |
+
+No deployment, external alert delivery, broader Webmasters modules, experimental candidate promotion or Prompt2 implementation occurred. Historical replay does not demonstrate data available at simulated issue time, independent local flood skill or emergency-warning reliability. Approval for live-source/retraining policy, independent outcome validation and any future alert/class-mapping policy is still required before operational promotion.
