@@ -32,8 +32,10 @@ class MLService:
             self.feature_cols = joblib.load(settings.FEATURE_COLS_PATH)
             validate_artifacts(self.model, self.scaler, self.feature_cols)
             logger.info("MLService: model, scaler, and feature columns loaded successfully")
-        except (FileNotFoundError, ModelInputError) as exc:
-            logger.warning("MLService: model unavailable (%s); predictions disabled", exc)
+        except Exception as exc:
+            # Legacy pickle/version errors must not prevent the separate research API
+            # from starting. Existing legacy predictions remain available for reads.
+            logger.warning("MLService: model unavailable (%s); predictions disabled", type(exc).__name__)
             self.model = None
             self.scaler = None
             self.feature_cols = None
