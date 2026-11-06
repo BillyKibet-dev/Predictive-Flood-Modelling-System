@@ -12,6 +12,14 @@ class Settings(BaseSettings):
     SCALER_PATH: str = "models/scaler_final.joblib"
     FEATURE_COLS_PATH: str = "models/feature_cols_final.joblib"
 
+    # Research v1 stays separate from the legacy nine-input serving artifacts.
+    MODEL_V1_DIR: str = "models/nextday-proxy-v1"
+    MODEL_V1_DATA_DIR: str = "data/model_v1"
+    MODEL_V1_PYTHON: str = ".venv-model-v1/Scripts/python.exe"
+    # API startup is read-only by default. Bootstrap/migrations use explicit CLIs.
+    AUTO_CREATE_LEGACY_TABLES: bool = False
+    LEGACY_SCHEDULER_ENABLED: bool = False
+
     OPEN_METEO_BASE_URL: str = "https://archive-api.open-meteo.com/v1/archive"
     OPEN_METEO_FORECAST_URL: str = "https://api.open-meteo.com/v1/forecast"
     NAIROBI_LAT: float = -1.286389

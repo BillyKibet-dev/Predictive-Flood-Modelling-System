@@ -1,7 +1,7 @@
 export default function BoundaryControls({ boundaries, showPolygons, setShowPolygons, showMarkers, setShowMarkers, fitCounty }) {
   const { data, error, isLoading, reload } = boundaries
   const subcounties = data?.features.filter((feature) => feature.properties.admin_level === 2) ?? []
-  let message = `${subcounties.length} sub-counties · Colours show highest monitored risk.`
+  let message = `${subcounties.length} administrative sub-counties · Colours summarise available monitored indications, not flood extent.`
   if (!data) message = isLoading ? 'Loading administrative boundaries...' : 'Boundaries unavailable. Monitoring points remain available.'
   else if (error) message = 'Could not refresh boundaries. Showing saved outlines.'
   else if (!data.features.length) message = 'No administrative boundaries loaded.'
@@ -13,7 +13,7 @@ export default function BoundaryControls({ boundaries, showPolygons, setShowPoly
       <div className="flex flex-wrap items-center gap-3 sm:ml-auto">
         <label className="flex items-center gap-1.5 text-ink">
           <input type="checkbox" checked={showPolygons} onChange={(event) => setShowPolygons(event.target.checked)} disabled={!subcounties.length} />
-          Sub-county risk
+          Administrative advisory layer
         </label>
         <label className="flex items-center gap-1.5 text-ink">
           <input type="checkbox" checked={showMarkers} onChange={(event) => setShowMarkers(event.target.checked)} />

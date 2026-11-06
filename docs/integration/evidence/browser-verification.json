@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "kind": "browser with captured real local model/PostgreSQL/FastAPI reads; simulated outage; writes blocked",
+  "desktop": {
+    "width": 1440,
+    "height": 1000,
+    "no_horizontal_overflow": true,
+    "subcounty_paths": 17,
+    "markers": 8
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "no_horizontal_overflow": true,
+    "subcounty_paths": 17,
+    "markers": 8
+  },
+  "checks": [
+    "legacy selectable",
+    "live Unknown/no scores/no emergency delivery",
+    "explicit historical target 01 May 2024",
+    "replay not current warning",
+    "retains same replay after injected HTTP503",
+    "switching to live clears replay",
+    "all writes blocked"
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/boundaries",
+      "query": ""
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "query": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dashboard",
+      "query": "?mode=live"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dashboard",
+      "query": "?mode=historical_replay&input_date=2024-04-30"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dashboard",
+      "query": "?mode=historical_replay&input_date=2024-04-30"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dashboard",
+      "query": "?mode=live"
+    }
+  ]
+}

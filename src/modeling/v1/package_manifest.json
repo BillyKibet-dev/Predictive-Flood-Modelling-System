@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "model_version": "nairobi_xgboost_nextday_proxy_v1",
+  "model_task_type": "next_day_proxy_risk",
+  "artifact_filename": "nairobi_xgboost_nextday_proxy_v1.json",
+  "producer_xgboost_version": "3.1.3",
+  "required_runtime_xgboost": "3.1.3",
+  "feature_columns": [
+    "chirps_daily_rain_mm",
+    "chirps_prev_1d_mm",
+    "chirps_prev_3d_sum_mm",
+    "chirps_prev_7d_sum_mm",
+    "meteo_daily_rain_mm",
+    "rainfall_3h_eod_mm",
+    "rainfall_6h_eod_mm",
+    "rainfall_12h_eod_mm",
+    "rainfall_24h_eod_mm",
+    "temperature_mean_c",
+    "humidity_mean_pct",
+    "wind_speed_mean_kmh",
+    "soil_moisture_mean_m3m3",
+    "soil_moisture_eod_m3m3",
+    "slope_degrees",
+    "ndvi",
+    "impervious_fraction",
+    "vegetation_fraction",
+    "season_sin",
+    "season_cos"
+  ],
+  "classes": [
+    "Low",
+    "Moderate",
+    "High",
+    "Extreme"
+  ],
+  "files": {
+    "class_names.json": {
+      "sha256": "04c5d0f21df96a18bad6d0496c55312ef5854e70d096dd6448cf5c2c330a7721",
+      "size_bytes": 68
+    },
+    "experiment_manifest.json": {
+      "sha256": "5c5434c82db2d86f26c6aea042c356969fb409ff6142627298e2d92079fe799e",
+      "size_bytes": 3875
+    },
+    "feature_columns.json": {
+      "sha256": "521f691dd7b0a97fbbcb604ca97beaaffc94988ae58e75ba4e30f92cfb96c179",
+      "size_bytes": 468
+    },
+    "nairobi_xgboost_nextday_proxy_v1.json": {
+      "sha256": "b185eced1e8887b0fdbcb539567ea4f7d485583848c81c81eacc2979d8c728bb",
+      "size_bytes": 5487493
+    },
+    "xgboost_test_metrics.csv": {
+      "sha256": "1df1845de37dd9ad868c6a16e3f62cc12a2b905b0b597a32c6e59f690da1fa3a",
+      "size_bytes": 381
+    },
+    "xgboost_test_per_class.csv": {
+      "sha256": "e4c02914e55c65c047fc2ce94b3d7bd18eb416ca94a0d4593a5c0e10bcfd10d8",
+      "size_bytes": 326
+    },
+    "xgboost_test_predictions_proxy_only.csv": {
+      "sha256": "16ce072199936925168130ec705d9f1c7594b0faa451ae715335f61f036beeac",
+      "size_bytes": 468194
+    }
+  },
+  "source_files": {
+    "cbd_2024.csv": {
+      "sha256": "93ae85a850791d54f0a16f3344f4c7c35e6bf269061e5984dbbae0a159817886",
+      "size_bytes": 1056157
+    },
+    "cbd_2024.json": {
+      "sha256": "5579959a46742006af8094e65d1ad53b37dda6bdaf51a27152d5db28b091a9bc",
+      "size_bytes": 707
+    },
+    "CHIRPS_Nairobi_zones_2016_2025.csv": {
+      "sha256": "221b2c50e9327a1efebca64d2e39526f97fa845677c553a94f908214a0cc2d83",
+      "size_bytes": 754660
+    },
+    "NairobiFloodWatch.ipynb": {
+      "sha256": "d0def899812c01a88c13084937a4e8f86340172d468d3888279f33b2431abe5b",
+      "size_bytes": 760403
+    },
+    "NairobiFloodWatch_data_quality_manifest.json": {
+      "sha256": "2909b67c8121c295220c2b084bfc10196ce8f5df2b29a864a619d13719da26a9",
+      "size_bytes": 2156
+    },
+    "NairobiFloodWatch_frozen_test_2024_2025.csv": {
+      "sha256": "c6d65812903dc68abdd51c0af5ef1494bc13ee6bc54ed231597d95817b3ec58e",
+      "size_bytes": 1448547
+    },
+    "NairobiFloodWatch_zone_daily_integrated_2016_2025.csv": {
+      "sha256": "9bf5c7b014e75b9dbfc551f391413f81a1d5b0c30d9cea834d4112927c00a665",
+      "size_bytes": 7242080
+    },
+    "weather_by_zone_provenance.json": {
+      "sha256": "e07b824bbd88c14a062c1528b1f56e84876f4b87d76f87f43e80e4bb3d8d167b",
+      "size_bytes": 66544
+    },
+    "zone_terrain_features.csv": {
+      "sha256": "223b8ee397819812731797e85a5789efb458cf4a2a209bcb294de6cb0f0062ba",
+      "size_bytes": 322
+    }
+  },
+  "source_file": "NairobiFloodWatch_zone_daily_integrated_2016_2025.csv",
+  "source_sha256": "9bf5c7b014e75b9dbfc551f391413f81a1d5b0c30d9cea834d4112927c00a665",
+  "recipe_notebook_sha256": "d0def899812c01a88c13084937a4e8f86340172d468d3888279f33b2431abe5b",
+  "evaluation": {
+    "source": "frozen_proxy_test_evaluation",
+    "test_target_dates": [
+      "2024-01-01",
+      "2025-12-31"
+    ],
+    "rows": 5848,
+    "metrics": {
+      "accuracy": 0.8117305061559508,
+      "balanced_accuracy": 0.6452557070944354,
+      "macro_f1": 0.6481525953286972,
+      "weighted_f1": 0.816837238590005,
+      "macro_precision": 0.6726171244885479,
+      "macro_recall": 0.6452557070944354,
+      "high_recall": 0.6262975778546713,
+      "extreme_recall": 0.3377777777777778,
+      "severe_macro_recall": 0.48203767781622453,
+      "proxy_multiclass_log_loss": 0.572082752682104,
+      "proxy_multiclass_brier": 0.3020400424780348
+    },
+    "per_class": [
+      {
+        "proxy_class": "Low",
+        "precision": 0.9451945988880064,
+        "recall": 0.8845391476709613,
+        "f1-score": 0.9138615128631767,
+        "support": 4036
+      },
+      {
+        "proxy_class": "Moderate",
+        "precision": 0.5347322720694645,
+        "recall": 0.7324083250743311,
+        "f1-score": 0.6181514010874112,
+        "support": 1009
+      },
+      {
+        "proxy_class": "High",
+        "precision": 0.6557971014492754,
+        "recall": 0.6262975778546713,
+        "f1-score": 0.6407079646017699,
+        "support": 578
+      },
+      {
+        "proxy_class": "Extreme",
+        "precision": 0.5547445255474452,
+        "recall": 0.3377777777777778,
+        "f1-score": 0.4198895027624309,
+        "support": 225
+      }
+    ],
+    "limitations": [
+      "Class scores are NOT calibrated probabilities of actual flood occurrence.",
+      "Targets are rules built from future CHIRPS rainfall; no independently observed flood/non-flood outcomes.",
+      "Some label criteria use prior 6 days of known rainfall, so accuracy partly reflects known antecedent context.",
+      "CHIRPS day boundaries and publication delay versus Open-Meteo Nairobi-local days require verification.",
+      "Retrospective CHIRPS and ERA5-Seamless data may not be available at prediction issue time.",
+      "2023 NDVI and 2021 land cover are applied as static spatial proxies to earlier historical dates.",
+      "Overlapping approximate zones and coarse weather grids are not independent monitoring gauges.",
+      "No measured water levels and no synthetic water levels.",
+      "Production API input generation, live-data availability, and observed-flood validation are not demonstrated."
+    ]
+  },
+  "score_tolerance": {
+    "rtol": 1e-06,
+    "atol": 1e-06
+  },
+  "selection": "supplied handoff v1 native artifact only; joblib and later candidates excluded"
+}
