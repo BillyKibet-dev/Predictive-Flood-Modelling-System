@@ -1,0 +1,496 @@
+{
+  "evaluation_recipe": "notebook_v2_daily_proxy_replay_v1",
+  "target": "same_day_rainfall_soil_moisture_proxy_class",
+  "street_level_accuracy_established": false,
+  "forecast_lead_time_established": false,
+  "source_provenance": {
+    "status": "user_supplied_candidate_scripts_export_execution_unverified",
+    "candidate_manifest": {
+      "filename": "training_sources.candidate.json",
+      "size_bytes": 2309,
+      "sha256": "dc8220073abec65934fb02c0e439765d7449be315111306dc4777c00280dbf39"
+    }
+  },
+  "dataset": {
+    "sources": {
+      "chirps": {
+        "filename": "CHIRPS_Nairobi_2016_2026.csv",
+        "size_bytes": 268235,
+        "sha256": "498fda5cff06b7f09a0a9ee66831df0f412cd80057811557abee488ff87d4ce2",
+        "kind": "chirps",
+        "rows": 3653,
+        "start": "2016-01-01T00:00:00",
+        "end": "2025-12-31T00:00:00",
+        "frequency": "daily",
+        "missing_timestamps": 0,
+        "duplicate_timestamps": 0,
+        "imputed_values": 0,
+        "statistics": {
+          "precipitation": {
+            "minimum": 0.0,
+            "maximum": 132.25730895996094,
+            "mean": 2.6597215236547016,
+            "missing_values": 0
+          }
+        }
+      },
+      "weather": {
+        "filename": "nairobi_weather_2016_2026.csv",
+        "size_bytes": 3436131,
+        "sha256": "da7ae41e950b046fa7fdcb6844809400a86091e70848b8c168387a3482af112e",
+        "kind": "weather",
+        "rows": 87696,
+        "start": "2016-01-01T00:00:00",
+        "end": "2026-01-01T23:00:00",
+        "frequency": "hourly",
+        "missing_timestamps": 0,
+        "duplicate_timestamps": 0,
+        "imputed_values": 0,
+        "statistics": {
+          "temperature_2m": {
+            "minimum": 8.2,
+            "maximum": 31.6,
+            "mean": 18.991211685823757,
+            "missing_values": 0
+          },
+          "relative_humidity_2m": {
+            "minimum": 11.0,
+            "maximum": 100.0,
+            "mean": 69.72211959496443,
+            "missing_values": 0
+          },
+          "precipitation": {
+            "minimum": 0.0,
+            "maximum": 19.2,
+            "mean": 0.10351441342820654,
+            "missing_values": 0
+          },
+          "wind_speed_10m": {
+            "minimum": 0.0,
+            "maximum": 26.6,
+            "mean": 8.27275816456851,
+            "missing_values": 0
+          },
+          "soil_moisture_0_to_7cm": {
+            "minimum": 0.055,
+            "maximum": 0.442,
+            "mean": 0.23275911101988686,
+            "missing_values": 0
+          }
+        }
+      }
+    },
+    "merged_rows": 3653,
+    "start": "2016-01-01",
+    "end": "2025-12-31",
+    "excluded_weather_days": [
+      "2026-01-01"
+    ],
+    "excluded_chirps_days": [],
+    "class_counts": {
+      "Low": 2682,
+      "Moderate": 630,
+      "High": 254,
+      "Extreme": 87
+    },
+    "rainfall_daily_correlation": 0.3399618236004786,
+    "same_calendar_date_join": true,
+    "accumulation_windows_reconciled": false,
+    "imputation_performed": false
+  },
+  "splits": {
+    "train": {
+      "rows": 2557,
+      "start": "2016-01-01",
+      "end": "2022-12-31",
+      "class_counts": {
+        "Low": 1885,
+        "Moderate": 473,
+        "High": 148,
+        "Extreme": 51
+      }
+    },
+    "validation": {
+      "rows": 365,
+      "start": "2023-01-01",
+      "end": "2023-12-31",
+      "class_counts": {
+        "Low": 285,
+        "Moderate": 49,
+        "High": 26,
+        "Extreme": 5
+      }
+    },
+    "test": {
+      "rows": 731,
+      "start": "2024-01-01",
+      "end": "2025-12-31",
+      "class_counts": {
+        "Low": 512,
+        "Moderate": 108,
+        "High": 80,
+        "Extreme": 31
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.1",
+    "platform": "Windows",
+    "machine": "AMD64",
+    "numpy": "1.26.4",
+    "pandas": "2.2.1",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.6.1",
+    "xgboost": "3.4.1",
+    "joblib": "1.4.0"
+  },
+  "artifacts": {
+    "flood_model_final.joblib": {
+      "filename": "flood_model_final.joblib",
+      "size_bytes": 2973764,
+      "sha256": "aa131e3bda3b06b3349cd36d9e5ad6454d5c7831e02a4084bb7dfad230f25027"
+    },
+    "scaler_final.joblib": {
+      "filename": "scaler_final.joblib",
+      "size_bytes": 1039,
+      "sha256": "f5f03f7b0e9fa668d8f1d0b2529f66272c95cc629666d7b4a11461eafbae0c02"
+    },
+    "feature_cols_final.joblib": {
+      "filename": "feature_cols_final.joblib",
+      "size_bytes": 173,
+      "sha256": "843a856cd34a8074afaf754f2a3a6e7c85d9d4df838aa961ebbe7d5dbe291eff"
+    }
+  },
+  "notebook": {
+    "sha256": "f0b954be3fec384433473a971af7e71f21bb719015e686ab9a34d3cbee39b458",
+    "saved_test_metrics": {
+      "weighted_recall": 0.7962,
+      "weighted_f1": 0.7746,
+      "auc_roc_weighted": 0.8769
+    }
+  },
+  "baselines": {
+    "training_majority_class": "Low",
+    "majority_class": {
+      "validation": {
+        "rows": 365,
+        "class_counts": {
+          "Low": 285,
+          "Moderate": 49,
+          "High": 26,
+          "Extreme": 5
+        },
+        "accuracy": 0.7808219178082192,
+        "weighted_recall": 0.7808219178082192,
+        "weighted_f1": 0.6847207586933615,
+        "macro_recall": 0.25,
+        "auc_roc_weighted": null,
+        "per_class": {
+          "Low": {
+            "precision": 0.7808219178082192,
+            "recall": 1.0,
+            "f1-score": 0.8769230769230769,
+            "support": 285
+          },
+          "Moderate": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 49
+          },
+          "High": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 26
+          },
+          "Extreme": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 5
+          }
+        },
+        "confusion_matrix": [
+          [
+            285,
+            0,
+            0,
+            0
+          ],
+          [
+            49,
+            0,
+            0,
+            0
+          ],
+          [
+            26,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            0,
+            0
+          ]
+        ],
+        "prediction_sha256": "d867dc22803ad80f108e7d2cf09bb581f0b54f775afef89e991c39bab849e776"
+      },
+      "test": {
+        "rows": 731,
+        "class_counts": {
+          "Low": 512,
+          "Moderate": 108,
+          "High": 80,
+          "Extreme": 31
+        },
+        "accuracy": 0.7004103967168263,
+        "weighted_recall": 0.7004103967168263,
+        "weighted_f1": 0.5770074386468463,
+        "macro_recall": 0.25,
+        "auc_roc_weighted": null,
+        "per_class": {
+          "Low": {
+            "precision": 0.7004103967168263,
+            "recall": 1.0,
+            "f1-score": 0.8238133547868061,
+            "support": 512
+          },
+          "Moderate": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 108
+          },
+          "High": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 80
+          },
+          "Extreme": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 31
+          }
+        },
+        "confusion_matrix": [
+          [
+            512,
+            0,
+            0,
+            0
+          ],
+          [
+            108,
+            0,
+            0,
+            0
+          ],
+          [
+            80,
+            0,
+            0,
+            0
+          ],
+          [
+            31,
+            0,
+            0,
+            0
+          ]
+        ],
+        "prediction_sha256": "e317e4b89f736fef2e72b777c567f968ec8bc95aacb0fae991c6ee5ca1fee6ed"
+      }
+    },
+    "label_rule_agreement": 1.0,
+    "label_rule_note": "The threshold rule constructs the target. Its perfect agreement is tautological, not evidence of forecasting skill."
+  },
+  "limitations": [
+    "Labels and runoff-change inputs depend on the same rainfall source; outcomes are not observed floods.",
+    "Replay uses full daily aggregates and does not validate live hourly/partial-day inputs.",
+    "CHIRPS UTC image-date keys and Nairobi weather calendar days are joined as in the notebook; accumulation windows remain unverified.",
+    "Single-point source scripts do not establish sub-county or street-level coverage.",
+    "The original training-time environment and artefact provenance are not fully recorded."
+  ],
+  "frozen_artifact": {
+    "status": "unavailable",
+    "error_type": "XGBoostError",
+    "error": "Frozen model could not be loaded or evaluated in this environment",
+    "compatibility_warning_categories": []
+  },
+  "reference_refit": {
+    "status": "diagnostic_only_not_exported",
+    "parameters": {
+      "learning_rate": 0.05,
+      "max_depth": 7,
+      "min_child_weight": 1,
+      "n_estimators": 300,
+      "subsample": 0.8,
+      "gamma": 0,
+      "colsample_bytree": 0.8,
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "training_rows": 2557,
+    "class_weights": {
+      "0": 0.33912466843501327,
+      "1": 1.3514799154334038,
+      "2": 8.638513513513514,
+      "3": 25.068627450980394
+    },
+    "metrics": {
+      "validation": {
+        "rows": 365,
+        "class_counts": {
+          "Low": 285,
+          "Moderate": 49,
+          "High": 26,
+          "Extreme": 5
+        },
+        "accuracy": 0.8273972602739726,
+        "weighted_recall": 0.8273972602739726,
+        "weighted_f1": 0.823817931521705,
+        "macro_recall": 0.618535349362417,
+        "auc_roc_weighted": 0.898924971769156,
+        "per_class": {
+          "Low": {
+            "precision": 0.8945578231292517,
+            "recall": 0.9228070175438596,
+            "f1-score": 0.9084628670120898,
+            "support": 285
+          },
+          "Moderate": {
+            "precision": 0.47058823529411764,
+            "recall": 0.4897959183673469,
+            "f1-score": 0.48,
+            "support": 49
+          },
+          "High": {
+            "precision": 0.7058823529411765,
+            "recall": 0.46153846153846156,
+            "f1-score": 0.5581395348837209,
+            "support": 26
+          },
+          "Extreme": {
+            "precision": 1.0,
+            "recall": 0.6,
+            "f1-score": 0.75,
+            "support": 5
+          }
+        },
+        "confusion_matrix": [
+          [
+            263,
+            21,
+            1,
+            0
+          ],
+          [
+            23,
+            24,
+            2,
+            0
+          ],
+          [
+            8,
+            6,
+            12,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            3
+          ]
+        ],
+        "prediction_sha256": "5da66ed0aa407bcf9acc844af05f7a38d933ff6e2f058c032e98f5d8768b012c"
+      },
+      "test": {
+        "rows": 731,
+        "class_counts": {
+          "Low": 512,
+          "Moderate": 108,
+          "High": 80,
+          "Extreme": 31
+        },
+        "accuracy": 0.7934336525307798,
+        "weighted_recall": 0.7934336525307798,
+        "weighted_f1": 0.7726815617937386,
+        "macro_recall": 0.5404314376120072,
+        "auc_roc_weighted": 0.8773326507345947,
+        "per_class": {
+          "Low": {
+            "precision": 0.8514680483592401,
+            "recall": 0.962890625,
+            "f1-score": 0.9037580201649863,
+            "support": 512
+          },
+          "Moderate": {
+            "precision": 0.49514563106796117,
+            "recall": 0.4722222222222222,
+            "f1-score": 0.4834123222748815,
+            "support": 108
+          },
+          "High": {
+            "precision": 0.6285714285714286,
+            "recall": 0.275,
+            "f1-score": 0.3826086956521739,
+            "support": 80
+          },
+          "Extreme": {
+            "precision": 1.0,
+            "recall": 0.45161290322580644,
+            "f1-score": 0.6222222222222222,
+            "support": 31
+          }
+        },
+        "confusion_matrix": [
+          [
+            493,
+            19,
+            0,
+            0
+          ],
+          [
+            54,
+            51,
+            3,
+            0
+          ],
+          [
+            28,
+            30,
+            22,
+            0
+          ],
+          [
+            4,
+            3,
+            10,
+            14
+          ]
+        ],
+        "prediction_sha256": "64c5a10abda265e8f486bbea10142bb7d206a587ba4efe02be5f204ac68b3e56"
+      }
+    },
+    "notebook_comparison": {
+      "saved_test_metrics": {
+        "weighted_recall": 0.7962,
+        "weighted_f1": 0.7746,
+        "auc_roc_weighted": 0.8769
+      },
+      "matches_at_four_decimal_places": {
+        "weighted_recall": false,
+        "weighted_f1": false,
+        "auc_roc_weighted": false
+      },
+      "all_saved_metrics_match": false
+    }
+  }
+}

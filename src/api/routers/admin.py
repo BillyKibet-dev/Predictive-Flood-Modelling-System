@@ -19,37 +19,6 @@ router = APIRouter()
 
 MODEL_REPORT_PATH = Path("models/model_report_final.json")
 
-FALLBACK_MODEL_PERFORMANCE = {
-    "model_version": "v2_final",
-    "test_period": "2024-01-01 to 2026-12-31",
-    "weighted_recall": 0.7880,
-    "weighted_f1": 0.7790,
-    "auc_roc": 0.8732,
-    "per_class_recall": {
-        "Low": 0.9375,
-        "Moderate": 0.3889,
-        "High": 0.5000,
-        "Extreme": 0.4516,
-    },
-    "features_used": [
-        "delta_water_level",
-        "temperature_2m",
-        "relative_humidity_2m",
-        "wind_speed_10m",
-        "is_long_rains",
-        "is_short_rains",
-        "day_of_year",
-        "month",
-        "soil_moisture_0_to_7cm",
-    ],
-    "known_limitations": [
-        "CHIRPS 5km resolution cannot detect localised Nairobi convective storms",
-        "Moderate and High recall below 0.70 due to training data scarcity",
-        "TAHMO ground station data pending integration",
-    ],
-}
-
-
 @router.get("/users", response_model=list[UserResponse])
 def list_users(db: Session = Depends(get_db), current_user: User = Depends(require_admin)):
     try:
@@ -132,9 +101,9 @@ def get_model_performance(current_user: User = Depends(require_admin)):
         try:
             with open(MODEL_REPORT_PATH, "r", encoding="utf-8") as f:
                 return ModelPerformance(**json.load(f))
-        except (json.JSONDecodeError, OSError, TypeError) as exc:
-            logger.warning("Failed to read %s, using fallback metrics: %s", MODEL_REPORT_PATH, exc)
-    return ModelPerformance(**FALLBACK_MODEL_PERFORMANCE)
+        except (ValueError, OSError, TypeError) as exc:
+            logger.warning("Model evaluation report unavailable: %s", exc)
+    raise HTTPException(status_code=503, detail="No valid model evaluation report is available")
 
 
 @router.get("/pipeline-status")

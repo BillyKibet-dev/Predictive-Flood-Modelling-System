@@ -25,6 +25,8 @@ models/*.pkl
 venv/
 env/
 .venv/
+.venv-evaluation/
+.venv-model-v1/
 client_secrets.json
 credentials.json
 
@@ -39,3 +41,9 @@ dashboard/.env.local
 Thumbs.db
 .vscode/
 .idea/
+
+# Local research handoff and versioned v1 artifact/source material.
+# Small trusted metadata and integrity anchors live under src/modeling/v1/.
+codex-handoff/
+models/nextday-proxy-v1/
+data/model_v1/

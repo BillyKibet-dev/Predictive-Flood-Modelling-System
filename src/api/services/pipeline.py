@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from src.api.database import SessionLocal
 from src.api.models.db_models import AlertNotification, FloodPrediction, Zone
 from src.api.services.ml_service import ml_service
+from src.api.services.model_contract import ModelUnavailableError, PREDICTION_CONTEXT, SERVING_VERSION
 from src.api.services.weather_service import weather_service
 
 logger = logging.getLogger("nairobifloodwatch.pipeline")
@@ -20,16 +21,29 @@ class PredictionPipeline:
         start = time.monotonic()
         timestamp = datetime.now(timezone.utc)
 
-        current_weather = weather_service.get_current_weather()
-        if current_weather is None:
-            logger.error("Pipeline aborted: could not fetch current weather")
-            summary = {"status": "failed", "reason": "weather_fetch"}
+        def fail(reason):
+            summary = {"status": "failed", "reason": reason}
             self.last_run_at = timestamp
             self.last_run_summary = summary
             return summary
 
-        historical_df = weather_service.get_historical_weather(days=7)
-        features = weather_service.compute_features(current_weather, historical_df)
+        if not ml_service.is_loaded:
+            return fail("model_unavailable")
+
+        try:
+            current_weather = weather_service.get_current_weather()
+            if current_weather is None:
+                logger.error("Pipeline aborted: could not fetch current weather")
+                return fail("weather_fetch")
+            features = weather_service.compute_features(current_weather)
+            # One shared weather row produces one indication, copied to the legacy zone records.
+            result = ml_service.predict(features)
+        except (ModelUnavailableError, KeyError, TypeError, ValueError):
+            logger.warning("Pipeline aborted: invalid or incomplete model inputs", exc_info=True)
+            return fail("model_inputs")
+        except Exception:  # Preserve scheduler operation if inference itself fails unexpectedly.
+            logger.exception("Pipeline aborted: model inference failed")
+            return fail("inference_error")
 
         db = SessionLocal()
         predictions_summary = []
@@ -37,15 +51,13 @@ class PredictionPipeline:
         try:
             zones = db.query(Zone).all()
             for zone in zones:
-                result = ml_service.predict(features)
-
                 prediction = FloodPrediction(
                     zone_id=zone.id,
                     timestamp=timestamp,
                     risk_level=result["risk_level"],
                     risk_class=result["risk_class"],
                     confidence_score=result["confidence"],
-                    model_version="v2_final",
+                    model_version=SERVING_VERSION,
                 )
                 db.add(prediction)
                 db.flush()  # populate prediction.id before alert check
@@ -94,6 +106,8 @@ class PredictionPipeline:
             "predictions": predictions_summary,
             "alerts_created": alerts_created,
             "duration_seconds": round(duration, 3),
+            "weather_timestamp": current_weather["timestamp"],
+            "prediction_context": dict(PREDICTION_CONTEXT),
         }
         self.last_run_at = timestamp
         self.last_run_summary = summary

@@ -1,0 +1,44 @@
+{
+  "status": "user_supplied_candidates_not_verified_export_history",
+  "provided_on": "2026-10-25",
+  "notes": "The user supplied these scripts as possible originals. Date windows and column names agree with the local CSVs, but exact export execution is not independently verified.",
+  "chirps": {
+    "filename": "CHIRPS_Nairobi_2016_2026.csv",
+    "collection": "UCSB-CHG/CHIRPS/DAILY",
+    "point_longitude_latitude": [36.817, -1.286],
+    "spatial_reducer": "mean at one point, not a county polygon",
+    "scale_metres": 5000,
+    "start_inclusive": "2016-01-01",
+    "end_exclusive": "2026-01-01",
+    "export_date_format": "YYYY-MM-dd",
+    "export_date_timezone": "UTC by Earth Engine default",
+    "precipitation_units": "mm/day per provider catalogue",
+    "provider_metadata": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY"
+  },
+  "weather": {
+    "filename": "nairobi_weather_2016_2026.csv",
+    "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+    "latitude": -1.286389,
+    "longitude": 36.817223,
+    "start_date": "2016-01-01",
+    "end_date": "2026-01-01",
+    "timezone": "Africa/Nairobi",
+    "hourly": ["temperature_2m", "relative_humidity_2m", "precipitation", "wind_speed_10m", "soil_moisture_0_to_7cm"],
+    "units_explicitly_requested": false,
+    "provider_model_explicitly_requested": false,
+    "response_metadata_preserved": false,
+    "notes": "The candidate saved only data['hourly']; returned grid coordinates, elevation, units and model metadata were discarded. Default units need to be distinguished from verified original response metadata."
+  },
+  "imerg_reference_only": {
+    "collection": "NASA/GPM_L3/IMERG_V06",
+    "band": "precipitationCal",
+    "start_inclusive": "2023-01-01",
+    "end_exclusive": "2026-01-01",
+    "point_longitude_latitude": [36.817, -1.286],
+    "scale_metres": 11132,
+    "used_in_current_model": false,
+    "local_file_supplied": false,
+    "notes": "Separate half-hourly rainfall-rate export. The deprecated V06 catalogue ends on 2024-06-02; the requested date range does not establish data through 2025. Rates require time integration before comparison with rainfall depths.",
+    "provider_metadata": "https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V06"
+  }
+}

@@ -1,6 +1,6 @@
 import { RISK_ORDER } from '../constants/colors.js'
 import { API_BASE_URL } from './api.js'
-import { isPredictionStale } from './predictions.js'
+import { isZonePredictionStale, PROXY_TASK } from './proxyPredictions.js'
 
 export function normalizeBoundaries(payload) {
   if (payload?.type !== 'FeatureCollection' || !Array.isArray(payload.features) || payload.crs) {
@@ -45,14 +45,15 @@ export async function fetchBoundaries({ signal } = {}) {
 export function summarizeBoundary(feature, zones, now = Date.now()) {
   const ids = [...new Set(feature.properties.monitoring_zone_ids)]
   const monitoredZones = zones.filter((zone) => ids.includes(zone.id))
-  const available = monitoredZones.filter((zone) => zone.timestamp && RISK_ORDER.includes(zone.risk))
+  const available = monitoredZones.filter((zone) => zone.timestamp && RISK_ORDER.includes(zone.risk) &&
+    (zone.modelTaskType !== PROXY_TASK || (zone.status === 'SUCCESS' && !isZonePredictionStale(zone, now))))
   const highest = [...available].sort((a, b) => RISK_ORDER.indexOf(b.risk) - RISK_ORDER.indexOf(a.risk))[0]
   return {
     risk: highest?.risk ?? 'Unknown',
     monitoredZones,
     monitoringCount: ids.length,
     missingCount: ids.length - available.length,
-    stale: available.some((zone) => isPredictionStale(zone.timestamp, now)),
+    stale: monitoredZones.some((zone) => isZonePredictionStale(zone, now)),
   }
 }
 
