@@ -6,7 +6,7 @@ import PredictionStatus from '../components/PredictionStatus'
 import { RISK_ORDER, riskColor } from '../constants/colors'
 
 // Officer alert management — filter, acknowledge, and (mock) export flood alerts
-export default function OfficerAlertsPage({ alerts, setAlerts, showToast, predictions }) {
+export default function OfficerAlertsPage({ alerts, showToast, predictions }) {
   const [zoneFilter, setZoneFilter] = useState('All')
   const [riskFilter, setRiskFilter] = useState('All')
   const [dateFilter, setDateFilter] = useState('')
@@ -31,19 +31,17 @@ export default function OfficerAlertsPage({ alerts, setAlerts, showToast, predic
   }
 
   function acknowledge(alert) {
-    setAlerts((prev) =>
-      prev.map((a) => (a.id === alert.id ? { ...a, acknowledged: true, acknowledgedBy: 'Jane Mwangi' } : a))
-    )
-    showToast(`✓ Alert acknowledged — ${alert.zone} Zone`, 'success')
+    showToast('Alert acknowledgement is not connected. No record changed.', 'info')
   }
 
   function exportCsv() {
-    showToast('Alerts exported to CSV', 'info')
+    showToast('Alert export is not connected. No file was exported.', 'info')
   }
 
   return (
     <div className="min-h-screen flex flex-col page-transition">
       <TopNav variant="app" active="Alerts" unacknowledgedCount={unacknowledged.length} />
+      <p className="px-6 py-3 text-sm" role="status">Alert management is not connected in this interface. Sample alerts are hidden; persistence integration is scheduled for Workstream 4.</p>
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-content mx-auto px-6 py-10 space-y-6">

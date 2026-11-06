@@ -7,6 +7,7 @@ const APP_LINKS = [
   { to: '/', label: 'Map' },
   { to: '/officer', label: 'Dashboard' },
   { to: '/officer/alerts', label: 'Alerts' },
+  { to: '/environmental-data', label: 'Environmental data' },
 ]
 
 // Universal top navigation — adapts between the public (map/citizen) shell
@@ -32,7 +33,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
   )
 
   return (
-    <nav className="h-16 bg-surface border-b border-border flex items-center px-6 sticky top-0 z-[1100]">
+    <nav className="min-h-16 bg-surface border-b border-border flex flex-wrap gap-y-2 items-center px-4 sm:px-6 sticky top-0 z-[1100]">
       <Link to="/" className="flex items-center gap-2 font-semibold text-brand" aria-label="NairobiFloodWatch home">
         <Droplets size={22} />
         NairobiFloodWatch
@@ -68,6 +69,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
       )}
 
       <div className="flex items-center gap-3 ml-auto">
+        {user && <Link to="/environmental-data" className="md:hidden text-sm text-brand">Data</Link>}
         {variant === 'public' && (
           <Link
             to="/citizen"

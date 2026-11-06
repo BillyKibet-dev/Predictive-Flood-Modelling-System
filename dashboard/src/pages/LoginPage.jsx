@@ -6,10 +6,10 @@ import { useAuth } from '../context/AuthContext'
 const FEATURES = [
   'Weather-based risk indications across Nairobi',
   'Eight monitored zones across Nairobi County',
-  'Automated alerts for High and Extreme risk',
+  'Traceable historical environmental data',
 ]
 
-// Login page — split layout; mock authentication against hard-coded admin/officer credentials
+// Login uses the backend and confirms the active account via /auth/me.
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -19,17 +19,20 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
     setLoading(true)
-    setTimeout(() => {
-      const role = login(email, password)
-      setLoading(false)
+    try {
+      const role = await login(email, password)
+      setPassword('')
       if (role === 'admin') navigate('/admin')
       else if (role === 'officer') navigate('/officer')
-      else setError('Invalid credentials. Please try again.')
-    }, 500)
+    } catch (failure) {
+      setError(failure.name === 'AbortError' ? 'Sign-in timed out. Try again.' : failure.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -45,7 +48,7 @@ export default function LoginPage() {
             NairobiFloodWatch
           </div>
           <h2 className="text-3xl font-bold tracking-tight">
-            Real-time flood prediction for Nairobi County
+            Environmental proxy-risk research for Nairobi County
           </h2>
           <ul className="space-y-6">
             {FEATURES.map((f) => (
@@ -65,7 +68,7 @@ export default function LoginPage() {
         <div className="w-full max-w-[400px] space-y-8">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-ink">Sign in to your account</h2>
-            <p className="text-muted mt-1">Access the officer dashboard and alerts</p>
+            <p className="text-muted mt-1">Use an active backend account. Reloading requires sign-in.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">

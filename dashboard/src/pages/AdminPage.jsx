@@ -3,10 +3,8 @@ import { useState } from 'react'
 import TopNav from '../components/TopNav'
 import PredictionStatus from '../components/PredictionStatus'
 import AlertThresholds from './admin/AlertThresholds'
-import CitizenReports from './admin/CitizenReports'
 import ModelPerformance from './admin/ModelPerformance'
 import SystemHealth from './admin/SystemHealth'
-import UserAccounts from './admin/UserAccounts'
 
 const MENU = [
   { key: 'users', label: 'User Accounts', icon: Users },
@@ -17,8 +15,8 @@ const MENU = [
 ]
 
 // System Administrator panel — sidebar + content CSS grid, independently scrollable regions
-export default function AdminPage({ users, setUsers, showToast, predictions }) {
-  const [section, setSection] = useState('users')
+export default function AdminPage({ showToast, predictions }) {
+  const [section, setSection] = useState('health')
 
   return (
     <div className="h-screen grid grid-rows-[64px_1fr] grid-cols-1">
@@ -67,11 +65,11 @@ export default function AdminPage({ users, setUsers, showToast, predictions }) {
         <main className="overflow-y-auto" style={{ height: 'calc(100vh - 64px)', backgroundColor: 'var(--bg)' }}>
           <div className="max-w-[960px] mx-auto px-6 py-10 page-transition">
             {predictions && <div className="mb-6"><PredictionStatus predictions={predictions} /></div>}
-            {section === 'users' && <UserAccounts users={users} setUsers={setUsers} showToast={showToast} />}
+            {section === 'users' && <p role="status">User management is not connected in this interface. Demo account changes are disabled. Backend authentication is active; management integration is scheduled for Workstream 4.</p>}
             {section === 'thresholds' && <AlertThresholds showToast={showToast} />}
             {section === 'health' && <SystemHealth />}
             {section === 'performance' && <ModelPerformance />}
-            {section === 'reports' && <CitizenReports />}
+            {section === 'reports' && <p role="status">Report moderation is not connected in this interface. Citizen submissions continue through the existing report API. Sample reports are hidden; administrative integration is scheduled for Workstream 4.</p>}
           </div>
         </main>
       </div>
