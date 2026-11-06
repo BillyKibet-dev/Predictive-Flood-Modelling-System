@@ -5,7 +5,7 @@ import Toast from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ALERTS, USERS } from './data/mockData'
-import usePredictions from './hooks/usePredictions'
+import usePredictionView from './hooks/usePredictionView'
 import AdminPage from './pages/AdminPage'
 import CitizenPage from './pages/CitizenPage'
 import LoginPage from './pages/LoginPage'
@@ -16,7 +16,7 @@ import OfficerDashboardPage from './pages/OfficerDashboardPage'
 // One prediction subscription is shared across routes. Alerts/users remain demo state.
 // Auth and theme are provided via Context so every nested page/component can read them.
 export default function App() {
-  const predictions = usePredictions()
+  const predictions = usePredictionView()
   const [alerts, setAlerts] = useState(ALERTS)
   const [users, setUsers] = useState(USERS)
   const [toasts, setToasts] = useState([])
@@ -49,7 +49,7 @@ export default function App() {
               path="/officer/alerts"
               element={
                 <ProtectedRoute role="officer">
-                  <OfficerAlertsPage alerts={alerts} setAlerts={setAlerts} showToast={showToast} />
+                  <OfficerAlertsPage alerts={alerts} setAlerts={setAlerts} showToast={showToast} predictions={predictions} />
                 </ProtectedRoute>
               }
             />
@@ -57,7 +57,7 @@ export default function App() {
               path="/admin"
               element={
                 <ProtectedRoute role="admin">
-                  <AdminPage users={users} setUsers={setUsers} showToast={showToast} />
+                  <AdminPage users={users} setUsers={setUsers} showToast={showToast} predictions={predictions} />
                 </ProtectedRoute>
               }
             />

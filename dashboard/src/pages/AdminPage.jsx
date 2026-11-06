@@ -1,6 +1,7 @@
 import { BarChart2, Bell, FileText, Monitor, RefreshCw, Users } from 'lucide-react'
 import { useState } from 'react'
 import TopNav from '../components/TopNav'
+import PredictionStatus from '../components/PredictionStatus'
 import AlertThresholds from './admin/AlertThresholds'
 import CitizenReports from './admin/CitizenReports'
 import ModelPerformance from './admin/ModelPerformance'
@@ -9,19 +10,15 @@ import UserAccounts from './admin/UserAccounts'
 
 const MENU = [
   { key: 'users', label: 'User Accounts', icon: Users },
-  { key: 'thresholds', label: 'Alert Thresholds', icon: Bell },
-  { key: 'health', label: 'System Health', icon: Monitor },
+  { key: 'thresholds', label: 'Research Alert Policy', icon: Bell },
+  { key: 'health', label: 'Runtime and Data Status', icon: Monitor },
   { key: 'performance', label: 'Model Performance', icon: BarChart2 },
   { key: 'reports', label: 'Citizen Reports', icon: FileText },
 ]
 
 // System Administrator panel — sidebar + content CSS grid, independently scrollable regions
-export default function AdminPage({ users, setUsers, showToast }) {
+export default function AdminPage({ users, setUsers, showToast, predictions }) {
   const [section, setSection] = useState('users')
-
-  function handleRetrain() {
-    showToast('Model retraining initiated. This may take several minutes.', 'info')
-  }
 
   return (
     <div className="h-screen grid grid-rows-[64px_1fr] grid-cols-1">
@@ -56,11 +53,12 @@ export default function AdminPage({ users, setUsers, showToast }) {
           </nav>
           <div className="px-3 pb-6 pt-3 border-t border-white/10">
             <button
-              onClick={handleRetrain}
-              className="w-full flex items-center gap-3 h-11 px-3 rounded-btn text-sm font-medium text-accent hover:bg-white/10 transition-colors"
+              disabled
+              title="Model training is an approved offline research task; this application does not start training."
+              className="w-full flex items-center gap-3 min-h-11 px-3 rounded-btn text-sm font-medium text-accent opacity-60 cursor-not-allowed"
             >
               <RefreshCw size={18} />
-              Retrain Model
+              Offline training — not enabled
             </button>
           </div>
         </aside>
@@ -68,6 +66,7 @@ export default function AdminPage({ users, setUsers, showToast }) {
         {/* Main content */}
         <main className="overflow-y-auto" style={{ height: 'calc(100vh - 64px)', backgroundColor: 'var(--bg)' }}>
           <div className="max-w-[960px] mx-auto px-6 py-10 page-transition">
+            {predictions && <div className="mb-6"><PredictionStatus predictions={predictions} /></div>}
             {section === 'users' && <UserAccounts users={users} setUsers={setUsers} showToast={showToast} />}
             {section === 'thresholds' && <AlertThresholds showToast={showToast} />}
             {section === 'health' && <SystemHealth />}

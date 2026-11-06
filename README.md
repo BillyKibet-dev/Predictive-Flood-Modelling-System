@@ -13,11 +13,34 @@ FastAPI backend to a React dashboard used by three kinds of users:
 - **Authorities (officers)** — monitor the live risk map, manage and acknowledge alerts
 - **System administrators** — manage user accounts, alert thresholds, and review model performance
 
+## Selected v1 research integration
+
+The selected **XGBoost v1 next-day environmental proxy-risk model** has a separate
+20-feature contract and native inference runtime. Historical research replay,
+source freshness/limitations, real frozen evaluation and per-zone results are
+available through `/api/v1/*` and an explicit dashboard view selector. Live v1
+forecasts remain unavailable: CHIRPS publication timing, retrospective ERA5
+availability and day-boundary parity are unresolved. Scores are not calibrated
+flood probabilities and the map does not predict inundation.
+
+The original nine-feature shared-weather model, tables and old APIs remain
+available as the **legacy** view. Historical v1 results never replace legacy
+current-condition records. API startup now performs no automatic schema creation
+or scheduled predictions by default. An explicitly enabled legacy worker is
+protected against duplicate hourly writes; v1 is not scheduled and sends no
+emergency alerts.
+
+Start with the [v1 runbook](docs/integration/model_v1_runbook.md),
+[contract](docs/integration/model_v1_contract.md), [audit](docs/integration/model_v1_audit.md)
+and [verification evidence](docs/integration/model_v1_validation.md).
+Ignored local model/data files must be restored and hash-verified; do not commit
+the handoff binaries or private source exports. Prompt 2 is outside this change.
+
 ## Architecture
 
 ```mermaid
 flowchart LR
-    W["Open-Meteo API<br/>(weather data)"] --> P["Prediction Pipeline<br/>(hourly, APScheduler)"]
+    W["Open-Meteo API<br/>(weather data)"] --> P["Legacy Pipeline<br/>(hourly only when explicitly enabled)"]
     P --> M["XGBoost Model<br/>(src/api/services/ml_service.py)"]
     M --> DB[("PostgreSQL<br/>zones, predictions, alerts, users, reports")]
     DB --> API["FastAPI Backend<br/>src/api/"]
@@ -93,7 +116,7 @@ Access the API docs:
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-Run tests (requires the seeded database above):
+Run isolated backend tests (source fixtures and explicitly enabled PostGIS integration have their own requirements; see the v1 runbook):
 
 ```
 pytest tests/ -v
