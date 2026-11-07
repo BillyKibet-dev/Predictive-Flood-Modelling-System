@@ -1,6 +1,7 @@
 """Alert querying and acknowledgement endpoints."""
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, time, timedelta
+from zoneinfo import ZoneInfo
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -10,7 +11,7 @@ from sqlalchemy.orm import Session
 from src.api.database import get_db
 from src.api.models.db_models import AlertNotification, User, Zone
 from src.api.models.schemas import AlertResponse, PaginatedResponse
-from src.api.utils.security import get_current_user
+from src.api.utils.security import require_staff
 
 logger = logging.getLogger("nairobifloodwatch.alerts")
 router = APIRouter()
@@ -35,7 +36,7 @@ def unacknowledged_count(db: Session = Depends(get_db)):
         count = db.query(AlertNotification).filter(AlertNotification.acknowledged_status.is_(False)).count()
         return {"count": count}
     except SQLAlchemyError as exc:
-        logger.error("unacknowledged_count failed: %s", exc)
+        logger.error("unacknowledged_count failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
@@ -44,10 +45,11 @@ def list_alerts(
     zone_id: Optional[str] = None,
     risk_level: Optional[str] = None,
     acknowledged: Optional[bool] = None,
+    on_date: Optional[date] = None,
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_staff),
 ):
     try:
         query = db.query(AlertNotification)
@@ -58,6 +60,9 @@ def list_alerts(
         if acknowledged is not None:
             query = query.filter(AlertNotification.acknowledged_status.is_(acknowledged))
 
+        if on_date is not None:
+            start = datetime.combine(on_date, time.min, ZoneInfo('Africa/Nairobi'))
+            query = query.filter(AlertNotification.timestamp >= start, AlertNotification.timestamp < start + timedelta(days=1))
         total = query.count()
         rows = query.order_by(AlertNotification.timestamp.desc()).offset(offset).limit(limit).all()
 
@@ -74,7 +79,7 @@ def list_alerts(
         ]
         return PaginatedResponse(total=total, items=items, limit=limit, offset=offset)
     except SQLAlchemyError as exc:
-        logger.error("list_alerts failed: %s", exc)
+        logger.error("list_alerts failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
@@ -82,13 +87,15 @@ def list_alerts(
 def acknowledge_alert(
     alert_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_staff),
 ):
-    alert = db.query(AlertNotification).filter(AlertNotification.id == alert_id).first()
+    alert = db.query(AlertNotification).filter(AlertNotification.id == alert_id).with_for_update().populate_existing().first()
     if alert is None:
         raise HTTPException(status_code=404, detail="Alert not found")
     if alert.acknowledged_status:
-        raise HTTPException(status_code=400, detail="Already acknowledged")
+        zone = db.query(Zone).filter(Zone.id == alert.zone_id).first()
+        actor = db.get(User, alert.acknowledged_by) if alert.acknowledged_by else None
+        return _to_alert_response(alert, zone.name if zone else alert.zone_id, actor.name if actor else None)
 
     try:
         alert.acknowledged_status = True
@@ -98,7 +105,7 @@ def acknowledge_alert(
         db.refresh(alert)
     except SQLAlchemyError as exc:
         db.rollback()
-        logger.error("acknowledge_alert failed: %s", exc)
+        logger.error("acknowledge_alert failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
     zone = db.query(Zone).filter(Zone.id == alert.zone_id).first()
