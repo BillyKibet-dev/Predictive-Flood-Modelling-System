@@ -29,7 +29,7 @@ export default function ModelPerformance() {
           <p>Test target dates: {formatTargetDate(data.evaluation.testTargetDates[0])} – {formatTargetDate(data.evaluation.testTargetDates[1])} · {data.evaluation.rows.toLocaleString('en-GB')} zone-days · {data.featureCount} features</p>
           <p>Artifact loaded: {data.loaded ? 'Yes' : 'No'} · Operational input status: {data.operationalStatus.replaceAll('_', ' ')}</p>
           <p>These scores do not measure prediction of observed floods, flood depth or inundation. Class scores are not calibrated flood occurrence probabilities.</p>
-          <p>Emergency delivery is disabled. Native model loading alone does not establish live feature availability or operational readiness.</p>
+          <p>Native model loading alone does not establish live input availability. Officers assess advisories alongside local observations.</p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {METRICS.map(([key, label]) => <div key={key} className="bg-surface border border-border rounded-card p-5 shadow-card-rest">
