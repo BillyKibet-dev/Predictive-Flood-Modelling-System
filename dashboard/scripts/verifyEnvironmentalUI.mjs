@@ -86,10 +86,10 @@ try {
  await waitFor(`location.pathname==='/login'&&document.querySelector('input[type=email]')`)
  await evaluate(`(()=>{for(const [selector,value] of [['input[type=email]','officer@example.test'],['input[type=password]','fixture-only-password']]){const e=document.querySelector(selector);Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,value);e.dispatchEvent(new Event('input',{bubbles:true}))}document.querySelector('button[type=submit]').click()})()`)
  await waitFor(`location.pathname==='/officer'`)
- await evaluate(`Array.from(document.querySelectorAll('a')).find(e=>e.textContent==='Environmental data').click()`)
- await waitFor(`document.querySelector('table')&&document.body.innerText.includes('Missing / invalid')`)
+ await evaluate(`Array.from(document.querySelectorAll('a')).find(e=>e.textContent==='Rainfall history').click()`)
+ await waitFor(`document.querySelector('table')`);await evaluate(`Array.from(document.querySelectorAll('details')).find(e=>e.querySelector('summary')?.textContent.startsWith('View exact records')).open=true`)
  const text=await evaluate('document.body.innerText')
- for(const phrase of ['0 mm','Insufficient data','UNAVAILABLE','NOT AVAILABLE','UNKNOWN','HISTORICAL_ONLY','not a forecast horizon'])assert.ok(text.includes(phrase),phrase)
+ for(const phrase of ['0 mm','Insufficient data','Historical data','does not show current flooding'])assert.ok(text.includes(phrase),phrase)
  assert.ok(!text.includes('Import snapshot'),'officer cannot see import control')
  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true)
  assert.equal(await evaluate(`Object.keys(localStorage).some(k=>/token|auth/i.test(k))||Object.keys(sessionStorage).some(k=>/token|auth/i.test(k))`),false)
@@ -97,13 +97,13 @@ try {
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true})
  await evaluate(`dispatchEvent(new Event('resize'))`);await pause(600)
  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true,'mobile horizontal overflow')
- assert.ok(await evaluate(`Array.from(document.querySelectorAll('a')).some(e=>e.textContent==='Data'&&e.getBoundingClientRect().width>0)`))
+ assert.ok(await evaluate(`document.querySelector('select[aria-label="Staff navigation"]').getBoundingClientRect().width>0`))
  await screenshot('mobile-historical-rainfall')
  expire=true
- await evaluate(`Array.from(document.querySelectorAll('button')).find(e=>e.textContent==='Refresh registry').click()`)
+ await evaluate(`Array.from(document.querySelectorAll('button')).find(e=>e.textContent==='Refresh data').click()`)
  await waitFor(`location.pathname==='/login'`)
  assert.equal(errors.length,0,JSON.stringify(errors))
- const result={status:'passed',kind:'Controlled synthetic browser fixtures; PostgreSQL/FastAPI verified separately; not real deployment',desktop:{width:1440,no_horizontal_overflow:true},mobile:{width:390,no_horizontal_overflow:true},checks:['protected route redirects','backend login and me requests','authorized source reads','true zero vs missing','historical/unknown publication labels','water and inundation unavailable','officer import hidden','memory-only session','401 redirects to sign-in'],requests,evidence_directory:evidence}
+ const result={status:'passed',kind:'Controlled synthetic browser fixtures; PostgreSQL/FastAPI verified separately; not real deployment',desktop:{width:1440,no_horizontal_overflow:true},mobile:{width:390,no_horizontal_overflow:true},checks:['protected route redirects','backend login and me requests','authorized source reads','true zero vs missing','historical/unknown publication labels','technical metadata collapsed and historical purpose stated','officer import hidden','memory-only session','401 redirects to sign-in'],requests,evidence_directory:evidence}
  await writeFile(join(evidence,'verification.json'),JSON.stringify(result,null,2))
  console.log(JSON.stringify(result,null,2))
 }finally{

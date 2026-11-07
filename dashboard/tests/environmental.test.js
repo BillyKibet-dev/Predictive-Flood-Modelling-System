@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { chartRows, observedWindows, observationPath, rainfallPath, rainfallLabel, validateRegistry, validateObservations, validateRainfall } from '../src/services/environmental.js'
+import { chartRows, observedWindows, observationPath, rainfallPath, rainfallLabel, validateRegistry, validateObservations, validateRainfall, nairobiDateInput } from '../src/services/environmental.js'
 
 test('source resolution restricts observed accumulation windows', () => {
   assert.deepEqual(observedWindows('daily'), [24,48,168])
@@ -19,6 +19,13 @@ test('queries isolate dataset and zone and encode timezone offsets', () => {
   assert.equal(params.get('limit'),'200'); assert.equal(params.get('variable'),'rainfall')
   const rain=new URLSearchParams(rainfallPath('version','cbd','2024-05-02T00:00:00+03:00',24).split('?')[1])
   assert.equal(rain.get('end_at'),'2024-05-02T00:00:00+03:00')
+})
+test('chart source records use the same half-open window as the accumulated rainfall', () => {
+  const end='2024-05-02T00:00:00+03:00'
+  const query=new URLSearchParams(observationPath('version','cbd',0,end,24).split('?')[1])
+  assert.equal(Date.parse(query.get('end_at'))-Date.parse(query.get('start_at')),24*3600000)
+  assert.equal(nairobiDateInput('2024-05-01T21:00:00Z'),'2024-05-02T00:00')
+  assert.equal(nairobiDateInput(null),'')
 })
 test('absent source bins break the chart line without inventing rainfall', () => {
   const points=chartRows([{observed_at:'2024-05-01T00:00:00Z',bin_end_at:'2024-05-01T01:00:00Z',value:1},

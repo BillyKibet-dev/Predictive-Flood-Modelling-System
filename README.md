@@ -348,3 +348,26 @@ versioned environmental observations, authorized rainfall APIs and the
 `/environmental-data` screen. Sign-in now uses the real backend; sample
 administrative/alert mutations are disabled pending their persistence workstream.
 Water-level measurements and predicted inundation remain unavailable.
+
+## Citizen reports and staff review
+
+Citizens submit observations at `/citizen` with a specific landmark or address
+and optional device/manual coordinates. Officers and administrators review the
+same persisted reports in `/officer/reports` or the admin report inbox; only the
+citizen page has a submission form. Review status and notes retain their reviewer
+and version. Administrator account changes and advisory acknowledgements use the
+backend database; sample accounts/reports/alerts are not used by the dashboard.
+
+Before running this version against an existing approved development database,
+apply the additive report migration from the repository root:
+
+```powershell
+.venv/Scripts/python.exe -m src.scripts.migrate_environmental --schema public
+.venv/Scripts/python.exe -m src.scripts.migrate_reports --schema public
+```
+
+Map view controls are a compact overlay. Other dashboards use the latest saved
+advisories independently of map exploration. The rainfall-history page shows
+stored estimates for a zone and selected past window. **Live readiness has no
+release-time estimate:** missing verified live inputs are a setup/data gap,
+not a queued prediction. Refreshing checks saved data and status.
