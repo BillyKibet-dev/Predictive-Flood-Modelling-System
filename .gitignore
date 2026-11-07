@@ -47,3 +47,7 @@ Thumbs.db
 codex-handoff/
 models/nextday-proxy-v1/
 data/model_v1/
+
+# Local implementation reports and supporting evidence.
+docs/webmasters/
+/CHAPTER5_IMPLEMENTATION_EVIDENCE.md

@@ -9,7 +9,7 @@ import { formatTargetDate, formatZoneScore, PROXY_TASK, zoneStatusLabel } from '
 import ProxyForecastDetails from '../components/ProxyForecastDetails'
 
 // Officer dashboard — county-wide summary, zone risk table, and recent alerts
-export default function OfficerDashboardPage({ predictions, alerts, setAlerts, showToast }) {
+export default function OfficerDashboardPage({ predictions, alerts, showToast }) {
   const { data } = predictions
   const zones = data?.zones ?? []
   const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
@@ -23,13 +23,13 @@ export default function OfficerDashboardPage({ predictions, alerts, setAlerts, s
   const recentAlerts = [...alerts].slice(-3).reverse()
 
   function acknowledge(id) {
-    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, acknowledged: true, acknowledgedBy: 'Jane Mwangi' } : a)))
-    showToast('Alert acknowledged', 'success')
+    showToast('Alert acknowledgement is not connected. No record changed.', 'info')
   }
 
   return (
     <div className="min-h-screen flex flex-col page-transition">
       <TopNav variant="app" active="Dashboard" unacknowledgedCount={activeAlerts} />
+      <p className="px-6 py-3 text-sm" role="status">Alert management is not connected in this interface. Sample alerts are hidden; persistence integration is scheduled for Workstream 4.</p>
 
       {activeAlerts > 0 && (
         <div className="bg-red-600 text-white text-sm font-medium text-center py-2.5 px-4 sticky top-16 z-[1050]">
