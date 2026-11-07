@@ -18,7 +18,6 @@ export default function SystemHealth() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Status label="Native model" value={data.loaded ? 'Loaded' : 'Unavailable'} detail={`${data.modelVersion} · ${readableReason(data.status)}`} />
           <Status label="Operational data" value="Unavailable" detail={readableReason(data.operationalStatus)} />
-          <Status label="Emergency delivery" value="Disabled" detail="Research/advisory use only; stakeholder policy required." />
         </div>
         <div className="bg-surface border border-border rounded-card p-5 space-y-2 text-sm text-muted">
           <h3 className="font-semibold text-ink">Runtime reported by the backend</h3>

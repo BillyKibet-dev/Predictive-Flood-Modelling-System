@@ -1,163 +1,112 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import RiskBadge from '../components/RiskBadge'
-import PredictionStatus from '../components/PredictionStatus'
 import TopNav from '../components/TopNav'
-import { RISK_ORDER, riskColor } from '../constants/colors'
+import RiskBadge from '../components/RiskBadge'
+import useStaffList from '../hooks/useStaffList'
 import { formatPredictionTime } from '../services/predictions'
-import { formatTargetDate, formatZoneScore, PROXY_TASK, zoneStatusLabel } from '../services/proxyPredictions'
-import ProxyForecastDetails from '../components/ProxyForecastDetails'
 
-// Officer dashboard — county-wide summary, zone risk table, and recent alerts
-export default function OfficerDashboardPage({ predictions, alerts, showToast }) {
-  const { data } = predictions
+export default function OfficerDashboardPage({ predictions }) {
+  const { data, error, refresh, isRefreshing } = predictions
+  const reports = useStaffList('/citizen-reports?review_status=New&limit=1')
   const zones = data?.zones ?? []
-  const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
-  const activeAlerts = data?.activeAlerts ?? 0
-
-  const sortedZones = useMemo(
-    () => [...zones].sort((a, b) => RISK_ORDER.indexOf(b.risk) - RISK_ORDER.indexOf(a.risk)),
-    [zones]
-  )
-  const highestRiskZone = sortedZones.find((zone) => zone.timestamp)
-  const recentAlerts = [...alerts].slice(-3).reverse()
-
-  function acknowledge(id) {
-    showToast('Alert acknowledgement is not connected. No record changed.', 'info')
-  }
-
   return (
-    <div className="min-h-screen flex flex-col page-transition">
-      <TopNav variant="app" active="Dashboard" unacknowledgedCount={activeAlerts} />
-      <p className="px-6 py-3 text-sm" role="status">Alert management is not connected in this interface. Sample alerts are hidden; persistence integration is scheduled for Workstream 4.</p>
-
-      {activeAlerts > 0 && (
-        <div className="bg-red-600 text-white text-sm font-medium text-center py-2.5 px-4 sticky top-16 z-[1050]">
-          {activeAlerts} unacknowledged alert{activeAlerts > 1 ? 's' : ''}.
-        </div>
-      )}
-
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-content mx-auto px-6 py-10 space-y-10">
-          <PredictionStatus predictions={predictions} />
-          {/* Summary cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <SummaryCard label="Zones Monitored" value={data ? zones.length : '—'} color="var(--brand)" />
-            <SummaryCard label={isProxy ? 'v1 emergency delivery' : 'Active Alerts'} value={isProxy ? 'Disabled' : data?.activeAlerts ?? '—'} color="var(--risk-extreme)" />
-            <SummaryCard label="Highest Risk" value={highestRiskZone?.risk.toUpperCase() ?? 'UNAVAILABLE'} color={riskColor(highestRiskZone?.risk)} />
-            <SummaryCard label={isProxy ? 'Target calendar day' : 'Last Updated'} value={isProxy ? formatTargetDate(data?.forecastTargetDate) : formatPredictionTime(data?.lastUpdated)} color="var(--text-muted)" />
+    <div className="min-h-screen bg-bg">
+      <TopNav variant="app" active="Dashboard" />
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-6 text-ink">
+        <div className="flex flex-wrap justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold">Officer overview</h1>
+            <p className="text-sm text-muted mt-1">
+              Latest saved weather advisories and community reports support your assessment.
+              Decisions remain with officers.
+            </p>
           </div>
-
-          {/* Zone risk overview */}
-          <section className="space-y-4">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-2xl font-semibold tracking-tight text-ink">{isProxy ? 'Zone-associated Proxy Class Overview' : 'Zone Risk Overview'}</h2>
-              <span className="text-sm text-muted">Nairobi County</span>
-            </div>
-            <div className="bg-surface border border-border rounded-card overflow-x-auto shadow-card-rest">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-muted border-b border-border">
-                    {['Zone', 'Sub-County', 'Risk', '24h Rainfall', 'Model score', 'Status'].map((h) => (
-                      <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedZones.map((zone) => {
-                    const severe = zone.risk === 'Extreme' || zone.risk === 'High'
-                    return (
-                      <tr
-                        key={zone.id}
-                        className={`border-b border-border last:border-0 hover:bg-bg transition-colors ${
-                          severe ? 'border-l-4' : ''
-                        }`}
-                        style={severe ? { borderLeftColor: riskColor(zone.risk) } : undefined}
-                      >
-                        <td className="px-4 py-3 font-semibold text-ink">{zone.name}</td>
-                        <td className="px-4 py-3 text-muted">{zone.subCounty}</td>
-                        <td className="px-4 py-3">
-                          <RiskBadge risk={zone.risk} size="sm" />
-                        </td>
-                        <td className="px-4 py-3 text-muted">
-                          Unavailable
-                        </td>
-                        <td className="px-4 py-3 w-36">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-ink">{formatZoneScore(zone)}</span>
-                            {zone.confidence !== null && zone.modelTaskType !== PROXY_TASK && (
-                              <div className="flex-1 h-1.5 rounded-full bg-border overflow-hidden">
-                                <div
-                                  className="h-full rounded-full"
-                                  style={{ width: `${zone.confidence * 100}%`, backgroundColor: 'var(--brand)' }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-muted text-xs">
-                          {zoneStatusLabel(zone)}
-                          <p>{formatPredictionTime(zone.timestamp)}</p>
-                          <ProxyForecastDetails zone={zone} />
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* Recent alerts */}
-          <section className="space-y-4">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-2xl font-semibold tracking-tight text-ink">Recent Alerts (Demo)</h2>
-              <Link to="/officer/alerts" className="text-sm font-medium text-brand hover:underline">
-                View all
-              </Link>
-            </div>
-            <p className="text-sm text-muted">These sample alerts and acknowledgement actions use demo data.</p>
-            <div className="space-y-3">
-              {recentAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className="bg-surface border border-border rounded-card p-4 flex items-center gap-4 card-hover shadow-card-rest"
-                >
-                  <span className="font-semibold text-ink">{alert.zone}</span>
-                  <RiskBadge risk={alert.risk} size="sm" />
-                  <span className="text-xs text-muted">{alert.timestamp}</span>
-                  <span className="ml-auto">
-                    {alert.acknowledged ? (
-                      <span className="text-xs font-medium text-muted">Acknowledged by {alert.acknowledgedBy}</span>
-                    ) : (
-                      <button
-                        onClick={() => acknowledge(alert.id)}
-                        className="text-xs font-semibold text-white rounded-btn px-3 py-1.5"
-                        style={{ backgroundColor: riskColor(alert.risk) }}
-                      >
-                        Acknowledge
-                      </button>
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
+          <Link className="text-brand underline" to="/">
+            Open risk map
+          </Link>
         </div>
+        {error && (
+          <p role="alert">
+            Could not refresh advisories.{' '}
+            {data ? 'The last fetched records remain visible.' : 'No data is confirmed.'}
+          </p>
+        )}
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            ['Study zones', data ? zones.length : 'Unavailable'],
+            [
+              'New citizen reports',
+              reports.data?.total ?? (reports.error ? 'Unavailable' : 'Loading...'),
+            ],
+            ['Latest saved advisory', formatPredictionTime(data?.lastUpdated)],
+          ].map(([label, value]) => (
+            <div key={label} className="bg-surface border border-border rounded-card p-4">
+              <p className="text-sm text-muted">{label}</p>
+              <p className="font-semibold mt-2">{value}</p>
+            </div>
+          ))}
+        </div>
+        {reports.error && (
+          <p role="alert">
+            Report inbox could not be loaded.{' '}
+            <Link className="underline" to="/officer/reports">
+              Open inbox to retry
+            </Link>
+            .
+          </p>
+        )}
+        <div className="flex gap-4 text-sm">
+          <Link className="text-brand underline" to="/officer/reports">
+            Review citizen reports
+          </Link>
+          <Link className="text-brand underline" to="/officer/alerts">
+            Review saved advisories
+          </Link>
+          <Link className="text-brand underline" to="/environmental-data">
+            Inspect rainfall history
+          </Link>
+        </div>
+        <section className="space-y-3">
+          <div className="flex justify-between">
+            <h2 className="text-lg font-semibold">Saved zone indications</h2>
+            <button
+              onClick={refresh}
+              disabled={isRefreshing}
+              className="border border-border rounded-btn p-2 text-sm"
+            >
+              Refresh advisories
+            </button>
+          </div>
+          <p className="text-sm text-muted">
+            The older model shares Nairobi weather across study zones. Check the timestamps; these
+            records do not resolve street drainage or predict inundation.
+          </p>
+          <div className="overflow-x-auto bg-surface rounded-card border border-border">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr>
+                  {['Study zone', 'Advisory class', 'Saved at'].map((label) => (
+                    <th key={label} className="p-3">
+                      {label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {zones.map((zone) => (
+                  <tr className="border-t border-border" key={zone.id}>
+                    <td className="p-3">{zone.name}</td>
+                    <td className="p-3">
+                      <RiskBadge risk={zone.risk} size="sm" />
+                    </td>
+                    <td className="p-3">{formatPredictionTime(zone.timestamp)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!zones.length && <p className="p-4">No zone advisories loaded.</p>}
+          </div>
+        </section>
       </main>
-    </div>
-  )
-}
-
-function SummaryCard({ label, value, color }) {
-  return (
-    <div className="bg-surface border border-border rounded-card p-6 card-hover shadow-card-rest">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
-      <p className="text-xl sm:text-2xl font-bold mt-1 break-words" style={{ color }}>
-        {value}
-      </p>
     </div>
   )
 }

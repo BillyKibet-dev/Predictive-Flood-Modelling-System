@@ -26,7 +26,11 @@ export function createAuthSession({ baseUrl = API_BASE_URL, fetchImpl = fetch, n
         if (credential === token) clear()
         throw new Error('Session expired or credentials rejected. Sign in again.')
       }
-      if (!response.ok) throw new Error(response.status === 403 ? 'Your account cannot perform this action.' : `Request failed (${response.status}). No successful change is confirmed.`)
+      if (!response.ok) {
+        const failure = await response.json().catch(() => ({}))
+        const detail = typeof failure.detail === 'string' && failure.detail.length <= 250 ? failure.detail : null
+        throw new Error(response.status === 403 ? 'Your account cannot perform this action.' : detail ?? `Request failed (${response.status}). Check the fields; no successful change is confirmed.`)
+      }
       return await response.json()
     } catch (error) {
       if (error.name === 'AbortError') throw error

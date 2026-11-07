@@ -3,8 +3,8 @@ export const WINDOWS = [3, 6, 12, 24, 48, 168]
 export function observedWindows(resolution) {
   return resolution === 'daily' ? WINDOWS.filter(hours => hours % 24 === 0) : resolution === 'hourly' ? WINDOWS : []
 }
-export function observationPath(dataset, zone, offset = 0) {
-  return '/api/v1/environmental-data/observations?' + new URLSearchParams({ dataset_id: dataset, zone_id: zone, variable: 'rainfall', limit: '200', offset: String(offset) })
+export function observationPath(dataset, zone, offset = 0, end, hours) {
+  return '/api/v1/environmental-data/observations?' + new URLSearchParams({ dataset_id: dataset, zone_id: zone, variable: 'rainfall', limit: '200', offset: String(offset), ...(end ? {start_at:new Date(Date.parse(end)-hours*3600000).toISOString(),end_at:end} : {}) })
 }
 export function rainfallPath(dataset, zone, end, hours) {
   return '/api/v1/environmental-data/rainfall?' + new URLSearchParams({ dataset_id: dataset, zone_id: zone, end_at: end, window_hours: String(hours) })
@@ -47,4 +47,9 @@ export function validateRainfall(body, dataset, zone, end, hours) {
       (body.status === 'INSUFFICIENT_DATA' ? body.rainfall_mm !== null :
         typeof body.rainfall_mm !== 'number' || !Number.isFinite(body.rainfall_mm) || body.rainfall_mm < 0)) throw new Error('Invalid rainfall-window response. No total confirmed.')
   return body
+}
+
+export function nairobiDateInput(value) {
+  if(!value || !Number.isFinite(Date.parse(value)))return ''
+  return new Date(Date.parse(value)+3*3600000).toISOString().slice(0,16)
 }

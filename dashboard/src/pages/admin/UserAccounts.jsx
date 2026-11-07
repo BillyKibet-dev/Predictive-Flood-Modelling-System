@@ -1,205 +1,248 @@
 import { useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import useStaffList from '../../hooks/useStaffList'
 
-const ROLE_BADGE = { admin: 'bg-slate-700', officer: 'bg-accent' }
-const STATUS_BADGE = { Active: 'bg-risk-low', Inactive: 'bg-risk-extreme' }
-
-function initials(name) {
-  return name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()
-}
-
-// Admin section — manage system user accounts via a card list + slide-over add/edit panel
-export default function UserAccounts({ users, setUsers, showToast }) {
-  const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState('All')
-  const [showPanel, setShowPanel] = useState(false)
-  const [editingUser, setEditingUser] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', role: 'officer', password: '' })
-
-  const filtered = users.filter((u) => {
-    const matchesSearch =
-      u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
-    const matchesRole = roleFilter === 'All' || u.role === roleFilter
-    return matchesSearch && matchesRole
-  })
-
-  function openAddPanel() {
-    setEditingUser(null)
-    setForm({ name: '', email: '', role: 'officer', password: '' })
-    setShowPanel(true)
+const initial = { name: '', email: '', role: 'officer', status: 'Active', password: '' }
+const input = 'w-full border border-border rounded-btn bg-surface text-ink p-2'
+export default function UserAccounts() {
+  const { user: actor, authorizedRequest } = useAuth()
+  const list = useStaffList('/admin/users')
+  const [search, setSearch] = useState(''),
+    [editing, setEditing] = useState(undefined),
+    [form, setForm] = useState(initial),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(''),
+    [notice, setNotice] = useState('')
+  function open(user = null) {
+    setEditing(user)
+    setForm(
+      user
+        ? { name: user.name, email: user.email, role: user.role, status: user.status, password: '' }
+        : initial
+    )
+    setError('')
   }
-
-  function openEditPanel(u) {
-    setEditingUser(u)
-    setForm({ name: u.name, email: u.email, role: u.role, password: '' })
-    setShowPanel(true)
-  }
-
-  function handleSave(e) {
-    e.preventDefault()
-    if (editingUser) {
-      setUsers((prev) =>
-        prev.map((u) => (u.id === editingUser.id ? { ...u, name: form.name, email: form.email, role: form.role } : u))
-      )
-      showToast('User updated successfully', 'success')
-    } else {
-      const newUser = {
-        id: Math.max(0, ...users.map((u) => u.id)) + 1,
-        name: form.name,
-        email: form.email,
+  async function save(event) {
+    event.preventDefault()
+    setBusy(true)
+    setError('')
+    setNotice('')
+    try {
+      const payload = {
+        name: form.name.trim(),
+        email: form.email.trim(),
         role: form.role,
-        status: 'Active',
+        ...(editing ? { status: form.status } : {}),
       }
-      setUsers((prev) => [...prev, newUser])
-      showToast('User added successfully', 'success')
+      if (form.password) payload.password = form.password
+      if (!editing && !form.password) throw new Error('A password is required for a new account.')
+      const saved = await authorizedRequest(
+        editing ? `/admin/users/${editing.id}` : '/admin/users',
+        { method: editing ? 'PUT' : 'POST', body: JSON.stringify(payload) }
+      )
+      if (!Number.isInteger(saved.id) || saved.email.toLowerCase() !== payload.email.toLowerCase())
+        throw new Error('Save not confirmed. Refresh the accounts before retrying.')
+      setForm(initial)
+      setEditing(undefined)
+      setNotice('Account saved.')
+      list.refresh()
+    } catch (failure) {
+      setError(
+        failure.name === 'AbortError'
+          ? 'Save not confirmed. Refresh accounts before retrying.'
+          : failure.message
+      )
+    } finally {
+      setBusy(false)
     }
-    setShowPanel(false)
   }
-
-  function handleDelete(id) {
-    if (window.confirm('Remove this user account?')) {
-      setUsers((prev) => prev.filter((u) => u.id !== id))
-      showToast('User removed', 'success')
+  async function remove(account) {
+    if (
+      !window.confirm(
+        `Permanently remove ${account.name}? Accounts with review/alert history must be deactivated instead.`
+      )
+    )
+      return
+    setBusy(true)
+    setError('')
+    setNotice('')
+    try {
+      await authorizedRequest(`/admin/users/${account.id}`, { method: 'DELETE' })
+      setNotice('Account removed.')
+      list.refresh()
+    } catch (failure) {
+      setError(failure.message)
+    } finally {
+      setBusy(false)
     }
   }
-
+  const rows = (list.data ?? []).filter((account) =>
+    `${account.name} ${account.email}`.toLowerCase().includes(search.toLowerCase())
+  )
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <h2 className="text-2xl font-semibold tracking-tight text-ink">User Accounts</h2>
-        <button
-          onClick={openAddPanel}
-          className="h-11 px-5 rounded-btn bg-brand text-white text-sm font-semibold hover:bg-brand-light transition-colors"
-        >
-          + Add User
-        </button>
+    <section className="space-y-5 text-ink">
+      <div className="flex flex-wrap justify-between gap-3">
+        <h1 className="text-2xl font-semibold">User accounts</h1>
+        <div className="flex gap-2">
+          <button className="border border-border rounded-btn p-2" onClick={list.refresh}>
+            Refresh accounts
+          </button>
+          <button className="bg-brand text-white rounded-btn p-2" onClick={() => open()}>
+            Add user
+          </button>
+        </div>
       </div>
-
-      <div className="flex flex-wrap gap-3">
-        <input
-          type="text"
-          placeholder="Search by name or email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="h-10 w-[280px] border border-border rounded-btn px-3 text-sm bg-surface text-ink"
-        />
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="h-10 w-40 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
+      <p className="text-sm text-muted">
+        Accounts are saved in the database. Deactivate an account to revoke access while retaining
+        its review history. Changes are checked by the server.
+      </p>
+      <input
+        className={input}
+        aria-label="Search accounts"
+        placeholder="Search name or email"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
+      {list.loading && <p role="status">Loading accounts...</p>}
+      {(list.error || error) && (
+        <p role="alert" className="text-risk-extreme">
+          {error || list.error}
+        </p>
+      )}
+      {notice && <p role="status">{notice}</p>}
+      {list.data && !rows.length && <p>No accounts match your search.</p>}
+      {rows.map((account) => (
+        <article
+          key={account.id}
+          aria-label={`Account ${account.id}`}
+          className="border border-border bg-surface rounded-card p-4 flex flex-wrap items-center gap-3"
         >
-          <option value="All">All Roles</option>
-          <option value="admin">Admin</option>
-          <option value="officer">Officer</option>
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        {filtered.map((u) => (
-          <div
-            key={u.id}
-            className="bg-surface border border-border rounded-card p-4 flex items-center gap-4 card-hover shadow-card-rest"
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold">
+              {account.name}
+              {actor.id === account.id ? ' (you)' : ''}
+            </p>
+            <p className="text-sm text-muted break-all">{account.email}</p>
+            <p className="text-xs text-muted">
+              {account.role} / {account.status}
+            </p>
+          </div>
+          <button
+            className="border border-border rounded-btn p-2"
+            disabled={busy}
+            onClick={() => open(account)}
           >
-            <span className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center text-sm font-semibold shrink-0">
-              {initials(u.name)}
-            </span>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-ink">{u.name}</p>
-              <p className="text-sm text-muted truncate">{u.email}</p>
-              <div className="flex gap-2 mt-1.5">
-                <span className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${ROLE_BADGE[u.role]}`}>
-                  {u.role}
-                </span>
-                <span className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGE[u.status]}`}>
-                  {u.status}
-                </span>
-              </div>
-            </div>
-            <div className="flex gap-2 shrink-0">
-              <button
-                onClick={() => openEditPanel(u)}
-                className="text-xs font-medium border border-border rounded-btn px-3 py-1.5 hover:bg-bg transition-colors"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(u.id)}
-                className="text-xs font-medium text-risk-extreme border border-border rounded-btn px-3 py-1.5 hover:bg-bg transition-colors"
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Slide-over add/edit panel */}
-      {showPanel && (
-        <div className="fixed inset-0 z-[1500]">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanel(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-surface shadow-modal p-6 overflow-y-auto modal-scale-in">
-            <h3 className="text-xl font-semibold text-ink mb-6">{editingUser ? 'Edit User' : 'Add New User'}</h3>
-            <form onSubmit={handleSave} className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Name</label>
+            Edit
+          </button>
+          <button
+            className="border border-border rounded-btn p-2 text-risk-extreme"
+            disabled={busy || actor.id === account.id}
+            onClick={() => remove(account)}
+          >
+            Remove
+          </button>
+        </article>
+      ))}
+      {editing !== undefined && (
+        <div
+          className="fixed inset-0 z-[1500] bg-black/40 flex justify-end"
+          role="dialog"
+          aria-modal="true"
+          aria-label={editing ? 'Edit account' : 'Add account'}
+        >
+          <form
+            onSubmit={save}
+            className="bg-surface w-full max-w-md p-6 overflow-y-auto space-y-4"
+          >
+            <h2 className="text-xl font-semibold">{editing ? 'Edit account' : 'Add account'}</h2>
+            {['name', 'email'].map((field) => (
+              <label className="block text-sm capitalize" key={field}>
+                {field}
                 <input
                   required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full h-10 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
+                  maxLength={field === 'name' ? 100 : 150}
+                  type={field === 'email' ? 'email' : 'text'}
+                  aria-label={`Account ${field}`}
+                  className={input}
+                  value={form[field]}
+                  disabled={busy}
+                  onChange={(event) =>
+                    setForm((value) => ({ ...value, [field]: event.target.value }))
+                  }
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full h-10 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Role</label>
+              </label>
+            ))}
+            <label className="block text-sm">
+              Role
+              <select
+                aria-label="Account role"
+                className={input}
+                value={form.role}
+                disabled={busy || editing?.id === actor.id}
+                onChange={(event) => setForm((value) => ({ ...value, role: event.target.value }))}
+              >
+                <option value="officer">Officer</option>
+                <option value="admin">Administrator</option>
+              </select>
+            </label>
+            {editing && (
+              <label className="block text-sm">
+                Status
                 <select
-                  value={form.role}
-                  onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  className="w-full h-10 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
+                  aria-label="Account status"
+                  className={input}
+                  value={form.status}
+                  disabled={busy || editing.id === actor.id}
+                  onChange={(event) =>
+                    setForm((value) => ({ ...value, status: event.target.value }))
+                  }
                 >
-                  <option value="admin">Admin</option>
-                  <option value="officer">Officer</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
                 </select>
-              </div>
-              {!editingUser && (
-                <div>
-                  <label className="block text-sm font-medium text-ink mb-1.5">Temporary Password</label>
-                  <input
-                    type="text"
-                    required
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full h-10 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
-                  />
-                </div>
-              )}
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowPanel(false)}
-                  className="h-11 px-5 rounded-btn border border-border text-sm font-medium text-ink hover:bg-bg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="h-11 px-5 rounded-btn bg-brand text-white text-sm font-semibold hover:bg-brand-light transition-colors"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
+              </label>
+            )}
+            <label className="block text-sm">
+              {editing ? 'New password (optional)' : 'Password'}
+              <input
+                type="password"
+                autoComplete="new-password"
+                aria-label="Account password"
+                required={!editing}
+                minLength={8}
+                className={input}
+                value={form.password}
+                disabled={busy}
+                onChange={(event) =>
+                  setForm((value) => ({ ...value, password: event.target.value }))
+                }
+              />
+            </label>
+            {error && (
+              <p role="alert" className="text-risk-extreme">
+                {error}
+              </p>
+            )}
+            <div className="flex gap-3">
+              <button disabled={busy} className="bg-brand text-white px-4 py-2 rounded-btn">
+                {busy ? 'Saving...' : 'Save account'}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                className="border border-border p-2 rounded-btn"
+                onClick={() => {
+                  setForm(initial)
+                  setEditing(undefined)
+                  setError('')
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       )}
-    </div>
+    </section>
   )
 }

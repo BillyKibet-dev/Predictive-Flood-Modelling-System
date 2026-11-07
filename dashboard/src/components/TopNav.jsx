@@ -6,8 +6,9 @@ import { useTheme } from '../context/ThemeContext'
 const APP_LINKS = [
   { to: '/', label: 'Map' },
   { to: '/officer', label: 'Dashboard' },
-  { to: '/officer/alerts', label: 'Alerts' },
-  { to: '/environmental-data', label: 'Environmental data' },
+  { to: '/officer/alerts', label: 'Advisories' },
+  { to: '/officer/reports', label: 'Reports' },
+  { to: '/environmental-data', label: 'Rainfall history' },
 ]
 
 // Universal top navigation — adapts between the public (map/citizen) shell
@@ -43,7 +44,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
       </Link>
 
       {variant === 'app' && (
-        <div className="hidden md:flex items-center gap-6 mx-auto" aria-label="Primary">
+        <div className="hidden lg:flex items-center gap-4 mx-auto" aria-label="Primary">
           {APP_LINKS.filter((l) => l.to !== '/admin' || user?.role === 'admin').map((l) => (
             <Link
               key={l.to}
@@ -69,7 +70,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
       )}
 
       <div className="flex items-center gap-3 ml-auto">
-        {user && <Link to="/environmental-data" className="md:hidden text-sm text-brand">Data</Link>}
+        {user && <select aria-label="Staff navigation" className="lg:hidden max-w-28 text-xs bg-surface text-ink border border-border rounded-btn p-1" value="" onChange={event => navigate(event.target.value)}><option value="" disabled>Menu</option>{APP_LINKS.map(link => <option key={link.to} value={link.to}>{link.label}</option>)}{user.role === 'admin' && <option value="/admin">Admin</option>}</select>}
         {variant === 'public' && (
           <Link
             to="/citizen"
