@@ -75,12 +75,20 @@ def ingestions(limit: int = Query(50, ge=1, le=200), db=Depends(get_db), user=De
 
 @router.get("/environmental-data/observations", response_model=ObservationList)
 def observations(dataset_id: str, zone_id: str, variable: str = "rainfall", limit: int = Query(200, ge=1, le=500),
-                 offset: int = Query(0, ge=0), db=Depends(get_db), user=Depends(require_data_reader)):
+                 offset: int = Query(0, ge=0), start_at: datetime | None = None, end_at: datetime | None = None, db=Depends(get_db), user=Depends(require_data_reader)):
     try:
         if db.get(EnvironmentalDataset, dataset_id) is None:
             raise HTTPException(404, "Dataset not found")
+        if any(stamp is not None and (stamp.tzinfo is None or stamp.utcoffset() is None) for stamp in (start_at,end_at)):
+            raise HTTPException(422, 'Source-window timestamps require an explicit timezone')
+        if start_at is not None and end_at is not None and start_at >= end_at:
+            raise HTTPException(422, 'Window start must precede its end')
         query = select(EnvironmentalObservation).where(EnvironmentalObservation.dataset_id == dataset_id,
                  EnvironmentalObservation.zone_id == zone_id, EnvironmentalObservation.variable == variable)
+        if start_at is not None:
+            query = query.where(EnvironmentalObservation.observed_at >= start_at)
+        if end_at is not None:
+            query = query.where(EnvironmentalObservation.observed_at < end_at)
         count = db.scalar(select(func.count()).select_from(query.subquery()))
         return {"dataset_id": dataset_id, "total": count, "items": db.scalars(query.order_by(EnvironmentalObservation.observed_at).limit(limit).offset(offset)).all(), "limit": limit, "offset": offset}
     except SQLAlchemyError:

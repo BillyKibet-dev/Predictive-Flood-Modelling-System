@@ -119,7 +119,10 @@ def test_acknowledge_alert(api):
     response = client.post("/alerts/1/acknowledge", headers=headers)
     assert response.status_code == 200 and response.json()["acknowledged_status"] is True
     assert db.query(AlertNotification).one().acknowledged_by == db.query(User).filter(User.role == "officer").one().id
-    assert client.post("/alerts/1/acknowledge", headers=headers).status_code == 400
+    # A repeated click is safe and preserves the original acknowledgement.
+    repeat = client.post("/alerts/1/acknowledge", headers=headers)
+    assert repeat.status_code == 200
+    assert repeat.json()["acknowledged_at"] == response.json()["acknowledged_at"]
     assert client.post("/alerts/999/acknowledge", headers=headers).status_code == 404
 
 

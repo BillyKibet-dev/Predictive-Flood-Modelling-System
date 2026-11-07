@@ -233,6 +233,19 @@ def test_versioned_openapi_and_rejected_requests_do_not_store_readings(env_api):
     assert env_api.db.query(EnvironmentalIngestion).count()==0
 
 
+def test_chart_observations_match_half_open_rainfall_window_and_require_aware_bounds(env_api):
+    dataset=env_api.service.ingest(env_api.db,request())["dataset"]
+    path='/api/v1/environmental-data/observations'
+    params={'dataset_id':dataset.id,'zone_id':'a','start_at':'2024-05-01T00:00:00Z','end_at':'2024-05-02T00:00:00Z'}
+    assert env_api.client.get(path,params=params,headers=headers()).json()['total']==1
+    params['end_at']='2024-05-01T00:00:00Z'
+    assert env_api.client.get(path,params=params,headers=headers()).status_code==422
+    params['start_at']='2024-05-01'
+    assert env_api.client.get(path,params=params,headers=headers()).status_code==422
+    params.update(start_at='2024-05-02T00:00:00Z',end_at='2024-05-03T00:00:00Z')
+    assert env_api.client.get(path,params=params,headers=headers()).json()['total']==0
+
+
 def test_postgres_schema_guard_rejects_non_postgres(env_api):
     from src.scripts.migrate_environmental import require_schema
     with env_api.engine.connect() as conn, pytest.raises(ValueError):
