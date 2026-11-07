@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MessageSquarePlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import BoundaryControls from '../components/BoundaryControls'
 import MapView from '../components/MapView'
 import PredictionStatus from '../components/PredictionStatus'
@@ -11,6 +12,7 @@ import useBoundaries from '../hooks/useBoundaries'
 
 // Universal flood risk map — the hero landing page for every user type, public and authenticated alike
 export default function MapPage({ predictions }) {
+  const { user } = useAuth()
   const boundaries = useBoundaries()
   const [showPolygons, setShowPolygons] = useState(true)
   const [showMarkers, setShowMarkers] = useState(true)
@@ -24,20 +26,17 @@ export default function MapPage({ predictions }) {
   )[0]
 
   return (
-    <div className="h-screen h-[100dvh] min-h-[600px] flex flex-col page-transition">
+    <div className="h-screen h-[100dvh] flex flex-col page-transition">
       <TopNav variant="public" />
-      <div className="shrink-0 bg-surface border-b border-border px-4 py-2 space-y-2">
-        <PredictionStatus predictions={predictions} />
-        <BoundaryControls boundaries={boundaries} showPolygons={showPolygons} setShowPolygons={setShowPolygons}
-          showMarkers={showMarkers} setShowMarkers={setShowMarkers} fitCounty={() => setFitRequest((value) => value + 1)} />
-      </div>
-      <div className="relative flex-1 min-h-[280px] sm:min-h-0">
+      <div className="relative flex-1 min-h-0">
         <MapView zones={zones} boundaries={boundaries.data} boundaryRevision={boundaries.revision}
           showPolygons={showPolygons} showMarkers={showMarkers} fitRequest={fitRequest} />
 
+        <div className="absolute top-3 right-3 z-[1000] w-[calc(100%-76px)] max-w-80"><PredictionStatus predictions={predictions} /></div>
         {/* Legend */}
-        <details className="absolute top-4 right-4 z-[1000] bg-surface shadow-card-hover rounded-card p-3 text-xs">
-          <summary className="font-semibold text-ink cursor-pointer">{isReplay ? 'Historical proxy-class legend' : 'Advisory indication legend'}</summary>
+        <details className="absolute bottom-16 left-3 z-[1000] max-w-[calc(100%-160px)] max-h-[50vh] overflow-y-auto bg-surface shadow-card-hover rounded-card p-3 text-xs">
+          <summary className="font-semibold text-ink cursor-pointer">Map layers & legend</summary>
+          <div className="max-w-60 mt-3 mb-3"><BoundaryControls boundaries={boundaries} showPolygons={showPolygons} setShowPolygons={setShowPolygons} showMarkers={showMarkers} setShowMarkers={setShowMarkers} fitCounty={() => setFitRequest(value => value + 1)} /></div>
           <p className="text-muted mt-2 mb-2 max-w-48">Administrative colour: highest available monitoring-point indication. No flood depth or inundation extent.</p>
           {isProxy && <p className="text-muted mb-2 max-w-48">Environmental proxy classes, not observed flooding. {isReplay ? 'Historical replay only.' : 'Unavailable live inputs show Unknown.'}</p>}
           {[...RISK_ORDER, 'Unknown'].map((risk) => (
@@ -48,9 +47,9 @@ export default function MapPage({ predictions }) {
           ))}
         </details>
 
-        <Link to="/citizen#report"
+        <Link to={user ? "/officer/reports" : "/citizen#report"}
           className="absolute z-[1000] bottom-14 right-4 bg-surface text-ink shadow-card-hover rounded-full px-4 h-11 flex items-center gap-2 text-sm font-semibold hover:scale-105 transition-transform">
-          <MessageSquarePlus size={18} />Report Flood
+          <MessageSquarePlus size={18} />{user ? "Review reports" : "Report flooding"}
         </Link>
       </div>
 
@@ -65,7 +64,7 @@ export default function MapPage({ predictions }) {
             <span className="text-xs text-center tracking-[0.08em] font-semibold">LAST UPDATED {formatPredictionTime(data?.lastUpdated)}</span>
           </div>
           <div className="flex flex-col items-center justify-center px-2">
-            <span className="text-xs tracking-[0.08em] font-semibold">{isProxy ? 'v1 EMERGENCY DELIVERY DISABLED' : `${data?.activeAlerts ?? '—'} ACTIVE ALERTS`}</span>
+            <span className="text-xs tracking-[0.08em] font-semibold">{isReplay ? 'PAST-DATE ANALYSIS' : 'WEATHER ADVISORY'}</span>
           </div>
           <div className="flex flex-col items-center justify-center px-2">
             <span className="text-xs tracking-[0.08em] font-semibold"

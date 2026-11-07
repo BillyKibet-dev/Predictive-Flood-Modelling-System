@@ -23,18 +23,15 @@ function ZoneCard({ zone, index = 0, onReport }) {
           </div>
           <RiskBadge risk={zone.risk} size="sm" />
         </div>
-        <p className="text-sm text-ink">
-          24h Rainfall: <span className="font-semibold">Unavailable</span>
-        </p>
         <p className="text-sm font-medium" style={{ color }}>
           {zone.modelTaskType === PROXY_TASK
             ? (zone.mode === 'historical_replay' ? 'Historical proxy-label research. Not a current warning.' : 'Operational v1 indications are unavailable.')
             : RISK_ACTION_MESSAGES[zone.risk]}
         </p>
-        <p className="text-xs text-muted">Model class score: {formatZoneScore(zone)}</p>
+
         <p className="text-xs text-muted">Updated: {formatPredictionTime(zone.timestamp)}</p>
         {isZonePredictionStale(zone) && <p className="text-xs text-risk-mod">Prediction is older than expected.</p>}
-        <ProxyForecastDetails zone={zone} />
+        <details className="text-xs text-muted"><summary className="cursor-pointer">About this advisory</summary><p className="mt-2">This is a weather-based indication. Local drainage and exact flood locations are not assessed. Model scores are not flood probabilities.</p><p>Model class score: {formatZoneScore(zone)}</p><ProxyForecastDetails zone={zone} /></details>
         {onReport && (
           <button
             type="button"
