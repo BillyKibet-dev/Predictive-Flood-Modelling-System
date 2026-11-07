@@ -330,9 +330,21 @@ and never exports a model. These checks do not establish local flood accuracy.
 - If the model/scaler/feature files are missing or their input contract does not
   match, the API still starts and reports the model as unavailable. The pipeline
   does not save placeholder predictions.
-- The final nine model inputs exclude location, terrain and drainage features.
+- The legacy nine model inputs exclude location, terrain and drainage features.
   All zones share the same weather indication; administrative polygons do not
   increase model resolution.
 - Original training data and a compatible re-export are needed to reproduce
   evaluation. Saved notebook metrics describe proxy-label classification, not
   validated street flooding probabilities.
+
+## Historical environmental data
+
+The selected v1 model has a separate 20-feature next-day proxy contract and
+verified historical replay. See its [runbook](docs/integration/model_v1_runbook.md).
+Operational v1 inference and emergency delivery remain disabled.
+
+The application supports verified historical-source ingestion/QC,
+versioned environmental observations, authorized rainfall APIs and the
+`/environmental-data` screen. Sign-in now uses the real backend; sample
+administrative/alert mutations are disabled pending their persistence workstream.
+Water-level measurements and predicted inundation remain unavailable.
