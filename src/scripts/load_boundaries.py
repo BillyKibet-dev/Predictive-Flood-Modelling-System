@@ -5,6 +5,7 @@ Run from the project root: python -m src.scripts.load_boundaries [--path boundar
 import argparse
 from pathlib import Path
 
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.api.database import engine
@@ -19,12 +20,20 @@ def main():
         with engine.begin() as connection:
             paths = [args.path] if args.path else [DEFAULT_BOUNDARY_PATH, DEFAULT_SUBCOUNTY_PATH]
             identifiers = [identifier for path in paths for identifier in load_boundaries(connection, path)]
+            removed = []
+            if not args.path:
+                # The packaged files are the complete county and sub-county set: drop renamed or
+                # retired outlines so they cannot overlap the current ones on the map.
+                removed = connection.execute(text(
+                    "DELETE FROM administrative_boundaries WHERE admin_level IN (1, 2) AND NOT (id = ANY(:ids)) RETURNING id"
+                ), {"ids": identifiers}).scalars().all()
     except (ValueError, OSError) as exc:
         parser.exit(1, f"Boundary import failed: {exc}\n")
     except SQLAlchemyError as exc:
         detail = getattr(getattr(getattr(exc, "orig", None), "diag", None), "message_primary", None)
         parser.exit(1, f"Boundary import failed: {detail or 'check PostgreSQL/PostGIS installation and permissions'}\n")
-    print(f"Loaded {len(identifiers)} administrative boundaries.")
+    print(f"Loaded {len(identifiers)} administrative boundaries."
+          + (f" Removed outdated: {', '.join(sorted(removed))}." if removed else ""))
 
 
 if __name__ == "__main__":

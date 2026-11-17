@@ -1,0 +1,483 @@
+{
+  "dataset_id": "unosat-20240501-nairobi-kiambu",
+  "information_type": "historical_satellite_observation",
+  "title": "UNOSAT historical satellite-detected water, Nairobi-Kiambu event archive, 1 May 2024",
+  "provider": "UNITAR-UNOSAT",
+  "sensor": "Pleiades",
+  "acquired_at": "2024-05-01T08:06:00Z",
+  "published_at": "2024-05-03",
+  "product_id": "3833",
+  "source_url": "https://unosat.org/products/3833",
+  "download_url": "https://unosat.org/static/unosat_filesystem/3833/FL20240426KEN_SHP.zip",
+  "archive_revision_published_at": null,
+  "field_validation": "Not yet field validated",
+  "confidence": "To be evaluated",
+  "licence": "UNITAR terms: attributed research/educational non-commercial use; no unrestricted redistribution licence asserted.",
+  "licence_url": "https://unitar.org/legal",
+  "layers": {
+    "flood": {
+      "sha256": "7073be3cc55df9ca59b9c25d02caeb4032781652b589841c275fb6df7deaf1a2",
+      "bytes": 5957338
+    },
+    "coverage": {
+      "sha256": "18d228d11be444657be4b2942d262633d42449c87725f42ce13d1a857ac0b3f4",
+      "bytes": 1255
+    },
+    "cloud": {
+      "sha256": "c0c0e95886200f40af1a3a85df7793676daf31e195fe93cb288e2d051207f2f8",
+      "bytes": 49309
+    }
+  },
+  "monitoring_points": [
+    {
+      "zone_id": "cbd",
+      "name": "CBD",
+      "latitude": -1.286,
+      "longitude": 36.817,
+      "observation_state": "OUTSIDE_ANALYSIS",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "dagoretti",
+      "name": "Dagoretti",
+      "latitude": -1.295,
+      "longitude": 36.754,
+      "observation_state": "OUTSIDE_ANALYSIS",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "embakasi",
+      "name": "Embakasi",
+      "latitude": -1.32,
+      "longitude": 36.895,
+      "observation_state": "NO_DETECTION_REPORTED",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "kasarani",
+      "name": "Kasarani",
+      "latitude": -1.221,
+      "longitude": 36.897,
+      "observation_state": "CLOUD_OBSCURED",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "kibera",
+      "name": "Kibera",
+      "latitude": -1.314,
+      "longitude": 36.784,
+      "observation_state": "OUTSIDE_ANALYSIS",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "mathare",
+      "name": "Mathare",
+      "latitude": -1.26,
+      "longitude": 36.86,
+      "observation_state": "CLOUD_OBSCURED",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "ruaraka",
+      "name": "Ruaraka",
+      "latitude": -1.241,
+      "longitude": 36.876,
+      "observation_state": "NO_DETECTION_REPORTED",
+      "confirmed_flood_free": null
+    },
+    {
+      "zone_id": "westlands",
+      "name": "Westlands",
+      "latitude": -1.264,
+      "longitude": 36.807,
+      "observation_state": "OUTSIDE_ANALYSIS",
+      "confirmed_flood_free": null
+    }
+  ],
+  "administrative_context": [
+    {
+      "boundary_id": "nairobi-subcounty-dagoretti",
+      "name": "Dagoretti",
+      "monitoring_zone_ids": [
+        "dagoretti"
+      ],
+      "usable_coverage_percent": 0.0,
+      "cloud_percent": 0.0,
+      "outside_analysis_percent": 100.0,
+      "detected_water_usable_km2": 0.0
+    },
+    {
+      "boundary_id": "nairobi-subcounty-embakasi-south",
+      "name": "Embakasi South",
+      "monitoring_zone_ids": [
+        "embakasi"
+      ],
+      "usable_coverage_percent": 41.268233447494815,
+      "cloud_percent": 0.26143063094732927,
+      "outside_analysis_percent": 58.47033592155715,
+      "detected_water_usable_km2": 0.3725552121978649
+    },
+    {
+      "boundary_id": "nairobi-subcounty-kasarani",
+      "name": "Kasarani",
+      "monitoring_zone_ids": [
+        "kasarani"
+      ],
+      "usable_coverage_percent": 94.62778436852818,
+      "cloud_percent": 5.37221563147129,
+      "outside_analysis_percent": 0.0,
+      "detected_water_usable_km2": 23.837402289257664
+    },
+    {
+      "boundary_id": "nairobi-subcounty-kilimani",
+      "name": "Kilimani",
+      "monitoring_zone_ids": [
+        "cbd"
+      ],
+      "usable_coverage_percent": 0.0,
+      "cloud_percent": 0.0,
+      "outside_analysis_percent": 100.0,
+      "detected_water_usable_km2": 0.0
+    },
+    {
+      "boundary_id": "nairobi-subcounty-langata",
+      "name": "Langata",
+      "monitoring_zone_ids": [
+        "kibera"
+      ],
+      "usable_coverage_percent": 0.10273498839907737,
+      "cloud_percent": 0.0,
+      "outside_analysis_percent": 99.89726501160092,
+      "detected_water_usable_km2": 0.0
+    },
+    {
+      "boundary_id": "nairobi-subcounty-mathare",
+      "name": "Mathare",
+      "monitoring_zone_ids": [
+        "mathare"
+      ],
+      "usable_coverage_percent": 68.45587621168121,
+      "cloud_percent": 30.851444063008543,
+      "outside_analysis_percent": 0.6926797253245964,
+      "detected_water_usable_km2": 0.06808608406112254
+    },
+    {
+      "boundary_id": "nairobi-subcounty-ruaraka",
+      "name": "Ruaraka",
+      "monitoring_zone_ids": [
+        "ruaraka"
+      ],
+      "usable_coverage_percent": 92.42513957260363,
+      "cloud_percent": 7.57486042740186,
+      "outside_analysis_percent": 2.220446049250313e-14,
+      "detected_water_usable_km2": 0.2464413833702931
+    },
+    {
+      "boundary_id": "nairobi-subcounty-westlands",
+      "name": "Westlands",
+      "monitoring_zone_ids": [
+        "westlands"
+      ],
+      "usable_coverage_percent": 1.2034711640501818,
+      "cloud_percent": 0.0,
+      "outside_analysis_percent": 98.79652883594981,
+      "detected_water_usable_km2": 0.0
+    }
+  ],
+  "geography_fingerprint": {
+    "points": [
+      {
+        "id": "cbd",
+        "latitude": -1.286,
+        "longitude": 36.817
+      },
+      {
+        "id": "dagoretti",
+        "latitude": -1.295,
+        "longitude": 36.754
+      },
+      {
+        "id": "embakasi",
+        "latitude": -1.32,
+        "longitude": 36.895
+      },
+      {
+        "id": "kasarani",
+        "latitude": -1.221,
+        "longitude": 36.897
+      },
+      {
+        "id": "kibera",
+        "latitude": -1.314,
+        "longitude": 36.784
+      },
+      {
+        "id": "mathare",
+        "latitude": -1.26,
+        "longitude": 36.86
+      },
+      {
+        "id": "ruaraka",
+        "latitude": -1.241,
+        "longitude": 36.876
+      },
+      {
+        "id": "westlands",
+        "latitude": -1.264,
+        "longitude": 36.807
+      }
+    ],
+    "administrative_geometry": [
+      {
+        "id": "nairobi-county",
+        "geometry_md5": "f987e838181ced476772f4d45336c6e2"
+      },
+      {
+        "id": "nairobi-subcounty-dagoretti",
+        "geometry_md5": "872cbf41e5ae5ac2cb7e755a5be250d0"
+      },
+      {
+        "id": "nairobi-subcounty-embakasi-central",
+        "geometry_md5": "85b422c7570e62f580cae52d286ae699"
+      },
+      {
+        "id": "nairobi-subcounty-embakasi-east",
+        "geometry_md5": "e7b4835ec038613c970de3f7f5f2fe2f"
+      },
+      {
+        "id": "nairobi-subcounty-embakasi-north",
+        "geometry_md5": "242b69d8516e9b350e840690598e55ac"
+      },
+      {
+        "id": "nairobi-subcounty-embakasi-south",
+        "geometry_md5": "ef484cded29af0135fffb84ddac31358"
+      },
+      {
+        "id": "nairobi-subcounty-embakasi-west",
+        "geometry_md5": "cbcb68642deaf61e74a9cc2b53a1f261"
+      },
+      {
+        "id": "nairobi-subcounty-kamukunji",
+        "geometry_md5": "8c74f7b91bc728eebe4352d408f2de13"
+      },
+      {
+        "id": "nairobi-subcounty-kasarani",
+        "geometry_md5": "63fd5a07e46eb8ee49dd4eb7aea23c94"
+      },
+      {
+        "id": "nairobi-subcounty-kibra",
+        "geometry_md5": "1540ddaa6488a29212870b2b1e65f660"
+      },
+      {
+        "id": "nairobi-subcounty-kilimani",
+        "geometry_md5": "362a897fadfd731d9c92cf0709dfed9b"
+      },
+      {
+        "id": "nairobi-subcounty-langata",
+        "geometry_md5": "ff854e984dec1a4ff1386600a4148f17"
+      },
+      {
+        "id": "nairobi-subcounty-makadara",
+        "geometry_md5": "8ae74e728e47f6b2e96f57f6b582ed8a"
+      },
+      {
+        "id": "nairobi-subcounty-mathare",
+        "geometry_md5": "869661cf658d93cde2d8cb405ddf906f"
+      },
+      {
+        "id": "nairobi-subcounty-roysambu",
+        "geometry_md5": "cb69f39a330175890503948ee700de63"
+      },
+      {
+        "id": "nairobi-subcounty-ruaraka",
+        "geometry_md5": "ddf49a8231db91846ca87dcc2ee92378"
+      },
+      {
+        "id": "nairobi-subcounty-starehe",
+        "geometry_md5": "fcbbdd805fec5461e4cec3b1487a5135"
+      },
+      {
+        "id": "nairobi-subcounty-westlands",
+        "geometry_md5": "25fc5078f55ff78fe54417f6bd00633c"
+      }
+    ]
+  },
+  "source_members": {
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.shp": {
+      "sha256": "07543ad6d71f8190198c250fd33eabcc1c836ca85352096db76b2a81e9f52607",
+      "bytes": 17675576
+    },
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.shx": {
+      "sha256": "3fe3ca5b0fd368dfa24dce6df4ca3cbab2b29449b887c19c10d4d1a66320d8b1",
+      "bytes": 108
+    },
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.dbf": {
+      "sha256": "86c7a4c0b7d67bdec3ce7e1e768d395ac9667250f44d19ece888d5c05ba93985",
+      "bytes": 2841
+    },
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.prj": {
+      "sha256": "54ac73040e3db97101a57e2dfbc0a0292473febf8f7c4bf67f32132dd18eb285",
+      "bytes": 266
+    },
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.cpg": {
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "bytes": 5
+    },
+    "PL_20240501_FloodExtent_Nairobi_Kiambu.shp.xml": {
+      "sha256": "ffd95f424fff52ec4f78082cb5f72785ad1552d6dbb21c651aa201ff6d8b57a8",
+      "bytes": 24780
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.shp": {
+      "sha256": "f08df1baa7272944ca9bfcb0fabfd4aea40d615ae29777d9dec8b29202c2d6f9",
+      "bytes": 732
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.shx": {
+      "sha256": "e191af0e81576eb17f9bbad3d05baa9e3134012895a36d4c094c593da2556288",
+      "bytes": 108
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.dbf": {
+      "sha256": "e5f5d11c22a71391f51ae568c26132e6ed98219966d7bfd2b129e20b8d6e95fd",
+      "bytes": 1229
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.prj": {
+      "sha256": "54ac73040e3db97101a57e2dfbc0a0292473febf8f7c4bf67f32132dd18eb285",
+      "bytes": 266
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.cpg": {
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "bytes": 5
+    },
+    "PL_20240501_AnalysisExtent_Nairobi_Kiambu.shp.xml": {
+      "sha256": "4732e25cf6449de5a20ba13a35d09a595e2a0199750c770e3091bfbfd146c5a7",
+      "bytes": 21197
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.shp": {
+      "sha256": "33e980f91680186d3279104666b5bf4409d7d75445e7b11c7c968d1a857a99ab",
+      "bytes": 96636
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.shx": {
+      "sha256": "6a330a09b3c8a0dfc2c0fd8c0c3cafb2f487e6639664e27379bddc9fae37854c",
+      "bytes": 116
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.dbf": {
+      "sha256": "0fb9d1c8e8db9d06efb911f04d9df0b305b55364a1b79dd9445ce01c8eda65c0",
+      "bytes": 3632
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.prj": {
+      "sha256": "54ac73040e3db97101a57e2dfbc0a0292473febf8f7c4bf67f32132dd18eb285",
+      "bytes": 266
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.cpg": {
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "bytes": 5
+    },
+    "PL_20240501_CloudObstruction_Nairobi_Kiambu.shp.xml": {
+      "sha256": "5d154a37466683839ca85ec93309a334ca0ced4a285d7bc9005fbd101bea576f",
+      "bytes": 18277
+    }
+  },
+  "geometry_processing": {
+    "native_horizontal_epsg": 4326,
+    "analysis_epsg": 32737,
+    "repair": "ST_MakeValid method=structure keepcollapsed=false; polygon components only",
+    "display_simplification": "ST_SimplifyPreserveTopology at 1 metre in EPSG:32737; WGS84 9-decimal GeoJSON",
+    "summaries_use": "full-resolution repaired source, not simplified display",
+    "percentage_roundoff_clamp_tolerance": 1e-08,
+    "review": {
+      "flood": {
+        "native_features": [
+          {
+            "original_valid": false,
+            "original_reason": "Ring Self-intersection[37.1057171640001 -1.26928443699995]",
+            "original_points": 1100334,
+            "original_area_m2": 55213148.0457222,
+            "repaired_valid": true,
+            "repaired_area_m2": 55213148.045721926,
+            "repaired_points": 1103085,
+            "repaired_empty": false
+          }
+        ],
+        "display": {
+          "valid": true,
+          "full_area_m2": 55213148.045721926,
+          "display_area_m2": 55221446.03700422,
+          "full_points": 1103085,
+          "display_points": 212943
+        },
+        "simplification_tolerance_m": 1.0
+      },
+      "coverage": {
+        "native_features": [
+          {
+            "original_valid": true,
+            "original_reason": "Valid Geometry",
+            "original_points": 36,
+            "original_area_m2": 573069726.2118291,
+            "repaired_valid": true,
+            "repaired_area_m2": 573069726.2118291,
+            "repaired_points": 36,
+            "repaired_empty": false
+          }
+        ],
+        "display": {
+          "valid": true,
+          "full_area_m2": 573069726.2118291,
+          "display_area_m2": 573069611.1712409,
+          "full_points": 36,
+          "display_points": 35
+        },
+        "simplification_tolerance_m": 1.0
+      },
+      "cloud": {
+        "native_features": [
+          {
+            "original_valid": true,
+            "original_reason": "Valid Geometry",
+            "original_points": 3139,
+            "original_area_m2": 26669875.356841616,
+            "repaired_valid": true,
+            "repaired_area_m2": 26669875.356841616,
+            "repaired_points": 3139,
+            "repaired_empty": false
+          },
+          {
+            "original_valid": true,
+            "original_reason": "Valid Geometry",
+            "original_points": 2881,
+            "original_area_m2": 3816192.128975451,
+            "repaired_valid": true,
+            "repaired_area_m2": 3816192.12897545,
+            "repaired_points": 2881,
+            "repaired_empty": false
+          }
+        ],
+        "display": {
+          "valid": true,
+          "full_area_m2": 30486067.485817026,
+          "display_area_m2": 30481895.586958744,
+          "full_points": 6020,
+          "display_points": 1761
+        },
+        "simplification_tolerance_m": 1.0
+      }
+    },
+    "source_consistency": {
+      "detected_water_outside_analysis_m2": 593.3485972073871,
+      "detected_water_overlapping_cloud_m2": 131.6350761725821,
+      "analysis_area_m2": 573069726.2118291,
+      "usable_analysis_area_m2": 542610182.5582193
+    }
+  },
+  "limitations": [
+    "Historical satellite interpretation, preliminary and not field validated; confidence is to be evaluated.",
+    "Acquisition date/time is not flood onset. Product publication date and unknown event-archive revision are separate.",
+    "The directly linked event archive is broader than the product map sheet; map-sheet statistics must not be assigned to the full vector layer.",
+    "Analysis extent is the mapped analysed footprint, not proof of complete Nairobi imagery or complete observation validity.",
+    "Mapped cloud obstruction reduces usable analysis coverage. No additional no-data mask or confirmed flood-free sample is supplied.",
+    "No detection polygon at an examined point does not establish absence of flooding.",
+    "Outside analysis or under mapped cloud is unknown. Source detection/coverage inconsistencies remain explicitly documented.",
+    "Eight monitoring points, original study rectangles and official administrative boundaries have different spatial supports. Original rectangle definitions were not supplied; old rectangle percentages are not reproduced.",
+    "2D extents do not provide flood depth, calibrated probability, prediction accuracy or operational warning lead time.",
+    "One scene is a historical case study, not eight independent validation events. No training or calibration uses it."
+  ]
+}
