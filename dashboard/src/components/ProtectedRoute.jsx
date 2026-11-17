@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-// Route guard — admin can access all protected routes; officer limited to /officer and /officer/alerts
+// Staff routes require their declared role; administrators may also use officer tools.
 export default function ProtectedRoute({ role, children }) {
   const { user } = useAuth()
 

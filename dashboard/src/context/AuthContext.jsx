@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   const [session] = useState(() => createAuthSession())
   useEffect(() => session.subscribe(setUser), [session])
 
-  return <AuthContext.Provider value={{ user, login: session.login, logout: session.logout, authorizedRequest: session.authorizedRequest }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login: session.login, logout: session.logout, authorizedRequest: session.authorizedRequest, authorizedDownload: session.authorizedDownload }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
