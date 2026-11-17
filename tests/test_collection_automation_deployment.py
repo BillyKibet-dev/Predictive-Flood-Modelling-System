@@ -28,3 +28,18 @@ def test_automated_runner_requires_private_gate_and_exact_timer_interval(monkeyp
     monkeypatch.setattr(settings,'MONITORING_POINT_COLLECTION_INTERVAL_HOURS',5)
     assert runner.main(['--execute','--automated','--require-synced-clock'])==2
     assert 'AUTOMATED_TIMER_INTERVAL_MISMATCH' in capsys.readouterr().out
+
+
+def test_cors_accepts_several_frontend_origins_and_drops_localhost_in_production():
+    from src.api.config import allowed_origins
+    origins = allowed_origins('https://floodwatch.example, https://www.floodwatch.example/ ,https://x.netlify.app', 'production')
+    assert origins == ['https://floodwatch.example', 'https://www.floodwatch.example', 'https://x.netlify.app']
+    assert 'http://localhost:5173' in allowed_origins('https://floodwatch.example', 'development')
+
+
+def test_api_unit_can_write_every_runtime_store():
+    service = (ROOT/'deploy/examples/nairobifloodwatch-api.service').read_text(encoding='utf-8')
+    environment = (ROOT/'deploy/examples/application.env.example').read_text(encoding='utf-8')
+    for store in ('operational_sources', 'point_weather', 'imerg_early', 'report_photos'):
+        assert f'/var/lib/nairobifloodwatch/{store}' in service.split('ReadWritePaths=')[1].splitlines()[0]
+        assert f'/var/lib/nairobifloodwatch/{store}' in environment

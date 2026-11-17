@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from src.api.config import settings
+from src.api.config import allowed_origins, settings
 from src.api.database import engine
 from src.api.models.db_models import Base
 from src.api.routers import admin, alerts, auth, boundaries, predictions, proxy_v1, reports
@@ -93,7 +93,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL, "http://localhost:5173"],
+    allow_origins=allowed_origins(settings.FRONTEND_URL, settings.ENVIRONMENT),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
