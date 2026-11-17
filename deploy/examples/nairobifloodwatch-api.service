@@ -1,0 +1,29 @@
+# INERT EXAMPLE: install/start only after explicit deployment approval and staging checks.
+[Unit]
+Description=NairobiFloodWatch application API (inference scheduling disabled)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=floodwatch
+Group=floodwatch
+WorkingDirectory=/srv/nairobifloodwatch
+EnvironmentFile=/etc/nairobifloodwatch/application.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+# The binary rainfall model is executed on an authenticated staff request only.
+ExecStart=/srv/nairobifloodwatch/.venv/bin/python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/nairobifloodwatch/operational_sources /var/lib/nairobifloodwatch/point_weather /var/lib/nairobifloodwatch/imerg_early
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
