@@ -1,7 +1,7 @@
 # Data provenance
 
-Training CSVs restored locally are documented in
-[docs/dataset-evaluation.md](../docs/dataset-evaluation.md). They remain ignored
+Training CSVs restored locally (`CHIRPS_Nairobi_2016_2026.csv`,
+`nairobi_weather_2016_2026.csv`, used by the v1 evaluation) remain ignored
 by Git. Candidate source scripts supplied by the user are preserved under
 [provenance/](provenance/candidate-export-scripts.md), with their uncertainty
 stated explicitly. They describe single-point sampling, rather than county or
