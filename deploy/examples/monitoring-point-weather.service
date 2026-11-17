@@ -1,0 +1,24 @@
+[Unit]
+Description=NairobiFloodWatch monitored-point weather collection only
+Wants=network-online.target time-sync.target
+After=network-online.target time-sync.target
+
+[Service]
+Type=oneshot
+User=floodwatch
+Group=floodwatch
+WorkingDirectory=/srv/nairobifloodwatch
+EnvironmentFile=/etc/nairobifloodwatch/application.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/srv/nairobifloodwatch/.venv/bin/python -m src.scripts.run_point_collection --execute --automated --require-synced-clock
+TimeoutStartSec=120
+Restart=no
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+UMask=0077
+ReadWritePaths=/var/lib/nairobifloodwatch/point_weather /var/lib/nairobifloodwatch/imerg_early
+# MONITORING_POINT_SOURCE_STORE must match the API's durable mount.
+# Optional: the API already collects on the same schedule. Running both is safe (same per-hour
+# label and lock, so no duplicate provider request). Not installed by repository changes.

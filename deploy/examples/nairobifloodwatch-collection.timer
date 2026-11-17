@@ -1,0 +1,14 @@
+# INERT EXAMPLE. No enable/start action was performed.
+[Unit]
+Description=Proposed 02:00 EAT source sampling
+
+[Timer]
+OnCalendar=*-*-* 02:00:00 Africa/Nairobi
+AccuracySec=1min
+RandomizedDelaySec=0
+# Never catch up a missed historical issue after reboot.
+Persistent=false
+Unit=nairobifloodwatch-collection.service
+
+[Install]
+WantedBy=timers.target

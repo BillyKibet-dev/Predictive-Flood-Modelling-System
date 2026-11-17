@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { PREDICTION_VIEWS, validCalendarDate } from '../services/proxyPredictions'
 
-export default function PredictionViewControls({ selection }) {
+export default function PredictionViewControls({ selection, views = PREDICTION_VIEWS }) {
   const id = useId()
   const [draftDate, setDraftDate] = useState(selection.inputDate)
   useEffect(() => setDraftDate(selection.inputDate), [selection.inputDate])
@@ -9,10 +9,10 @@ export default function PredictionViewControls({ selection }) {
   return (
     <div className="flex flex-wrap items-end gap-3 text-xs">
       <label className="space-y-1 text-ink" htmlFor={`${id}-view`}>
-        <span className="block font-medium">Map view</span>
+        <span className="block font-medium">Result set</span>
         <select id={`${id}-view`} value={selection.view} onChange={(event) => selection.setView(event.target.value)}
           className="max-w-full h-10 rounded-btn border border-border bg-surface px-2 text-ink">
-          {PREDICTION_VIEWS.map((view) => <option key={view.value} value={view.value}>{view.label}</option>)}
+          {views.map((view) => <option key={view.value} value={view.value}>{view.label}</option>)}
         </select>
       </label>
       {selection.view === 'v1_replay' && <form className="flex flex-wrap items-end gap-2" onSubmit={(event) => {

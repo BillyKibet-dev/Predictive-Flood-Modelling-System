@@ -1,0 +1,24 @@
+{
+ "purpose": "Original 9-feature flood-risk model (legacy pipeline), converted from pickles to JSON.",
+ "source_sha256": {
+  "flood_model_final.joblib": "aa131e3bda3b06b3349cd36d9e5ad6454d5c7831e02a4084bb7dfad230f25027",
+  "scaler_final.joblib": "f5f03f7b0e9fa668d8f1d0b2529f66272c95cc629666d7b4a11461eafbae0c02",
+  "feature_cols_final.joblib": "843a856cd34a8074afaf754f2a3a6e7c85d9d4df838aa961ebbe7d5dbe291eff"
+ },
+ "files_sha256": {
+  "model.json": "06101663f83c5c1a85a0c8c7c458eac948b1e59bc8c10e71ed30227067c63f78",
+  "scaler.json": "7de2b61a233974688816f9f7f7287c0b365c8ca34b635c45344656c8bfe59894",
+  "features.json": "ffa0afea7838af5d5c88a133ba8cbce1b0bca2ecc2ac85412427ebf8508334d1"
+ },
+ "exported_with": {
+  "xgboost": "2.0.3",
+  "scikit_learn": "1.4.2"
+ },
+ "booster_feature_names": null,
+ "equivalence": {
+  "rows": 5002,
+  "max_abs_probability_difference": 0.0,
+  "tolerance": 1e-06,
+  "same_class_every_row": true
+ }
+}

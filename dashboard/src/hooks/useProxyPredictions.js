@@ -12,7 +12,7 @@ export default function useProxyPredictions(configuration) {
   const pollerRef = useRef(null)
 
   useEffect(() => {
-    if (!key || mode === 'legacy') return undefined
+    if (!key) return undefined
     const poller = createPredictionPoller({
       load: ({ signal }) => fetchProxyDashboard({ mode, inputDate, signal }),
       onChange: (state) => setSnapshot({ key, ...state }),

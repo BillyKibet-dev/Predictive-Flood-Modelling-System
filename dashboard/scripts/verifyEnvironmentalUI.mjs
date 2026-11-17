@@ -86,7 +86,8 @@ try {
  await waitFor(`location.pathname==='/login'&&document.querySelector('input[type=email]')`)
  await evaluate(`(()=>{for(const [selector,value] of [['input[type=email]','officer@example.test'],['input[type=password]','fixture-only-password']]){const e=document.querySelector(selector);Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,value);e.dispatchEvent(new Event('input',{bubbles:true}))}document.querySelector('button[type=submit]').click()})()`)
  await waitFor(`location.pathname==='/officer'`)
- await evaluate(`Array.from(document.querySelectorAll('a')).find(e=>e.textContent==='Rainfall history').click()`)
+ // Imported datasets are reached from Rainfall history; open the address in-app.
+ await evaluate(`history.pushState({},'', '/environmental-data');dispatchEvent(new PopStateEvent('popstate'))`)
  await waitFor(`document.querySelector('table')`);await evaluate(`Array.from(document.querySelectorAll('details')).find(e=>e.querySelector('summary')?.textContent.startsWith('View exact records')).open=true`)
  const text=await evaluate('document.body.innerText')
  for(const phrase of ['0 mm','Insufficient data','Historical data','does not show current flooding'])assert.ok(text.includes(phrase),phrase)
@@ -97,7 +98,7 @@ try {
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true})
  await evaluate(`dispatchEvent(new Event('resize'))`);await pause(600)
  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true,'mobile horizontal overflow')
- assert.ok(await evaluate(`document.querySelector('select[aria-label="Staff navigation"]').getBoundingClientRect().width>0`))
+ assert.ok(await evaluate(`document.querySelector('button[aria-label="Open menu"]').getBoundingClientRect().width>0`),'mobile staff menu button')
  await screenshot('mobile-historical-rainfall')
  expire=true
  await evaluate(`Array.from(document.querySelectorAll('button')).find(e=>e.textContent==='Refresh data').click()`)

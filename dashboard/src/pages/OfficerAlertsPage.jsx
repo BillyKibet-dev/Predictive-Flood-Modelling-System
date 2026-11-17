@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import TopNav from '../components/TopNav'
+import StaffLayout from '../components/StaffLayout'
 import useStaffList from '../hooks/useStaffList'
 import { useAuth } from '../context/AuthContext'
 import { formatPredictionTime } from '../services/predictions'
 import RiskBadge from '../components/RiskBadge'
+import { Link } from 'react-router-dom'
 
 export default function OfficerAlertsPage() {
   const { authorizedRequest } = useAuth()
@@ -60,14 +61,12 @@ export default function OfficerAlertsPage() {
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
   return (
-    <div className="min-h-screen bg-bg">
-      <TopNav variant="app" active="Advisories" />
-      <main className="max-w-5xl mx-auto p-6 space-y-5 text-ink">
-        <h1 className="text-2xl font-semibold">Saved advisories</h1>
+    <StaffLayout><div className="space-y-5">
+        <h1 className="text-2xl font-semibold">Saved model notice history</h1>
+        <Link className="text-sm text-brand underline" to="/research">Back to experimental models</Link>
         <p className="text-sm text-muted">
           Persisted advisory records for officer review. Acknowledgement records who reviewed an
-          item; it does not send a public warning. The selected next-day model does not
-          automatically create these records.
+          item; it does not send a public warning. Records may come from current or older experimental pipelines and do not confirm flooding.
         </p>
         <div className="flex flex-wrap gap-3">
           <select
@@ -154,7 +153,6 @@ export default function OfficerAlertsPage() {
             </div>
           </>
         )}
-      </main>
-    </div>
+      </div></StaffLayout>
   )
 }

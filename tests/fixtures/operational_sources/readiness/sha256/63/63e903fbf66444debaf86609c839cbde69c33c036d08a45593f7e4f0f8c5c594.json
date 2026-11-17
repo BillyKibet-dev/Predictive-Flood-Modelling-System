@@ -1,0 +1,258 @@
+{
+  "all_eight_target_windows_complete": false,
+  "attribution": {
+    "changes": "Original response bytes unchanged; diagnostic metadata added",
+    "credit": "Weather data by Open-Meteo.com; ECMWF IFS forecasts",
+    "credit_url": "https://open-meteo.com/",
+    "data_licence": "CC BY 4.0",
+    "licence_text_url": "https://creativecommons.org/licenses/by/4.0/",
+    "licence_url": "https://open-meteo.com/en/licence",
+    "provider": "Open-Meteo",
+    "service_terms_url": "https://open-meteo.com/en/terms",
+    "service_use": "Bounded non-commercial academic shadow collection; no commercial-service entitlement asserted",
+    "source_kind": "numerical_weather_forecast_not_ground_observation",
+    "upstream": "ECMWF IFS"
+  },
+  "availability_errors": [],
+  "capture": {
+    "bytes": 3525,
+    "path": "captures/sha256/98/988e41729bb75cd4f1d1d2942e74f34e6a44a11c4ad64b2ec7168254f1e1957b.json",
+    "sha256": "988e41729bb75cd4f1d1d2942e74f34e6a44a11c4ad64b2ec7168254f1e1957b"
+  },
+  "complete_target_zones": 0,
+  "consistency_at_daily_cutoff": "UNVERIFIED_REQUIRES_REPEATED_PROSPECTIVE_COLLECTIONS",
+  "context_errors": [
+    "INCOMPLETE_OR_INVALID_ZONE_COVERAGE",
+    "PROVIDER_ERROR_RESPONSE",
+    "PROVIDER_HTTP_ERROR"
+  ],
+  "contract_version": "openmeteo-ifs-shadow-v1",
+  "cutoff_evidence": "RECEIVED_AND_STORED_BEFORE_CANDIDATE_CUTOFF",
+  "mode": "manual_shadow_collection_only",
+  "model_inference_performed": false,
+  "operational_predictions_enabled": false,
+  "policy": {
+    "candidate_issue_at": "2026-11-08T06:00:00+03:00",
+    "contract_version": "openmeteo-ifs-shadow-v1",
+    "expected_response_hours": 72,
+    "forecast_days": 3,
+    "freshness_guard_is_provisional": true,
+    "issue_date": "2026-11-08",
+    "max_run_age_hours": 18.0,
+    "model": "ecmwf_ifs",
+    "requested_run_initialization_utc": "2026-11-07T18:00:00+00:00",
+    "target_end": "2026-11-10T00:00:00+03:00",
+    "target_start": "2026-11-09T00:00:00+03:00",
+    "timezone": "Africa/Nairobi"
+  },
+  "publication_caveat": "HTTP Date, valid time and initialization are not publication evidence",
+  "raw": {
+    "bytes": 108,
+    "path": "raw/sha256/7f/7f802be4bbf82f4931fcec1c6014cf6e0277733f4fd9a0380a4db818384f921b.bin",
+    "sha256": "7f802be4bbf82f4931fcec1c6014cf6e0277733f4fd9a0380a4db818384f921b"
+  },
+  "request_started_at_utc": "2026-11-07T21:21:55.202288+00:00",
+  "requested_model": "ecmwf_ifs",
+  "requested_run_initialization_utc": "2026-11-07T18:00:00+00:00",
+  "requested_zone_count": 8,
+  "response_received_at_utc": "2026-11-07T21:21:56.135506+00:00",
+  "returned_zone_count": 0,
+  "run_age_at_cutoff_hours": 9.0,
+  "snapshot_readiness": "NOT_READY",
+  "source_publication_utc": null,
+  "source_quality": "FAILED",
+  "storage_completed_at_utc": "2026-11-07T21:21:56.145381+00:00",
+  "target_window_quality": "FAILED",
+  "variables": {
+    "precipitation": {
+      "temporal_semantics": "preceding_hour_total",
+      "unit": "mm"
+    },
+    "relative_humidity_2m": {
+      "temporal_semantics": "instant_at_valid_time",
+      "unit": "%"
+    },
+    "soil_moisture_0_to_7cm": {
+      "temporal_semantics": "instant_at_valid_time",
+      "unit": "m\u00b3/m\u00b3"
+    },
+    "temperature_2m": {
+      "temporal_semantics": "instant_at_valid_time",
+      "unit": "\u00b0C"
+    },
+    "wind_speed_10m": {
+      "temporal_semantics": "instant_at_valid_time",
+      "unit": "km/h"
+    }
+  },
+  "zones": [
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.286,
+        "longitude": 36.817
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "cbd"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.295,
+        "longitude": 36.754
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "dagoretti"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.32,
+        "longitude": 36.895
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "embakasi"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.221,
+        "longitude": 36.897
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "kasarani"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.314,
+        "longitude": 36.784
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "kibera"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.26,
+        "longitude": 36.86
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "mathare"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.241,
+        "longitude": 36.876
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "ruaraka"
+    },
+    {
+      "errors": [
+        "MISSING_OR_INVALID_ZONE_RESPONSE"
+      ],
+      "forecast_initialization_utc": null,
+      "model_identity_basis": "explicit_single_run_request; response identity recorded separately",
+      "precipitation_intervals_utc": [],
+      "requested_coordinates": {
+        "latitude": -1.264,
+        "longitude": 36.807
+      },
+      "returned_grid": null,
+      "source_publication_utc": null,
+      "source_quality": "FAILED",
+      "target_errors": [],
+      "target_quality": "FAILED",
+      "valid_times_local": [],
+      "variables": {},
+      "warnings": [],
+      "zone_id": "westlands"
+    }
+  ]
+}

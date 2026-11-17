@@ -1,0 +1,115 @@
+{
+  "attribution": {
+    "changes": "Original response bytes unchanged; diagnostic metadata added",
+    "credit": "Weather data by Open-Meteo.com; ECMWF IFS forecasts",
+    "credit_url": "https://open-meteo.com/",
+    "data_licence": "CC BY 4.0",
+    "licence_text_url": "https://creativecommons.org/licenses/by/4.0/",
+    "licence_url": "https://open-meteo.com/en/licence",
+    "provider": "Open-Meteo",
+    "service_terms_url": "https://open-meteo.com/en/terms",
+    "service_use": "Bounded non-commercial academic shadow collection; no commercial-service entitlement asserted",
+    "source_kind": "numerical_weather_forecast_not_ground_observation",
+    "upstream": "ECMWF IFS"
+  },
+  "automatic_retries": 0,
+  "body_complete": true,
+  "connect_read_timeout_seconds": [
+    10,
+    30
+  ],
+  "contract_version": "openmeteo-ifs-shadow-v1",
+  "elapsed_seconds": 0.922,
+  "http_status": 400,
+  "max_response_bytes": 2097152,
+  "policy": {
+    "candidate_issue_at": "2026-11-08T06:00:00+03:00",
+    "contract_version": "openmeteo-ifs-shadow-v1",
+    "expected_response_hours": 72,
+    "forecast_days": 3,
+    "freshness_guard_is_provisional": true,
+    "issue_date": "2026-11-08",
+    "max_run_age_hours": 18.0,
+    "model": "ecmwf_ifs",
+    "requested_run_initialization_utc": "2026-11-07T18:00:00+00:00",
+    "target_end": "2026-11-10T00:00:00+03:00",
+    "target_start": "2026-11-09T00:00:00+03:00",
+    "timezone": "Africa/Nairobi"
+  },
+  "publication_evidence_basis": null,
+  "raw": {
+    "bytes": 108,
+    "path": "raw/sha256/7f/7f802be4bbf82f4931fcec1c6014cf6e0277733f4fd9a0380a4db818384f921b.bin",
+    "sha256": "7f802be4bbf82f4931fcec1c6014cf6e0277733f4fd9a0380a4db818384f921b"
+  },
+  "raw_persisted_at_utc": "2026-11-07T21:21:56.137032+00:00",
+  "request": {
+    "endpoint": "https://single-runs-api.open-meteo.com/v1/forecast",
+    "method": "GET",
+    "params": {
+      "forecast_days": 3,
+      "hourly": "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,soil_moisture_0_to_7cm",
+      "latitude": "-1.286,-1.295,-1.32,-1.221,-1.314,-1.26,-1.241,-1.264",
+      "longitude": "36.817,36.754,36.895,36.897,36.784,36.86,36.876,36.807",
+      "models": "ecmwf_ifs",
+      "precipitation_unit": "mm",
+      "run": "2026-11-07T18:00",
+      "temperature_unit": "celsius",
+      "timezone": "Africa/Nairobi",
+      "wind_speed_unit": "kmh"
+    }
+  },
+  "request_budget": 1,
+  "request_started_at_utc": "2026-11-07T21:21:55.202288+00:00",
+  "requested_zones": [
+    {
+      "id": "cbd",
+      "latitude": -1.286,
+      "longitude": 36.817
+    },
+    {
+      "id": "dagoretti",
+      "latitude": -1.295,
+      "longitude": 36.754
+    },
+    {
+      "id": "embakasi",
+      "latitude": -1.32,
+      "longitude": 36.895
+    },
+    {
+      "id": "kasarani",
+      "latitude": -1.221,
+      "longitude": 36.897
+    },
+    {
+      "id": "kibera",
+      "latitude": -1.314,
+      "longitude": 36.784
+    },
+    {
+      "id": "mathare",
+      "latitude": -1.26,
+      "longitude": 36.86
+    },
+    {
+      "id": "ruaraka",
+      "latitude": -1.241,
+      "longitude": 36.876
+    },
+    {
+      "id": "westlands",
+      "latitude": -1.264,
+      "longitude": 36.807
+    }
+  ],
+  "response_headers": {
+    "Content-Length": "107",
+    "Content-Type": "application/json; charset=utf-8",
+    "Date": "Sat, 07 Nov 2026 21:21:54 GMT"
+  },
+  "response_received_at_utc": "2026-11-07T21:21:56.135506+00:00",
+  "source_publication_utc": null,
+  "transport_error": null,
+  "zone_catalogue_source": "read_only_public.zones"
+}

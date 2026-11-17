@@ -1,0 +1,230 @@
+{
+  "schema_version": "monitoring-area-location-updates-v1",
+  "updates": {
+    "NFW-S003": {
+      "display_name": "Uhuru Highway monitoring point",
+      "latitude_dms": [
+        1,
+        17,
+        39.5,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        49,
+        17.0,
+        "E"
+      ],
+      "original_coordinate_text": "1°17'39.5\"S 36°49'17.0\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-11T20:22:53Z",
+      "observation": "User-selected monitoring point on Uhuru Highway; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S037": {
+      "display_name": "T-Mall / Langata Road",
+      "latitude_dms": [
+        1,
+        18,
+        39.4,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        49,
+        1.8,
+        "E"
+      ],
+      "original_coordinate_text": "1°18'39.4\"S 36°49'01.8\"E",
+      "source_kind": "user_personal_observation",
+      "recorded_at_utc": "2026-11-11T19:46:15Z",
+      "observation": "Local observer reports frequently seeing flooding around this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S032": {
+      "display_name": "Gumba Bridge",
+      "latitude_dms": [
+        1,
+        15,
+        43.0,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        51,
+        37.4,
+        "E"
+      ],
+      "original_coordinate_text": "1°15'43.0\"S 36°51'37.4\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S021": {
+      "display_name": "Gatwekera Sokomoko",
+      "latitude_dms": [
+        1,
+        18,
+        54.4,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        46,
+        56.9,
+        "E"
+      ],
+      "original_coordinate_text": "1°18'54.4\"S 36°46'56.9\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S019": {
+      "display_name": "Mwengenye, Njiru",
+      "latitude_dms": [
+        1,
+        15,
+        11.3,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        55,
+        2.8,
+        "E"
+      ],
+      "original_coordinate_text": "1°15'11.3\"S 36°55'02.8\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S016": {
+      "display_name": "Infinity, Kasarani",
+      "latitude_dms": [
+        1,
+        13,
+        26.9,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        54,
+        48.4,
+        "E"
+      ],
+      "original_coordinate_text": "1°13'26.9\"S 36°54'48.4\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S013": {
+      "display_name": "Mukuru Kayaba area",
+      "latitude_dms": [
+        1,
+        18,
+        47.9,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        50,
+        57.1,
+        "E"
+      ],
+      "original_coordinate_text": "1°18'47.9\"S 36°50'57.1\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S010": {
+      "display_name": "Mukuru Kwa Reuben Cosovo area",
+      "latitude_dms": [
+        1,
+        18,
+        36.7,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        52,
+        58.4,
+        "E"
+      ],
+      "original_coordinate_text": "1°18'36.7\"S 36°52'58.4\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    },
+    "NFW-S008": {
+      "display_name": "Mukuru Kwa Reuben Feed the Children zone",
+      "latitude_dms": [
+        1,
+        18,
+        57.2,
+        "S"
+      ],
+      "longitude_dms": [
+        36,
+        52,
+        9.0,
+        "E"
+      ],
+      "original_coordinate_text": "1°18'57.2\"S 36°52'09.0\"E",
+      "source_kind": "user_supplied_location",
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "observation": "User-located monitoring point for a previously unresolved inventory record; no dated flood observation was supplied for this point.",
+      "field_verified": false,
+      "event_dates": null,
+      "measured_depth_m": null,
+      "surveyed_accuracy_m": null
+    }
+  },
+  "removals": {
+    "NFW-S009": {
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "reason": "User could not locate this record during manual location review; removed from the monitored inventory."
+    },
+    "NFW-S017": {
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "reason": "User could not locate this record during manual location review; removed from the monitored inventory."
+    },
+    "NFW-S029": {
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "reason": "User could not locate this record during manual location review; removed from the monitored inventory."
+    },
+    "NFW-S036": {
+      "recorded_at_utc": "2026-11-15T08:00:00Z",
+      "reason": "User could not locate this record during manual location review; removed from the monitored inventory."
+    }
+  }
+}

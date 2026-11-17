@@ -1,16 +1,22 @@
-"""Creates all tables and seeds zones, default users, and an initial prediction run.
+"""Explicit database bootstrap with a privately supplied admin, never inference.
 
-Run with:  python -m src.scripts.init_db
+Run with: python -m src.scripts.init_db --admin-email your-address@example.org
 """
 import sys
+import argparse
+from getpass import getpass
+import os
 from pathlib import Path
 
 # Ensure the project root is importable when this script is run directly.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.api.database import Base, SessionLocal, engine  # noqa: E402
+from sqlalchemy.orm import Session  # noqa: E402
+from sqlalchemy.exc import SQLAlchemyError  # noqa: E402
+from pydantic import ValidationError  # noqa: E402
+from src.api.database import Base, engine  # noqa: E402
 from src.api.models.db_models import User, Zone  # noqa: E402
-from src.api.services.pipeline import pipeline  # noqa: E402
+from src.api.models.schemas import UserCreate  # noqa: E402
 from src.api.utils.security import hash_password  # noqa: E402
 
 ZONES = [
@@ -24,51 +30,53 @@ ZONES = [
     {"id": "ruaraka", "name": "Ruaraka", "sub_county": "Ruaraka", "latitude": -1.241, "longitude": 36.876},
 ]
 
-USERS = [
-    {"name": "Billy Kibet", "email": "admin@flood.ke", "password": "admin123", "role": "admin"},
-    {"name": "Jane Mwangi", "email": "officer@flood.ke", "password": "officer123", "role": "officer"},
-]
-
-
-def main():
-    print("Creating database tables...")
-    Base.metadata.create_all(bind=engine)
-
-    db = SessionLocal()
+def bootstrap(target_engine, *, name, email, password):
+    """Idempotent first admin setup; existing accounts are never overwritten."""
+    admin = UserCreate(name=name, email=email, password=password, role='admin')
     zones_created = 0
     users_created = 0
-    try:
+    with target_engine.begin() as connection, Session(bind=connection) as db:
+        Base.metadata.create_all(bind=connection)
+        existing = db.query(User).filter_by(email=admin.email).first()
+        if existing and (existing.role != 'admin' or existing.status != 'Active'):
+            raise ValueError('The requested account already exists with another role or status; use account management.')
+        if existing is None:
+            if db.query(User).filter_by(role='admin', status='Active').first():
+                raise ValueError('An active administrator already exists; create additional users through account management.')
+            db.add(User(name=admin.name, email=admin.email, password_hash=hash_password(admin.password), role='admin', status='Active'))
+            users_created = 1
         for zone_data in ZONES:
             if db.query(Zone).filter(Zone.id == zone_data["id"]).first() is None:
                 db.add(Zone(**zone_data))
                 zones_created += 1
 
-        for user_data in USERS:
-            if db.query(User).filter(User.email == user_data["email"]).first() is None:
-                db.add(
-                    User(
-                        name=user_data["name"],
-                        email=user_data["email"],
-                        password_hash=hash_password(user_data["password"]),
-                        role=user_data["role"],
-                        status="Active",
-                    )
-                )
-                users_created += 1
-
         db.commit()
-    finally:
-        db.close()
+    return dict(zones_created=zones_created, administrators_created=users_created, inference_performed=False)
 
-    print(f"Seeded {zones_created} new zone(s), {users_created} new user(s).")
 
-    print("Running initial prediction pipeline...")
-    summary = pipeline.run()
-    print(f"Pipeline result: {summary}")
-
-    print("\n✅ Database initialised.")
-    print("   Admin login:   admin@flood.ke / admin123")
-    print("   Officer login: officer@flood.ke / officer123")
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--admin-email', required=True)
+    parser.add_argument('--admin-name', default='Administrator')
+    args = parser.parse_args(argv)
+    try:
+        password = os.environ.get('FLOODWATCH_BOOTSTRAP_PASSWORD')
+        if password is None:
+            password = getpass('New administrator password: ')
+            if password != getpass('Confirm password: '):
+                parser.error('Passwords do not match.')
+        result = bootstrap(engine, name=args.admin_name, email=args.admin_email, password=password)
+    except ValidationError:
+        # Pydantic's full error text can include the original password input.
+        parser.exit(1, 'Invalid administrator details. Use a valid email, name and password of at least 8 characters and at most 72 UTF-8 bytes.\n')
+    except ValueError as exc:
+        parser.exit(1, str(exc) + '\n')
+    except (EOFError, KeyboardInterrupt):
+        parser.exit(1, 'Bootstrap cancelled; no default credentials were created.\n')
+    except SQLAlchemyError:
+        parser.exit(1, 'Bootstrap failed and its transaction was rolled back. Check database access privately.\n')
+    print(f"Seeded {result['zones_created']} zones and {result['administrators_created']} administrator. No predictions or alerts created.")
+    return 0
 
 
 if __name__ == "__main__":

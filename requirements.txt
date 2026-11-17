@@ -9,6 +9,7 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart==0.0.9
+pillow==11.0.0
 python-dotenv==1.0.1
 xgboost==2.0.3
 scikit-learn==1.4.2
