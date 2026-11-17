@@ -7,10 +7,11 @@ export default function usePredictionView() {
   const [view, setView] = useState('legacy')
   const [inputDate, setInputDate] = useState(DEFAULT_REPLAY_DATE)
   const configuration = useMemo(() => predictionViewConfiguration(view, inputDate), [view, inputDate])
-  const legacy = usePredictions(view === 'legacy')
+  const legacy = usePredictions(true)
   const proxy = useProxyPredictions(view === 'legacy' ? null : configuration)
   return {
     ...(view === 'legacy' ? legacy : proxy),
+    current: legacy,
     selection: { view, inputDate, setView, setInputDate },
   }
 }

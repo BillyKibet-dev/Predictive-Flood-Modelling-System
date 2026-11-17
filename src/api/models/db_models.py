@@ -10,6 +10,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 
@@ -88,5 +89,36 @@ class CitizenReport(Base):
     perceived_severity = Column(String(20))
     description = Column(Text, nullable=True)
     ip_hash = Column(String(64), nullable=True)
+    location_description = Column(String(250), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    location_accuracy_m = Column(Float, nullable=True)
+    review_status = Column(String(20), nullable=False, default="New", server_default="New")
+    review_note = Column(Text, nullable=True)
+    reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    review_version = Column(Integer, nullable=False, default=0, server_default="0")
 
     zone = relationship("Zone")
+    reviewer = relationship("User")
+
+    @property
+    def zone_name(self):
+        return self.zone.name if self.zone else self.zone_id
+
+    @property
+    def reviewed_by_name(self):
+        return self.reviewer.name if self.reviewer else None
+
+
+class ReportReviewEvent(Base):
+    __tablename__ = "report_review_events"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    report_id = Column(Integer, ForeignKey("citizen_reports.id"), nullable=False, index=True)
+    reviewer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    previous_status = Column(String(20), nullable=False)
+    status = Column(String(20), nullable=False)
+    note = Column(Text, nullable=True)
+    version = Column(Integer, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)
+    __table_args__ = (UniqueConstraint("report_id", "version"),)

@@ -330,9 +330,44 @@ and never exports a model. These checks do not establish local flood accuracy.
 - If the model/scaler/feature files are missing or their input contract does not
   match, the API still starts and reports the model as unavailable. The pipeline
   does not save placeholder predictions.
-- The final nine model inputs exclude location, terrain and drainage features.
+- The legacy nine model inputs exclude location, terrain and drainage features.
   All zones share the same weather indication; administrative polygons do not
   increase model resolution.
 - Original training data and a compatible re-export are needed to reproduce
   evaluation. Saved notebook metrics describe proxy-label classification, not
   validated street flooding probabilities.
+
+## Historical environmental data
+
+The selected v1 model has a separate 20-feature next-day proxy contract and
+verified historical replay. See its [runbook](docs/integration/model_v1_runbook.md).
+Operational v1 inference and emergency delivery remain disabled.
+
+The application supports verified historical-source ingestion/QC,
+versioned environmental observations, authorized rainfall APIs and the
+`/environmental-data` screen. Sign-in now uses the real backend; sample
+administrative/alert mutations are disabled pending their persistence workstream.
+Water-level measurements and predicted inundation remain unavailable.
+
+## Citizen reports and staff review
+
+Citizens submit observations at `/citizen` with a specific landmark or address
+and optional device/manual coordinates. Officers and administrators review the
+same persisted reports in `/officer/reports` or the admin report inbox; only the
+citizen page has a submission form. Review status and notes retain their reviewer
+and version. Administrator account changes and advisory acknowledgements use the
+backend database; sample accounts/reports/alerts are not used by the dashboard.
+
+Before running this version against an existing approved development database,
+apply the additive report migration from the repository root:
+
+```powershell
+.venv/Scripts/python.exe -m src.scripts.migrate_environmental --schema public
+.venv/Scripts/python.exe -m src.scripts.migrate_reports --schema public
+```
+
+Map view controls are a compact overlay. Other dashboards use the latest saved
+advisories independently of map exploration. The rainfall-history page shows
+stored estimates for a zone and selected past window. **Live readiness has no
+release-time estimate:** missing verified live inputs are a setup/data gap,
+not a queued prediction. Refreshing checks saved data and status.

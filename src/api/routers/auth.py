@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from src.api.database import get_db
@@ -17,17 +18,17 @@ router = APIRouter()
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
-    if user is None or not verify_password(payload.password, user.password_hash):
+    user = db.query(User).filter(func.lower(User.email) == payload.email.strip().lower()).first()
+    if user is None or user.status != "Active" or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     try:
         user.last_login = datetime.now(timezone.utc)
         db.commit()
         db.refresh(user)
-    except SQLAlchemyError as exc:
+    except SQLAlchemyError:
         db.rollback()
-        logger.error("login: failed to update last_login: %s", exc)
+        logger.error("login: failed to update last_login")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
     token = create_access_token({"sub": user.email, "role": user.role, "user_id": user.id})

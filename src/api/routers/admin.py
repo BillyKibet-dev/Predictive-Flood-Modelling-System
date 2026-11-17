@@ -5,11 +5,12 @@ from datetime import timedelta
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from src.api.database import get_db
-from src.api.models.db_models import User
+from src.api.models.db_models import AlertNotification, CitizenReport, ReportReviewEvent, User
 from src.api.models.schemas import ModelPerformance, UserCreate, UserResponse, UserUpdate
 from src.api.services.pipeline import pipeline
 from src.api.utils.security import hash_password, require_admin
@@ -19,20 +20,28 @@ router = APIRouter()
 
 MODEL_REPORT_PATH = Path("models/model_report_final.json")
 
+
+def _lock_user_changes(db, current_user):
+    # Serialize privilege changes and recheck the actor after acquiring locks.
+    db.query(User).order_by(User.id).with_for_update().populate_existing().all()
+    if current_user.role != 'admin' or current_user.status != 'Active':
+        raise HTTPException(403, 'Active administrator privileges required')
+
+
 @router.get("/users", response_model=list[UserResponse])
 def list_users(db: Session = Depends(get_db), current_user: User = Depends(require_admin)):
     try:
         return db.query(User).all()
     except SQLAlchemyError as exc:
-        logger.error("list_users failed: %s", exc)
+        logger.error("list_users failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
 @router.post("/users", response_model=UserResponse, status_code=201)
 def create_user(payload: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(require_admin)):
-    existing = db.query(User).filter(User.email == payload.email).first()
+    existing = db.query(User).filter(func.lower(User.email) == payload.email.lower()).first()
     if existing is not None:
-        raise HTTPException(status_code=400, detail="Email already in use")
+        raise HTTPException(status_code=409, detail="Email already in use")
 
     try:
         user = User(
@@ -46,9 +55,12 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db), current_user
         db.commit()
         db.refresh(user)
         return user
-    except SQLAlchemyError as exc:
+    except IntegrityError:
         db.rollback()
-        logger.error("create_user failed: %s", exc)
+        raise HTTPException(409, "Email already in use") from None
+    except SQLAlchemyError:
+        db.rollback()
+        logger.error("create_user failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
@@ -59,20 +71,29 @@ def update_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin),
 ):
+    _lock_user_changes(db, current_user)
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     try:
         updates = payload.model_dump(exclude_unset=True)
+        if user.id == current_user.id and (updates.get('role', user.role) != 'admin' or updates.get('status', user.status) != 'Active'):
+            raise HTTPException(409, 'You cannot deactivate or demote your own administrator account')
+        password = updates.pop('password', None)
+        if password is not None:
+            user.password_hash = hash_password(password)
         for field, value in updates.items():
             setattr(user, field, value)
         db.commit()
         db.refresh(user)
         return user
-    except SQLAlchemyError as exc:
+    except IntegrityError:
         db.rollback()
-        logger.error("update_user failed: %s", exc)
+        raise HTTPException(409, "Email already in use") from None
+    except SQLAlchemyError:
+        db.rollback()
+        logger.error("update_user failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
@@ -81,17 +102,25 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User 
     if user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete yourself")
 
+    _lock_user_changes(db, current_user)
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     try:
+        if (db.query(AlertNotification.id).filter(AlertNotification.acknowledged_by == user_id).first()
+                or db.query(CitizenReport.id).filter(CitizenReport.reviewed_by == user_id).first()
+                or db.query(ReportReviewEvent.id).filter(ReportReviewEvent.reviewer_id == user_id).first()):
+            raise HTTPException(409, "This user has an audit history. Deactivate the account instead.")
         db.delete(user)
         db.commit()
         return {"message": "User deleted successfully"}
-    except SQLAlchemyError as exc:
+    except IntegrityError:
         db.rollback()
-        logger.error("delete_user failed: %s", exc)
+        raise HTTPException(409, "This user has an audit history. Deactivate the account instead.") from None
+    except SQLAlchemyError:
+        db.rollback()
+        logger.error("delete_user failed")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
