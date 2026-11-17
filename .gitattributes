@@ -4,3 +4,11 @@ data/boundaries/*.source.json text eol=lf
 
 # Keep the audited notebook fingerprint reproducible across checkouts.
 notebooks/*.ipynb text eol=lf
+
+# Hash-pinned data, models and test fixtures: store and check out the exact bytes, never
+# convert line endings (a converted file no longer matches its SHA-256 pin).
+src/api/data/** -text
+data/** -text
+models/** -text
+tests/fixtures/** -text
+dashboard/scripts/fixtures/** -text
