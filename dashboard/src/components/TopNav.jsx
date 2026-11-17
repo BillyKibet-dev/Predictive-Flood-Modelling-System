@@ -6,7 +6,9 @@ import { useTheme } from '../context/ThemeContext'
 const APP_LINKS = [
   { to: '/', label: 'Map' },
   { to: '/officer', label: 'Dashboard' },
-  { to: '/officer/alerts', label: 'Alerts' },
+  { to: '/officer/alerts', label: 'Advisories' },
+  { to: '/officer/reports', label: 'Reports' },
+  { to: '/environmental-data', label: 'Rainfall history' },
 ]
 
 // Universal top navigation — adapts between the public (map/citizen) shell
@@ -32,7 +34,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
   )
 
   return (
-    <nav className="h-16 bg-surface border-b border-border flex items-center px-6 sticky top-0 z-[1100]">
+    <nav className="min-h-16 bg-surface border-b border-border flex flex-wrap gap-y-2 items-center px-4 sm:px-6 sticky top-0 z-[1100]">
       <Link to="/" className="flex items-center gap-2 font-semibold text-brand" aria-label="NairobiFloodWatch home">
         <Droplets size={22} />
         NairobiFloodWatch
@@ -42,7 +44,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
       </Link>
 
       {variant === 'app' && (
-        <div className="hidden md:flex items-center gap-6 mx-auto" aria-label="Primary">
+        <div className="hidden lg:flex items-center gap-4 mx-auto" aria-label="Primary">
           {APP_LINKS.filter((l) => l.to !== '/admin' || user?.role === 'admin').map((l) => (
             <Link
               key={l.to}
@@ -68,6 +70,7 @@ export default function TopNav({ variant = 'public', active, unacknowledgedCount
       )}
 
       <div className="flex items-center gap-3 ml-auto">
+        {user && <select aria-label="Staff navigation" className="lg:hidden max-w-28 text-xs bg-surface text-ink border border-border rounded-btn p-1" value="" onChange={event => navigate(event.target.value)}><option value="" disabled>Menu</option>{APP_LINKS.map(link => <option key={link.to} value={link.to}>{link.label}</option>)}{user.role === 'admin' && <option value="/admin">Admin</option>}</select>}
         {variant === 'public' && (
           <Link
             to="/citizen"

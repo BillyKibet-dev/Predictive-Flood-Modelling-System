@@ -9,7 +9,7 @@ export default function PredictionViewControls({ selection }) {
   return (
     <div className="flex flex-wrap items-end gap-3 text-xs">
       <label className="space-y-1 text-ink" htmlFor={`${id}-view`}>
-        <span className="block font-medium">Prediction view</span>
+        <span className="block font-medium">Map view</span>
         <select id={`${id}-view`} value={selection.view} onChange={(event) => selection.setView(event.target.value)}
           className="max-w-full h-10 rounded-btn border border-border bg-surface px-2 text-ink">
           {PREDICTION_VIEWS.map((view) => <option key={view.value} value={view.value}>{view.label}</option>)}
@@ -20,12 +20,12 @@ export default function PredictionViewControls({ selection }) {
         if (valid) selection.setInputDate(draftDate)
       }}>
         <label className="space-y-1 text-ink" htmlFor={`${id}-date`}>
-          <span className="block font-medium">Historical input day (Nairobi)</span>
+          <span className="block font-medium">Input date</span>
           <input id={`${id}-date`} type="date" value={draftDate} onChange={(event) => setDraftDate(event.target.value)}
             required aria-invalid={!valid} className="h-10 rounded-btn border border-border bg-surface px-2 text-ink" />
         </label>
         <button type="submit" disabled={!valid || draftDate === selection.inputDate}
-          className="h-10 rounded-btn border border-border px-3 text-ink disabled:opacity-50">Load replay date</button>
+          className="h-10 rounded-btn border border-border px-3 text-ink disabled:opacity-50">Apply date</button>
       </form>}
     </div>
   )

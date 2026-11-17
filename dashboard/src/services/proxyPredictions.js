@@ -5,10 +5,11 @@ export const PROXY_CLASSES = ['Low', 'Moderate', 'High', 'Extreme']
 export const PROXY_TASK = 'next_day_proxy_risk'
 export const DEFAULT_REPLAY_DATE = '2024-04-30'
 export const PREDICTION_VIEWS = [
-  { value: 'legacy', label: 'Legacy shared weather indication' },
-  { value: 'v1_live', label: 'v1 next-day research — live status' },
-  { value: 'v1_replay', label: 'v1 historical research replay' },
+  { value: 'legacy', label: 'Latest saved advisory', description: 'The older model\'s most recently saved weather indication, shared across Nairobi. Use it for an overview and check its update time; it is not a street-level flood forecast.' },
+  { value: 'v1_live', label: 'Next-day forecast readiness', description: 'Checks whether the selected next-day model has verified live inputs. It is currently unavailable, with no estimated release time. Refresh checks the status; it does not generate a forecast.' },
+  { value: 'v1_replay', label: 'Explore a past date', description: 'Displays saved results from the selected model using historical weather. Choose the input day to examine the following day\'s proxy-risk class. Dates without a saved run remain unavailable. Use it for past-date analysis, never as today\'s warning.' },
 ]
+
 const STATUSES = ['SUCCESS', 'PARTIAL', 'INSUFFICIENT_DATA', 'STALE_DATA', 'MODEL_UNAVAILABLE', 'FAILED']
 const PROBABILITY_REASON = 'NOT_CALIBRATED_TO_OBSERVED_FLOODS'
 

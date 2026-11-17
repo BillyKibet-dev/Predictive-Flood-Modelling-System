@@ -1,22 +1,40 @@
 import { AlertTriangle, CheckCircle2, Phone } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Footer from '../components/Footer'
-import PredictionStatus from '../components/PredictionStatus'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import TopNav from '../components/TopNav'
 import ZoneCard from '../components/ZoneCard'
 import { formatPredictionTime } from '../services/predictions'
 import { isZonePredictionStale } from '../services/proxyPredictions'
-import { MAX_DESCRIPTION_LENGTH, REPORT_CONDITIONS, submitCitizenReport, validateCitizenReport } from '../services/reports'
+import { MAX_DESCRIPTION_LENGTH, REPORT_CONDITIONS, fetchReportingZones, submitCitizenReport, validateCitizenReport } from '../services/reports'
 
 const SEVERITY_OPTIONS = [
   { label: 'Mild', color: '#16A34A' },
   { label: 'Serious', color: '#EA580C' },
   { label: 'Dangerous', color: '#DC2626' },
 ]
-const EMPTY_FORM = { zone_id: '', observed_condition: 'Street flooding', perceived_severity: 'Mild', description: '' }
+const EMPTY_FORM = { zone_id: '', observed_condition: 'Street flooding', perceived_severity: 'Mild', description: '', location_description:'', latitude:'', longitude:'', location_accuracy_m:null }
 
 // Citizens page — public flood warnings by zone + anonymous flood condition reporting
 export default function CitizenPage({ predictions, showToast }) {
+  const { user } = useAuth()
+  const [reportZones,setReportZones] = useState([]), [zoneError,setZoneError] = useState(''), [zoneReload,setZoneReload] = useState(0)
+  const [locating,setLocating] = useState(false), [locationMessage,setLocationMessage] = useState('')
+  useEffect(() => {
+    const controller = new AbortController()
+    setZoneError('')
+    fetchReportingZones({ signal:controller.signal }).then(items => { if(!controller.signal.aborted)setReportZones(items) }).catch(error => { if(!controller.signal.aborted)setZoneError(error.message) })
+    return () => controller.abort()
+  }, [zoneReload])
+  function locate() {
+    if (!navigator.geolocation) { setLocationMessage('Location is not supported. Enter the landmark or coordinates manually.'); return }
+    setLocating(true); setLocationMessage('')
+    navigator.geolocation.getCurrentPosition(position => {
+      setForm(previous => ({...previous,latitude:String(position.coords.latitude),longitude:String(position.coords.longitude),location_accuracy_m:position.coords.accuracy}))
+      setLocationMessage('Device location added. Check that it is where you observed the flooding.'); setLocating(false)
+    }, () => {setLocationMessage('Location could not be obtained. Describe the location or enter coordinates manually.');setLocating(false)}, {enableHighAccuracy:true,timeout:10000,maximumAge:60000})
+  }
   const zones = predictions.data?.zones ?? []
   const isProxy = predictions.selection?.view !== undefined && predictions.selection.view !== 'legacy'
   const isReplay = predictions.selection?.view === 'v1_replay'
@@ -61,8 +79,8 @@ export default function CitizenPage({ predictions, showToast }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (submissionRef.current) return
-    const errors = validateCitizenReport(form, zones.map((zone) => zone.id))
+    if (submissionRef.current || locating) return
+    const errors = validateCitizenReport(form, reportZones.map((zone) => zone.id))
     setFieldErrors(errors)
     setSubmitError('')
     if (Object.keys(errors).length) {
@@ -73,7 +91,7 @@ export default function CitizenPage({ predictions, showToast }) {
     const controller = new AbortController()
     submissionRef.current = controller
     setSubmitting(true)
-    const zoneName = zones.find((zone) => zone.id === form.zone_id)?.name
+    const zoneName = reportZones.find((zone) => zone.id === form.zone_id)?.name
     try {
       const report = await submitCitizenReport(form, { signal: controller.signal })
       if (controller.signal.aborted) return
@@ -113,9 +131,7 @@ export default function CitizenPage({ predictions, showToast }) {
           <p className="text-white/80">{isProxy
             ? 'Explore next-day environmental proxy classes and report conditions you observe now. Historical replays are not current flood warnings.'
             : 'View saved weather-based risk indications and report conditions in your area. Check update times and official warnings.'}</p>
-          <a href="#report" className="inline-flex rounded-btn border border-white/50 px-4 py-2 text-sm font-semibold hover:bg-white/10">
-            Report a flood condition
-          </a>
+          {user ? <Link to="/officer/reports" className="inline-flex rounded-btn border border-white/50 px-4 py-2 text-sm font-semibold hover:bg-white/10">Review citizen reports</Link> : <a href="#report" className="inline-flex rounded-btn border border-white/50 px-4 py-2 text-sm font-semibold hover:bg-white/10">Report a flood condition</a>}
 
           {warningZones.length > 0 && (
             <div className="bg-red-600 rounded-card px-4 py-3 text-sm font-medium inline-block">
@@ -129,7 +145,7 @@ export default function CitizenPage({ predictions, showToast }) {
       <section id="warnings" className="py-10 px-6 scroll-mt-20">
         <div className="max-w-content mx-auto space-y-6">
           <h2 className="text-2xl font-semibold tracking-tight text-ink">{isReplay ? 'Historical Proxy Classes by Monitoring Zone' : 'Saved Indications by Monitoring Zone'}</h2>
-          <PredictionStatus predictions={predictions} />
+          <p className="text-sm text-muted">Latest saved weather advisories. Local drainage is not assessed. <Link to="/" className="text-brand underline">Explore the map</Link>.</p>
           {zones.length > 0 && (
             <div className="max-w-sm">
               <label htmlFor="warning-zone" className="block text-sm font-medium text-ink mb-1.5">View a zone</label>
@@ -146,14 +162,14 @@ export default function CitizenPage({ predictions, showToast }) {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {visibleZones.map((zone, i) => (
-              <ZoneCard key={zone.id} zone={zone} index={i} onReport={reportZone} />
+              <ZoneCard key={zone.id} zone={zone} index={i} onReport={user ? undefined : reportZone} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Report section */}
-      <section id="report" className="py-20 px-6 bg-bg scroll-mt-20">
+      {!user && <section id="report" className="py-20 px-6 bg-bg scroll-mt-20">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-5 gap-10">
           <div className="lg:col-span-3 space-y-6">
             <div>
@@ -169,6 +185,7 @@ export default function CitizenPage({ predictions, showToast }) {
                 <CheckCircle2 size={40} className="text-risk-low mx-auto" />
                 <h3 className="font-semibold text-ink">Thank you — your report has been recorded.</h3>
                 <p className="text-sm text-muted">{submittedReport.zoneName} · Reference #{submittedReport.id}</p>
+                <p className="text-sm text-muted">Your report is available in the staff inbox for review.</p>
                 <p className="text-xs text-muted">Received: {formatPredictionTime(submittedReport.timestamp)}</p>
                 <div className="flex flex-wrap justify-center gap-4">
                   <button type="button" onClick={startAnotherReport} className="text-ink text-sm font-medium underline underline-offset-4">Submit another report</button>
@@ -177,13 +194,13 @@ export default function CitizenPage({ predictions, showToast }) {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate aria-busy={submitting} className="bg-surface border border-border rounded-card p-6 space-y-6">
-                {zones.length === 0 && (
+                {reportZones.length === 0 && (
                   <p role="status" className="text-sm text-muted">
-                    {predictions.isRefreshing ? 'Loading reporting zones...' : 'Reporting zones are unavailable. Refresh the warnings to try again.'}
+                    {zoneError || 'Loading reporting zones...'} <button type="button" className="underline" onClick={() => setZoneReload(value => value+1)}>Retry zones</button>
                   </p>
                 )}
                 {submitError && <p id="report-error" role="alert" tabIndex={-1} className="text-sm text-risk-extreme">{submitError}</p>}
-                <fieldset disabled={submitting || zones.length === 0} className="space-y-6">
+                <fieldset disabled={submitting || locating || reportZones.length === 0} className="space-y-6">
                   <div>
                     <label htmlFor="report-zone_id" className="block text-sm font-medium text-ink mb-1.5">Zone</label>
                     <select
@@ -196,10 +213,21 @@ export default function CitizenPage({ predictions, showToast }) {
                       className="w-full h-10 border border-border rounded-btn px-3 text-sm bg-surface text-ink"
                     >
                       <option value="">Choose a zone</option>
-                      {form.zone_id && !zones.some((zone) => zone.id === form.zone_id) && <option value={form.zone_id} disabled>Selected zone unavailable</option>}
-                      {zones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name}</option>)}
+                      {form.zone_id && !reportZones.some((zone) => zone.id === form.zone_id) && <option value={form.zone_id} disabled>Selected zone unavailable</option>}
+                      {reportZones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name}</option>)}
                     </select>
                     {fieldErrors.zone_id && <p id="report-zone-error" className="text-sm text-risk-extreme mt-1">{fieldErrors.zone_id}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="report-location_description" className="block text-sm font-medium text-ink">Specific location / landmark</label>
+                    <input id="report-location_description" required maxLength={250} value={form.location_description} onChange={event => updateField('location_description',event.target.value)} aria-invalid={Boolean(fieldErrors.location_description)} placeholder="e.g. outside Tmall, on the road towards Strathmore" className="w-full border border-border rounded-btn p-2 text-sm bg-surface text-ink" />
+                    {fieldErrors.location_description && <p role="alert" className="text-sm text-risk-extreme">{fieldErrors.location_description}</p>}
+                    <p className="text-xs text-muted">Visible to reviewing officers and admins. Avoid personal contact details. A report pin does not generate a location-specific forecast.</p>
+                    <button type="button" disabled={locating} onClick={locate} className="border border-border rounded-btn px-3 py-2 text-sm text-ink">{locating ? 'Getting location...' : 'Use my device location (optional)'}</button>
+                    {locationMessage && <p role="status" className="text-xs text-muted">{locationMessage}</p>}
+                    <details><summary className="text-sm text-brand cursor-pointer">Check or enter coordinates (optional)</summary><div className="grid grid-cols-2 gap-3 mt-2">{['latitude','longitude'].map(field => <label className="text-xs text-ink capitalize" key={field}>{field}<input id={`report-${field}`} type="number" step="any" min={field==='latitude'?-90:-180} max={field==='latitude'?90:180} value={form[field]} onChange={event => {updateField(field,event.target.value);setForm(previous=>({...previous,location_accuracy_m:null}))}} aria-invalid={Boolean(fieldErrors[field])} className="block w-full border border-border rounded-btn p-2 bg-surface" /></label>)}</div></details>
+                    {fieldErrors.latitude && <p role="alert" className="text-sm text-risk-extreme">{fieldErrors.latitude}</p>}
                   </div>
 
                   <fieldset id="report-observed_condition" tabIndex={-1} aria-describedby={fieldErrors.observed_condition ? 'report-condition-error' : undefined}>
@@ -279,7 +307,7 @@ export default function CitizenPage({ predictions, showToast }) {
 
                   <button
                     type="submit"
-                    disabled={submitting || zones.length === 0}
+                    disabled={submitting || locating || reportZones.length === 0}
                     className="w-full h-12 rounded-card bg-brand text-white font-semibold hover:bg-brand-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {submitting ? 'Submitting report...' : 'Submit Report'}
@@ -313,7 +341,7 @@ export default function CitizenPage({ predictions, showToast }) {
             </div>
           </aside>
         </div>
-      </section>
+      </section>}
 
       <Footer />
     </div>

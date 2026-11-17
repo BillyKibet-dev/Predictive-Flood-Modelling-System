@@ -1,26 +1,16 @@
-import { createContext, useContext, useState } from 'react'
-import { MOCK_CREDENTIALS } from '../data/mockData'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { createAuthSession } from '../services/auth'
 
 const AuthContext = createContext(null)
 
-// Provides mock authentication state (user, login, logout) to the whole app via Context API
+// Memory-only backend session; reload requires sign-in.
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
 
-  function login(email, password) {
-    const account = MOCK_CREDENTIALS[email]
-    if (account && account.password === password) {
-      setUser({ name: account.name, email, role: account.role })
-      return account.role
-    }
-    return null
-  }
+  const [session] = useState(() => createAuthSession())
+  useEffect(() => session.subscribe(setUser), [session])
 
-  function logout() {
-    setUser(null)
-  }
-
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login: session.login, logout: session.logout, authorizedRequest: session.authorizedRequest }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

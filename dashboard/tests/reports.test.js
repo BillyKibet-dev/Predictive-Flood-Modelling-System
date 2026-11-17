@@ -8,6 +8,15 @@ const form = {
 }
 const savedReport = { id: 42, zone_id: 'mathare', timestamp: '2026-10-18T09:00:00Z' }
 
+test('specific location is required in the new form and partial or invalid coordinates are rejected', () => {
+  assert.ok(validateCitizenReport({...form,location_description:''},['mathare']).location_description)
+  const precise={...form,location_description:'Outside Tmall',latitude:'-1.31',longitude:'36.81'}
+  assert.deepEqual(validateCitizenReport(precise,['mathare']),{})
+  assert.ok(validateCitizenReport({...precise,longitude:''},['mathare']).longitude)
+  assert.ok(validateCitizenReport({...precise,latitude:'91'},['mathare']).latitude)
+  assert.ok(validateCitizenReport({...precise,latitude:'not-a-number'},['mathare']).latitude)
+})
+
 test('requires a supported zone, condition, severity, and description length before submission', () => {
   assert.deepEqual(validateCitizenReport(form, ['mathare']), {})
   assert.deepEqual(validateCitizenReport({ ...form, description: '' }, ['mathare']), {})
