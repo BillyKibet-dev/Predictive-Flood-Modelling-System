@@ -1,0 +1,1974 @@
+{
+ "contract_version": "monitoring-susceptibility-v1",
+ "method": "Points from fixed weights: height above the nearest mapped river or stream (<=5 m: 3, <=15 m: 2, <=30 m: 1), lower than the ground within 250 m (<=-3 m: 2, <=-1 m: 1), within 100 m of a river (1), satellite water within 250 m on 1 May 2024 (2), built-up share >=0.85 (1), recorded flooding (1). Higher >=6, Medium 3-5, Lower <=2.",
+ "sources": {
+  "dem": {
+   "name": "Copernicus DEM GLO-30 (surface model, ~30 m), tiles S02 E036 and S02 E037",
+   "sha256": [
+    "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed",
+    "4d65f18cdbe9b3f74b8f4400abbd3072b1984ac375c3472c9da74039f948ef53"
+   ],
+   "licence": "Copernicus DEM licence; (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018"
+  },
+  "waterways": {
+   "name": "OpenStreetMap waterways (river, stream, canal), Overpass extract 15 Nov 2026",
+   "sha256": "1086ddfb48aeff90f0c7dc82938e7d5e015582b45d721057f455b7ecb6e6c8c7",
+   "licence": "ODbL; (c) OpenStreetMap contributors"
+  },
+  "satellite_water": "UNOSAT 1 May 2024 Nairobi water map (catalogue)",
+  "built_up": "ESA WorldCover 2021 (enrichment)"
+ },
+ "catalog_sha256": "d0ea8b1893b38a151ccfbefc03b9c8b142062830c8a360a42be2b61686076005",
+ "limitations": [
+  "A ranking of the monitored places against each other, not a validated flood probability.",
+  "The terrain model is a surface model (includes buildings) at ~30 m; it cannot see drains, culvert capacity or blockages.",
+  "OpenStreetMap may miss small streams and drains.",
+  "The 2024 satellite scene does not cover western Nairobi; no water there means not observed, not dry."
+ ],
+ "rows": [
+  {
+   "area_id": "NFW-S001",
+   "score": 7,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 2.6,
+   "relief_m": -4.9,
+   "river_distance_m": 44,
+   "river_name": "Nairobi River",
+   "river_kind": "river",
+   "elevation_m": 1657.7,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.76,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S002",
+   "score": 4,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 19.2,
+   "relief_m": -2.3,
+   "river_distance_m": 503,
+   "river_name": "Nairobi River",
+   "river_kind": "river",
+   "elevation_m": 1671.5,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.96,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S003",
+   "score": 5,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 3.3,
+   "relief_m": 0.7,
+   "river_distance_m": 43,
+   "river_name": "Uhuru park stream",
+   "river_kind": "stream",
+   "elevation_m": 1663.4,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.47,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S004",
+   "score": 4,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 2.9,
+   "relief_m": 1.3,
+   "river_distance_m": 63,
+   "river_name": "Nairobi River",
+   "river_kind": "river",
+   "elevation_m": 1642.0,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.83,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S005",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 20.8,
+   "relief_m": 1.1,
+   "river_distance_m": 391,
+   "river_name": "unnamed river",
+   "river_kind": "river",
+   "elevation_m": 1795.8,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.87,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S006",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 10.6,
+   "relief_m": 0.1,
+   "river_distance_m": 447,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1625.2,
+   "satellite_water_m": 376,
+   "satellite_covered": true,
+   "built_up_fraction": 0.85,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S007",
+   "score": 5,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 5.1,
+   "relief_m": 0.8,
+   "river_distance_m": 214,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1629.5,
+   "satellite_water_m": 141,
+   "satellite_covered": true,
+   "built_up_fraction": 0.97,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S008",
+   "score": 5,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 3.0,
+   "relief_m": -1.6,
+   "river_distance_m": 392,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1624.1,
+   "satellite_water_m": 388,
+   "satellite_covered": true,
+   "built_up_fraction": 0.93,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S010",
+   "score": 8,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 1.7,
+   "relief_m": -4.5,
+   "river_distance_m": 25,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1615.5,
+   "satellite_water_m": 0,
+   "satellite_covered": true,
+   "built_up_fraction": 0.61,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S011",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 12.3,
+   "relief_m": 0.3,
+   "river_distance_m": 345,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1591.9,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.97,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S012",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 12.3,
+   "relief_m": 0.3,
+   "river_distance_m": 345,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1591.9,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.97,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S013",
+   "score": 8,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 1.0,
+   "relief_m": -2.9,
+   "river_distance_m": 8,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1634.9,
+   "satellite_water_m": 0,
+   "satellite_covered": true,
+   "built_up_fraction": 0.96,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S014",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 21.5,
+   "relief_m": 0.2,
+   "river_distance_m": 910,
+   "river_name": "Nairobi River",
+   "river_kind": "river",
+   "elevation_m": 1549.0,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.99,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S015",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 3.9,
+   "relief_m": 1.3,
+   "river_distance_m": 199,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1550.9,
+   "satellite_water_m": 279,
+   "satellite_covered": true,
+   "built_up_fraction": 0.69,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S016",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 5.4,
+   "relief_m": 0.0,
+   "river_distance_m": 432,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1588.9,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.41,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S018",
+   "score": 4,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 9.5,
+   "relief_m": 0.1,
+   "river_distance_m": 1836,
+   "river_name": "Nairobi river",
+   "river_kind": "river",
+   "elevation_m": 1500.5,
+   "satellite_water_m": 59,
+   "satellite_covered": true,
+   "built_up_fraction": 0.33,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S019",
+   "score": 5,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 8.5,
+   "relief_m": -6.4,
+   "river_distance_m": 331,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1568.9,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.99,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S020",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 21.7,
+   "relief_m": 0.7,
+   "river_distance_m": 128,
+   "river_name": "Motoine River",
+   "river_kind": "river",
+   "elevation_m": 1727.6,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.86,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S021",
+   "score": 1,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 36.1,
+   "relief_m": 6.9,
+   "river_distance_m": 216,
+   "river_name": "Motoine River",
+   "river_kind": "river",
+   "elevation_m": 1742.5,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.89,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 0,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S022",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 21.7,
+   "relief_m": 0.7,
+   "river_distance_m": 128,
+   "river_name": "Motoine River",
+   "river_kind": "river",
+   "elevation_m": 1727.6,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.86,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S023",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 21.2,
+   "relief_m": 4.0,
+   "river_distance_m": 131,
+   "river_name": "Motoine River",
+   "river_kind": "river",
+   "elevation_m": 1746.2,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.96,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S024",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 27.9,
+   "relief_m": 6.9,
+   "river_distance_m": 206,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1768.1,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.93,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S025",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 27.1,
+   "relief_m": -2.4,
+   "river_distance_m": 169,
+   "river_name": "Motoine River",
+   "river_kind": "river",
+   "elevation_m": 1745.7,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.83,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S026",
+   "score": 6,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 9.0,
+   "relief_m": -2.9,
+   "river_distance_m": 92,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1616.9,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.93,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S027",
+   "score": 6,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 12.2,
+   "relief_m": -1.4,
+   "river_distance_m": 266,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1612.3,
+   "satellite_water_m": 174,
+   "satellite_covered": true,
+   "built_up_fraction": 0.86,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S028",
+   "score": 7,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 6.8,
+   "relief_m": -3.6,
+   "river_distance_m": 132,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1606.9,
+   "satellite_water_m": 39,
+   "satellite_covered": true,
+   "built_up_fraction": 0.91,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S030",
+   "score": 1,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 17.3,
+   "relief_m": 1.2,
+   "river_distance_m": 315,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1608.8,
+   "satellite_water_m": 304,
+   "satellite_covered": true,
+   "built_up_fraction": 0.75,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S031",
+   "score": 6,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 11.7,
+   "relief_m": 3.8,
+   "river_distance_m": 90,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1599.1,
+   "satellite_water_m": 96,
+   "satellite_covered": true,
+   "built_up_fraction": 0.9,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S032",
+   "score": 7,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 0.9,
+   "relief_m": -8.1,
+   "river_distance_m": 12,
+   "river_name": "Mathare River",
+   "river_kind": "stream",
+   "elevation_m": 1611.3,
+   "satellite_water_m": null,
+   "satellite_covered": true,
+   "built_up_fraction": 0.95,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S033",
+   "score": 2,
+   "max_score": 10,
+   "level": "Lower",
+   "height_above_river_m": 28.1,
+   "relief_m": 3.8,
+   "river_distance_m": 320,
+   "river_name": "Ruiruaka River",
+   "river_kind": "river",
+   "elevation_m": 1594.1,
+   "satellite_water_m": 308,
+   "satellite_covered": true,
+   "built_up_fraction": 0.98,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S034",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 11.5,
+   "relief_m": 1.2,
+   "river_distance_m": 300,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1817.1,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.98,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S035",
+   "score": 3,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 22.9,
+   "relief_m": -4.2,
+   "river_distance_m": 1250,
+   "river_name": "Ruiruaka River",
+   "river_kind": "stream",
+   "elevation_m": 1697.8,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.51,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 1,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S037",
+   "score": 6,
+   "max_score": 10,
+   "level": "Higher",
+   "height_above_river_m": 0.9,
+   "relief_m": -2.4,
+   "river_distance_m": 52,
+   "river_name": "Ngong River",
+   "river_kind": "stream",
+   "elevation_m": 1662.1,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.78,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S038",
+   "score": 4,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": -0.2,
+   "relief_m": -2.5,
+   "river_distance_m": 181,
+   "river_name": "unnamed stream",
+   "river_kind": "stream",
+   "elevation_m": 1684.1,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.39,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 3,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S039",
+   "score": 4,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 8.0,
+   "relief_m": -3.5,
+   "river_distance_m": 207,
+   "river_name": "Ngong river",
+   "river_kind": "river",
+   "elevation_m": 1683.8,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.58,
+   "observed_flooding": false,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 2,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 0,
+     "max_points": 1
+    }
+   ]
+  },
+  {
+   "area_id": "NFW-S040",
+   "score": 5,
+   "max_score": 10,
+   "level": "Medium",
+   "height_above_river_m": 5.8,
+   "relief_m": -1.1,
+   "river_distance_m": 849,
+   "river_name": "Ngong River",
+   "river_kind": "river",
+   "elevation_m": 1658.9,
+   "satellite_water_m": null,
+   "satellite_covered": false,
+   "built_up_fraction": 0.9,
+   "observed_flooding": true,
+   "factors": [
+    {
+     "key": "height_above_river",
+     "label": "Close in height to a river or stream",
+     "points": 2,
+     "max_points": 3
+    },
+    {
+     "key": "relief",
+     "label": "Lower than the ground around it",
+     "points": 1,
+     "max_points": 2
+    },
+    {
+     "key": "river_distance",
+     "label": "Within 100 m of a river or stream",
+     "points": 0,
+     "max_points": 1
+    },
+    {
+     "key": "satellite_water",
+     "label": "Satellite saw water within 250 m on 1 May 2024",
+     "points": 0,
+     "max_points": 2
+    },
+    {
+     "key": "built_up",
+     "label": "Mostly sealed ground (roofs, roads)",
+     "points": 1,
+     "max_points": 1
+    },
+    {
+     "key": "observed",
+     "label": "Flooding recorded here before",
+     "points": 1,
+     "max_points": 1
+    }
+   ]
+  }
+ ]
+}
