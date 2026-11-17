@@ -59,7 +59,11 @@ docs/webmasters/
 /data/hotspots/
 
 # Stage 2 label/training data (derived CHIRPS extension, IMERG backfill).
-/data/stage2/
+/data/stage2/*
+# ...except what the API reads at runtime (Models page, Rainfall history):
+!/data/stage2/evaluation.json
+!/data/stage2/CHIRPS_Nairobi_zones_2016_2026-09-30.csv
+!/data/stage2/CHIRPS_Nairobi_zones_2016_2026-09-30.manifest.json
 # Citizen report photos (personal data)
 data/report_photos/
 # Copernicus DEM tile used only by the offline susceptibility prep (re-download: see prepare_susceptibility.py)
