@@ -11,9 +11,18 @@ from src.api.config import settings
 from src.api.database import engine
 from src.api.models.db_models import Base
 from src.api.routers import admin, alerts, auth, boundaries, predictions, proxy_v1, reports
-from src.api.routers import environmental
+from src.api.routers import environmental, forecast_outlook
+from src.api.routers import historical_floods
+from src.api.routers import binary_rainfall
+from src.api.routers import hotspots
+from src.api.routers import monitoring_areas
+from src.api.routers import staff_data
+from src.api.routers import advisories
+from src.api.routers import routes
 from src.api.services.ml_service import ml_service
+from src.api.services.binary_rainfall_service import binary_rainfall_service
 from src.api.services.pipeline import pipeline
+from src.api.services import automatic_point_collection
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nairobifloodwatch.main")
@@ -61,9 +70,14 @@ async def lifespan(app: FastAPI):
     if settings.LEGACY_SCHEDULER_ENABLED:
         scheduler.add_job(run_legacy_scheduled_pipeline, "interval", hours=1,
                           id="prediction_pipeline", max_instances=1, coalesce=True, replace_existing=True)
+    if automatic_point_collection.enabled():
+        # Hourly forecast + observed-rain collection for the public outlook (no alerts, no writes).
+        automatic_point_collection.schedule(scheduler)
+    if scheduler.get_jobs():
         scheduler.start()
     logger.info("✅ NairobiFloodWatch API started")
-    logger.info("Legacy scheduler enabled=%s; v1 operational inference disabled", settings.LEGACY_SCHEDULER_ENABLED)
+    logger.info("Legacy scheduler enabled=%s; automatic weather collection=%s; binary rainfall execution is staff-requested only",
+                settings.LEGACY_SCHEDULER_ENABLED, automatic_point_collection.enabled())
     yield
     # Shutdown
     if scheduler.running:
@@ -83,6 +97,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],  # lets the dashboard name downloaded CSV files
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
@@ -94,6 +109,14 @@ app.include_router(boundaries.router, prefix="/boundaries", tags=["Administrativ
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(proxy_v1.router, prefix="/api/v1", tags=["Research next-day proxy risk"])
 app.include_router(environmental.router)
+app.include_router(forecast_outlook.router)
+app.include_router(historical_floods.router)
+app.include_router(hotspots.router)
+app.include_router(monitoring_areas.router)
+app.include_router(binary_rainfall.router)
+app.include_router(staff_data.router)
+app.include_router(advisories.router)
+app.include_router(routes.router)
 
 
 @app.get("/health")
@@ -101,6 +124,7 @@ def health_check():
     return {
         "status": "online",
         "model": ml_service.get_model_info(),
+        "binary_rainfall_research": binary_rainfall_service.model_status(),
         "environment": settings.ENVIRONMENT,
         "legacy_scheduler_enabled": settings.LEGACY_SCHEDULER_ENABLED,
         "v1_operational_status": "INSUFFICIENT_DATA",
