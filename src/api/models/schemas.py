@@ -1,6 +1,6 @@
 """Pydantic request/response schemas for the NairobiFloodWatch API."""
 from datetime import datetime
-from typing import Generic, List, Literal, Optional, TypeVar
+from typing import Union, Generic, List, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 import re
@@ -73,6 +73,11 @@ class UserUpdate(UserFields):
 
 # ---------------------------------------------------------------- Zones ----
 
+class ReportingArea(BaseModel):
+    id: str
+    name: str
+
+
 class ZoneResponse(BaseModel):
     id: str
     name: str
@@ -106,12 +111,15 @@ class ZoneWithPrediction(BaseModel):
     timestamp: Optional[datetime] = None
 
 
-class PredictionContext(BaseModel):
+class LegacyPredictionContext(BaseModel):
     spatial_scope: Literal["shared_nairobi_weather"]
     label_basis: Literal["rainfall_soil_moisture_proxy"]
     temporal_scope: Literal["current_conditions"]
     location_specific: Literal[False]
     confidence_interpretation: Literal["uncalibrated_class_score"]
+
+
+PredictionContext = LegacyPredictionContext
 
 
 class DashboardResponse(BaseModel):
@@ -144,7 +152,9 @@ class AlertAcknowledge(BaseModel):
 # --------------------------------------------------------- Citizen reports ----
 
 class ReportCreate(BaseModel):
-    zone_id: str = Field(min_length=1, max_length=50)
+    # New reports name a sub-county (area_id); zone_id is kept for older clients.
+    area_id: Optional[str] = Field(default=None, min_length=1, max_length=80)
+    zone_id: Optional[str] = Field(default=None, min_length=1, max_length=50)
     observed_condition: Literal["Street flooding", "River overflow", "Blocked drainage", "Other"]
     perceived_severity: Literal["Mild", "Serious", "Dangerous"]
     description: Optional[str] = Field(default=None, max_length=200)
@@ -166,12 +176,17 @@ class ReportCreate(BaseModel):
             raise ValueError("Latitude and longitude must be supplied together")
         if self.location_accuracy_m is not None and self.latitude is None:
             raise ValueError("Accuracy requires coordinates")
+        if self.area_id and self.zone_id:
+            raise ValueError("Choose a sub-county or a zone, not both")
+        if not (self.area_id or self.zone_id or self.latitude is not None):
+            raise ValueError("Choose your sub-county or drop a pin")
         return self
 
 
 class ReportResponse(BaseModel):
     id: int
-    zone_id: str
+    zone_id: Optional[str] = None
+    area_id: Optional[str] = None
     timestamp: datetime
     observed_condition: str
     perceived_severity: Optional[str] = None
@@ -186,14 +201,44 @@ class ReportResponse(BaseModel):
     reviewed_by_name: Optional[str] = None
     reviewed_at: Optional[datetime] = None
     review_version: int
+    public_visible: bool = False
+    published_at: Optional[datetime] = None
+    photo_attached: bool = False
+    # Shown once, in the response to the resident who sent the report; never stored or listed.
+    tracking_code: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ReportStatusRequest(BaseModel):
+    reference: int = Field(ge=1)
+    code: str = Field(min_length=8, max_length=12)
+
+
+class AdvisoryCreate(BaseModel):
+    area_id: str = Field(min_length=1, max_length=80)
+    place_label: Optional[str] = Field(default=None, max_length=120)
+    latitude: Optional[float] = Field(default=None, ge=-90, le=90, allow_inf_nan=False)
+    longitude: Optional[float] = Field(default=None, ge=-180, le=180, allow_inf_nan=False)
+    message: str = Field(min_length=5, max_length=280)
+    level: Literal["Advice", "Warning"] = "Advice"
+    hours: int = Field(default=12, ge=1, le=72)
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    @model_validator(mode="after")
+    def pin_pair(self):
+        if (self.latitude is None) != (self.longitude is None):
+            raise ValueError("Latitude and longitude must be supplied together")
+        return self
 
 
 class ReportReview(BaseModel):
     status: Literal["New", "Reviewed", "ActionNeeded", "Resolved"]
     note: Optional[str] = Field(default=None, max_length=1000)
     expected_version: int = Field(ge=0)
+    # None keeps the current public-map choice (older clients); True/False publishes or withdraws.
+    public: Optional[bool] = None
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
 
