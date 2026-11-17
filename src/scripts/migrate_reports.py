@@ -23,14 +23,31 @@ def migrate(connection, *, schema="public", downgrade=False, allow_data_loss=Fal
             raise ValueError("Rollback refused: location/review records must be archived before approved data loss")
         if 'report_review_events' in tables and connection.execute(text(f'SELECT EXISTS(SELECT 1 FROM "{schema}".report_review_events)')).scalar():
             raise ValueError("Rollback refused: review audit records exist")
-    name='004_report_locations_down.sql' if downgrade else '004_report_locations.sql'
-    sql=(Path(__file__).resolve().parents[1]/'api/migrations'/name).read_text(encoding='utf-8')
-    for table in ('citizen_reports','users','report_review_events','ix_citizen_reports_review_status'):
-        # Index names following ON are table-qualified indirectly; DROP must target this schema.
-        if table.startswith('ix_') and not downgrade:
-            continue
-        sql=re.sub(rf'\b{table}\b',f'"{schema}"."{table}"',sql)
-    connection.execute(text(sql))
+        if 'public_visible' in columns and connection.execute(text(f'''SELECT EXISTS(SELECT 1 FROM "{schema}".citizen_reports
+                WHERE public_visible OR published_at IS NOT NULL)''')).scalar():
+            raise ValueError("Rollback refused: published reports must be archived before approved data loss")
+    if downgrade:
+        columns=set(connection.execute(text("SELECT column_name FROM information_schema.columns WHERE table_schema=:s AND table_name='citizen_reports'"),{"s":schema}).scalars())
+        if 'area_id' in columns and connection.execute(text(f'SELECT EXISTS(SELECT 1 FROM "{schema}".citizen_reports WHERE zone_id IS NULL)')).scalar():
+            raise ValueError("Rollback refused: reports filed under a sub-county have no original zone")
+        if 'tracking_hash' in columns and connection.execute(text(f'''SELECT EXISTS(SELECT 1 FROM "{schema}".citizen_reports
+                WHERE tracking_hash IS NOT NULL OR photo_sha256 IS NOT NULL)''')).scalar():
+            raise ValueError("Rollback refused: tracking codes or photos exist")
+        if 'area_advisories' in tables and connection.execute(text(f'SELECT EXISTS(SELECT 1 FROM "{schema}".area_advisories)')).scalar():
+            raise ValueError("Rollback refused: advisories exist")
+    # 004: locations and staff review; 006: staff publication to the public map (24 hours);
+    # 007: reports filed under the 17 sub-counties instead of the original eight zones;
+    # 008: report tracking codes, photos and officer advisories.
+    names=(['008_report_tracking_photos_advisories_down.sql','007_report_areas_down.sql','006_report_publication_down.sql','004_report_locations_down.sql'] if downgrade
+           else ['004_report_locations.sql','006_report_publication.sql','007_report_areas.sql','008_report_tracking_photos_advisories.sql'])
+    for name in names:
+        sql=(Path(__file__).resolve().parents[1]/'api/migrations'/name).read_text(encoding='utf-8')
+        for table in ('citizen_reports','users','report_review_events','ix_citizen_reports_review_status','ix_citizen_reports_public_recent','ix_citizen_reports_area','area_advisories','ix_area_advisories_active'):
+            # Index names following ON are table-qualified indirectly; DROP must target this schema.
+            if table.startswith('ix_') and not downgrade:
+                continue
+            sql=re.sub(rf'\b{table}\b',f'"{schema}"."{table}"',sql)
+        connection.execute(text(sql))
 
 
 def main():
