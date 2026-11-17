@@ -1,0 +1,65 @@
+{
+  "created_at_utc": "2026-11-14T22:38:22.889392+00:00",
+  "feature_version": "stage2-observed-forecast-v1",
+  "feature_columns": [
+    "tomorrow_rain_mm",
+    "tomorrow_max_1h_mm",
+    "tomorrow_max_3h_mm",
+    "tomorrow_max_6h_mm",
+    "tomorrow_rainy_hours",
+    "tomorrow_humidity_mean_pct",
+    "tomorrow_temperature_mean_c",
+    "tomorrow_wind_max_kmh",
+    "tomorrow_soil_moisture_mean_m3m3",
+    "today_forecast_rain_mm",
+    "observed_yesterday_mm",
+    "observed_3d_mm",
+    "observed_5d_mm",
+    "accumulation_7d_mm",
+    "rule_tomorrow_level",
+    "rule_accumulation_level",
+    "rule_class_level",
+    "target_month_sin",
+    "target_month_cos"
+  ],
+  "classes": [
+    "Low",
+    "Moderate",
+    "High",
+    "Extreme"
+  ],
+  "params": {
+    "objective": "multi:softprob",
+    "num_class": 4,
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "max_depth": 3,
+    "min_child_weight": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 5.0,
+    "tree_method": "hist",
+    "random_state": 42,
+    "n_jobs": 4
+  },
+  "xgboost_version": "2.0.3",
+  "model_sha256": "ad9614eb6e8521109cb4b78227f0dd7957f3c770e6463bf588392e2108c67ed9",
+  "training_rows": 7384,
+  "issue_days": [
+    "2024-03-20",
+    "2026-09-29"
+  ],
+  "label": "v1 CHIRPS rule on target day (40/20/5 mm daily, 150/80/25 mm 7-day)",
+  "inputs": "ECMWF IFS 00 UTC single run (Open-Meteo) + NASA IMERG Early daily, no terrain",
+  "decision": {
+    "primary_metric": "zone-day High-or-above CSI, leave-one-season-out",
+    "csi_gain": 0.13023239952940374,
+    "bootstrap_95": [
+      0.07650360426865108,
+      0.18553611571040893
+    ],
+    "extreme_recall_drop": -0.01282051282051283,
+    "adopted": true,
+    "live_method": "stage2_xgboost"
+  }
+}
