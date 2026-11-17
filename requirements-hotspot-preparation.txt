@@ -1,0 +1,4 @@
+# Optional offline GIS preparation only; API and model runtime environments stay unchanged.
+numpy==1.26.4
+rasterio==1.4.4
+shapely==2.2.0

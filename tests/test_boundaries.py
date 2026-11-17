@@ -185,7 +185,7 @@ def test_boundary_endpoints_return_geojson_and_404(postgis_connection):
         feature = client.get("/boundaries/nairobi-county").json()
         assert feature == collection["features"][0]
         assert feature["geometry"]["type"] == "MultiPolygon"
-        assert feature["properties"]["source_license"] == "Public Domain"
+        assert feature["properties"]["source_license"].startswith("Open Database License")
         assert "crs" not in feature["geometry"]
         assert client.get("/boundaries/missing").status_code == 404
 
@@ -203,7 +203,26 @@ def test_subcounty_extract_preserves_provenance_and_17_source_features():
     features = validate_feature_collection(json.loads(DEFAULT_SUBCOUNTY_PATH.read_text(encoding="utf-8")))
     assert len(features) == 17
     assert all(feature["properties"]["admin_level"] == 2 for feature in features)
-    assert {feature["properties"]["source_feature_id"] for feature in features} == {item["shapeID"] for item in metadata["selection"]}
+    assert {feature["properties"]["source_feature_id"] for feature in features} == {
+        f"osm-relation-{relation}" for relation in metadata["constituency_relations"]}
+
+
+def test_subcounties_tile_the_county_without_overlaps_or_gaps():
+    """The county outline and sub-county borders must coincide on the map."""
+    dependencies = DEFAULT_SUBCOUNTY_PATH.parents[1] / "hotspots/gis_dependencies"
+    if not dependencies.exists():
+        pytest.skip("Optional offline GIS dependencies not installed")
+    import sys
+    sys.path.insert(0, str(dependencies))
+    from itertools import combinations
+    from shapely.geometry import shape
+    from shapely.ops import unary_union
+    parts = [shape(f["geometry"]) for f in json.loads(DEFAULT_SUBCOUNTY_PATH.read_text(encoding="utf-8"))["features"]]
+    county = shape(source_document()["features"][0]["geometry"])
+    square_m = 111_320 ** 2  # degree^2 to m^2 near the equator (upper bound)
+    assert all(p.is_valid for p in parts) and county.is_valid
+    assert sum(a.intersection(b).area for a, b in combinations(parts, 2)) * square_m < 1
+    assert county.symmetric_difference(unary_union(parts)).area * square_m < 1
 
 
 def test_subcounty_monitoring_ids_use_point_location_not_labels(postgis_connection):
@@ -219,6 +238,6 @@ def test_subcounty_monitoring_ids_use_point_location_not_labels(postgis_connecti
     matches = [feature for feature in features if "arbitrary-name" in feature["properties"]["monitoring_zone_ids"]]
     assert len(matches) == 1
     assert matches[0]["properties"]["admin_level"] == 2
-    assert matches[0]["properties"]["name"] == "Mathare"
+    assert matches[0]["properties"]["name"] == "Ruaraka"  # OSM constituency outline; the v1 'mathare' zone centre lies just inside Ruaraka
     assert all("outside-county" not in feature["properties"]["monitoring_zone_ids"] for feature in features)
     assert next(feature for feature in features if feature["id"] == "nairobi-county")["properties"]["monitoring_zone_ids"] == []
