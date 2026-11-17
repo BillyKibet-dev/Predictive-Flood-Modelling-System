@@ -5,7 +5,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Geist', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
         brand: {
@@ -15,6 +16,7 @@ export default {
         accent: 'var(--accent)',
         bg: 'var(--bg)',
         surface: 'var(--surface)',
+        'surface-2': 'var(--surface-2)',
         border: 'var(--border)',
         ink: 'var(--text)',
         muted: 'var(--text-muted)',
@@ -26,12 +28,12 @@ export default {
         },
       },
       borderRadius: {
-        card: '8px',
-        btn: '6px',
+        card: '12px',
+        btn: '8px',
         badge: '4px',
       },
       boxShadow: {
-        'card-rest': '0 1px 3px rgba(0,0,0,0.08)',
+        'card-rest': '0 1px 2px rgba(15,23,42,0.05)',
         'card-hover': '0 4px 16px rgba(0,0,0,0.12)',
         modal: '0 24px 48px rgba(0,0,0,0.20)',
       },

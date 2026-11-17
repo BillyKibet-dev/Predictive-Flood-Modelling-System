@@ -1,7 +1,7 @@
-export default function BoundaryControls({ boundaries, showPolygons, setShowPolygons, showMarkers, setShowMarkers, fitCounty }) {
+export default function BoundaryControls({ boundaries, showPolygons, setShowPolygons, showMarkers, setShowMarkers, fitCounty, markerLabel = 'Monitoring points' }) {
   const { data, error, isLoading, reload } = boundaries
   const subcounties = data?.features.filter((feature) => feature.properties.admin_level === 2) ?? []
-  let message = `${subcounties.length} administrative sub-counties · Colours summarise available monitored indications, not flood extent.`
+  let message = `${subcounties.length} administrative sub-counties · Geographic context only.`
   if (!data) message = isLoading ? 'Loading administrative boundaries...' : 'Boundaries unavailable. Monitoring points remain available.'
   else if (error) message = 'Could not refresh boundaries. Showing saved outlines.'
   else if (!data.features.length) message = 'No administrative boundaries loaded.'
@@ -13,11 +13,11 @@ export default function BoundaryControls({ boundaries, showPolygons, setShowPoly
       <div className="flex flex-wrap items-center gap-3 sm:ml-auto">
         <label className="flex items-center gap-1.5 text-ink">
           <input type="checkbox" checked={showPolygons} onChange={(event) => setShowPolygons(event.target.checked)} disabled={!subcounties.length} />
-          Administrative advisory layer
+          Sub-county outlines
         </label>
         <label className="flex items-center gap-1.5 text-ink">
           <input type="checkbox" checked={showMarkers} onChange={(event) => setShowMarkers(event.target.checked)} />
-          Monitoring points
+          {markerLabel}
         </label>
         <button type="button" onClick={fitCounty} disabled={!data?.features.length} className="rounded-btn border border-border px-2 py-1.5 text-ink disabled:opacity-50">Fit county</button>
         <button type="button" onClick={reload} disabled={isLoading} className="rounded-btn border border-border px-2 py-1.5 text-ink disabled:opacity-50">
