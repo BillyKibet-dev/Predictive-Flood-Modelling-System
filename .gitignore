@@ -68,3 +68,5 @@ docs/webmasters/
 data/report_photos/
 # Copernicus DEM tile used only by the offline susceptibility prep (re-download: see prepare_susceptibility.py)
 data/susceptibility/source/*.tif
+# Runtime data bundle for the server (built by deploy/scripts/pack_runtime_data.py)
+deploy/out/
