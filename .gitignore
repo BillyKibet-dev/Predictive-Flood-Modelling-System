@@ -51,3 +51,16 @@ data/model_v1/
 # Local implementation reports and supporting evidence.
 docs/webmasters/
 /CHAPTER5_IMPLEMENTATION_EVIDENCE.md
+
+# Immutable shadow collection payloads and local readiness evidence.
+/data/operational_sources/
+
+# Local GIS preparation dependencies and immutable hotspot source evidence.
+/data/hotspots/
+
+# Stage 2 label/training data (derived CHIRPS extension, IMERG backfill).
+/data/stage2/
+# Citizen report photos (personal data)
+data/report_photos/
+# Copernicus DEM tile used only by the offline susceptibility prep (re-download: see prepare_susceptibility.py)
+data/susceptibility/source/*.tif
