@@ -11,13 +11,14 @@ export function createAuthSession({ baseUrl = API_BASE_URL, fetchImpl = fetch, n
     token = null; user = null; expiry = 0
     listeners.forEach(listener => listener(null))
   }
-  async function request(path, { signal, ...options } = {}, credential = token) {
+  async function request(path, { signal, timeoutMs = 15000, raw = false, ...options } = {}, credential = token) {
     if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid API path')
+    if (!Number.isFinite(timeoutMs) || timeoutMs < 1 || timeoutMs > 90000) throw new Error('Invalid request timeout')
     const controller = new AbortController()
     const abort = () => controller.abort()
     if (signal?.aborted) controller.abort()
     signal?.addEventListener('abort', abort, { once: true })
-    const timeout = setTimeout(abort, 15000)
+    const timeout = setTimeout(abort, timeoutMs)
     try {
       const response = await fetchImpl(baseUrl + path, { ...options, signal: controller.signal,
         headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers,
@@ -31,7 +32,7 @@ export function createAuthSession({ baseUrl = API_BASE_URL, fetchImpl = fetch, n
         const detail = typeof failure.detail === 'string' && failure.detail.length <= 250 ? failure.detail : null
         throw new Error(response.status === 403 ? 'Your account cannot perform this action.' : detail ?? `Request failed (${response.status}). Check the fields; no successful change is confirmed.`)
       }
-      return await response.json()
+      return raw ? response : await response.json()
     } catch (error) {
       if (error.name === 'AbortError') throw error
       if (error instanceof TypeError) throw new Error('API unavailable. Check the connection and try again.')
@@ -63,6 +64,13 @@ export function createAuthSession({ baseUrl = API_BASE_URL, fetchImpl = fetch, n
     async authorizedRequest(path, options) {
       if (!token || now() >= expiry) { clear(); throw new Error('Sign in to access environmental data.') }
       return request(path, options)
+    },
+    // A file (CSV) the server names in Content-Disposition; the token never enters a URL.
+    async authorizedDownload(path, options = {}) {
+      if (!token || now() >= expiry) { clear(); throw new Error('Sign in to download records.') }
+      const response = await request(path, { timeoutMs: 60000, ...options, raw: true })
+      const named = /filename="([A-Za-z0-9._-]{1,120})"/.exec(response.headers.get('Content-Disposition') ?? '')
+      return { blob: await response.blob(), filename: named ? named[1] : 'nairobifloodwatch-export.csv' }
     },
   }
 }

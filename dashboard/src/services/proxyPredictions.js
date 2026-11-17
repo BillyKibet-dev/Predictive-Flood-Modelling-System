@@ -5,9 +5,7 @@ export const PROXY_CLASSES = ['Low', 'Moderate', 'High', 'Extreme']
 export const PROXY_TASK = 'next_day_proxy_risk'
 export const DEFAULT_REPLAY_DATE = '2024-04-30'
 export const PREDICTION_VIEWS = [
-  { value: 'legacy', label: 'Latest saved advisory', description: 'The older model\'s most recently saved weather indication, shared across Nairobi. Use it for an overview and check its update time; it is not a street-level flood forecast.' },
-  { value: 'v1_live', label: 'Next-day forecast readiness', description: 'Checks whether the selected next-day model has verified live inputs. It is currently unavailable, with no estimated release time. Refresh checks the status; it does not generate a forecast.' },
-  { value: 'v1_replay', label: 'Explore a past date', description: 'Displays saved results from the selected model using historical weather. Choose the input day to examine the following day\'s proxy-risk class. Dates without a saved run remain unavailable. Use it for past-date analysis, never as today\'s warning.' },
+  { value: 'v1_replay', label: 'Historical v1 replay', description: 'Saved v1 environmental proxy classes using historical inputs. Select the input day to inspect the following day. This is historical research, not a current warning.' },
 ]
 
 const STATUSES = ['SUCCESS', 'PARTIAL', 'INSUFFICIENT_DATA', 'STALE_DATA', 'MODEL_UNAVAILABLE', 'FAILED']
@@ -60,8 +58,6 @@ export function formatTargetDate(value) {
 
 export function predictionViewConfiguration(view, inputDate = DEFAULT_REPLAY_DATE) {
   if (!PREDICTION_VIEWS.some((item) => item.value === view)) throw new Error('Unsupported prediction view')
-  if (view === 'legacy') return { view, mode: 'legacy', inputDate: null, key: 'legacy' }
-  if (view === 'v1_live') return { view, mode: 'live', inputDate: null, key: 'live' }
   if (!validCalendarDate(inputDate)) throw new Error('Choose a valid historical input date')
   return { view, mode: 'historical_replay', inputDate, key: `historical_replay:${inputDate}` }
 }

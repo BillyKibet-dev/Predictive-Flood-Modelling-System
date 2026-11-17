@@ -67,8 +67,8 @@ export default function LoginPage() {
       <div className="flex items-center justify-center px-6 bg-surface">
         <div className="w-full max-w-[400px] space-y-8">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-ink">Sign in to your account</h2>
-            <p className="text-muted mt-1">Use an active backend account. Reloading requires sign-in.</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-ink">Staff sign in</h2>
+            <p className="text-muted mt-1">For officers and administrators. Residents can report flooding without an account.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">

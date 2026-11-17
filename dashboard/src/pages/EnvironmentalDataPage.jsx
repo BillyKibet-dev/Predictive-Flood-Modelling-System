@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { useAuth } from '../context/AuthContext'
-import TopNav from '../components/TopNav'
+import StaffLayout from '../components/StaffLayout'
+import { Link } from 'react-router-dom'
 import {
   SOURCE_OPTIONS,
   observedWindows,
@@ -146,10 +147,9 @@ export default function EnvironmentalDataPage() {
     }
   }
   return (
-    <div className="min-h-screen bg-bg text-ink">
-      <TopNav variant="app" active="Rainfall history" />
-      <main className="max-w-6xl mx-auto p-6 space-y-6">
-        <h1 className="text-2xl font-semibold">Rainfall history</h1>
+    <StaffLayout><div className="space-y-5">
+        <h1 className="text-2xl font-semibold tracking-tight">Imported datasets</h1>
+        <Link className="text-sm text-accent font-medium" to="/history">← Rainfall history</Link>
         <p className="text-sm text-muted">
           Compare stored rainfall estimates for a study zone and time window. This helps you assess
           past weather alongside citizen reports; it does not show current flooding or a new
@@ -469,7 +469,6 @@ export default function EnvironmentalDataPage() {
             </form>
           </details>
         )}
-      </main>
-    </div>
+      </div></StaffLayout>
   )
 }
