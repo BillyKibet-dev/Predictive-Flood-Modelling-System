@@ -43,13 +43,16 @@ function model(overrides = {}) {
     runtime: { python: '3.12.1', xgboost: '3.1.3' }, ...overrides }
 }
 
-test('keeps the legacy, v1 live status and explicitly dated replay selections separate', () => {
-  assert.deepEqual(predictionViewConfiguration('legacy'), { view: 'legacy', mode: 'legacy', inputDate: null, key: 'legacy' })
-  assert.deepEqual(predictionViewConfiguration('v1_live'), { view: 'v1_live', mode: 'live', inputDate: null, key: 'live' })
+test('only the explicitly dated historical v1 replay view is selectable', () => {
+  assert.deepEqual(predictionViewConfiguration('v1_replay', '2024-04-30'),
+    { view: 'v1_replay', mode: 'historical_replay', inputDate: '2024-04-30', key: 'historical_replay:2024-04-30' })
   assert.equal(predictionViewConfiguration('v1_replay').inputDate, DEFAULT_REPLAY_DATE)
   assert.notEqual(predictionViewConfiguration('v1_replay', '2024-04-30').key,
     predictionViewConfiguration('v1_replay', '2024-05-01').key)
-  for (const view of ['automatic', 'next_6_hours', undefined]) assert.throws(() => predictionViewConfiguration(view))
+  // Retired views (legacy live advisory, v1 live readiness, v3 nowcast) are refused, not silently mapped.
+  for (const view of ['legacy', 'v1_live', 'automatic', 'next_6_hours', undefined]) {
+    assert.throws(() => predictionViewConfiguration(view))
+  }
   assert.throws(() => predictionViewConfiguration('v1_replay', '2024-02-30'))
 })
 
