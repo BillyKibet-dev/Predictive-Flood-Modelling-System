@@ -83,7 +83,8 @@ class CitizenReport(Base):
     __tablename__ = "citizen_reports"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    zone_id = Column(String(50), ForeignKey("zones.id"), nullable=False)
+    zone_id = Column(String(50), ForeignKey("zones.id"), nullable=True)  # original eight zones (older reports)
+    area_id = Column(String(80), nullable=True, index=True)  # one of the 17 sub-counties (reporting_areas)
     timestamp = Column(DateTime(timezone=True), nullable=False, default=utcnow)
     observed_condition = Column(String(100), nullable=False)
     perceived_severity = Column(String(20))
@@ -98,17 +99,56 @@ class CitizenReport(Base):
     reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     reviewed_at = Column(DateTime(timezone=True), nullable=True)
     review_version = Column(Integer, nullable=False, default=0, server_default="0")
+    # Staff choice to show this report on the public map for 24 h after it was reported.
+    public_visible = Column(Boolean, nullable=False, default=False, server_default="false")
+    published_at = Column(DateTime(timezone=True), nullable=True)
+    published_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    # sha256 of the resident's private tracking code (the code itself is shown once, never stored).
+    tracking_hash = Column(String(64), nullable=True)
+    # One photo, re-encoded without metadata; the file is named by this hash (staff only).
+    photo_sha256 = Column(String(64), nullable=True)
+    photo_bytes = Column(Integer, nullable=True)
 
     zone = relationship("Zone")
-    reviewer = relationship("User")
+    reviewer = relationship("User", foreign_keys=[reviewed_by])
 
     @property
     def zone_name(self):
+        if self.area_id:
+            from src.api.services import reporting_areas
+            try:
+                return reporting_areas.name(self.area_id) or self.area_id
+            except reporting_areas.ReportingAreasUnavailable:
+                return self.area_id
         return self.zone.name if self.zone else self.zone_id
 
     @property
     def reviewed_by_name(self):
         return self.reviewer.name if self.reviewer else None
+
+    @property
+    def photo_attached(self):
+        return self.photo_sha256 is not None
+
+
+class AreaAdvisory(Base):
+    """A short, time-limited message officers post for a sub-county (optionally a pinned spot)."""
+    __tablename__ = "area_advisories"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    area_id = Column(String(80), nullable=False)
+    place_label = Column(String(120), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    message = Column(String(280), nullable=False)
+    level = Column(String(20), nullable=False)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    withdrawn_at = Column(DateTime(timezone=True), nullable=True)
+    withdrawn_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+
+    author = relationship("User", foreign_keys=[created_by])
 
 
 class ReportReviewEvent(Base):
@@ -120,5 +160,8 @@ class ReportReviewEvent(Base):
     status = Column(String(20), nullable=False)
     note = Column(Text, nullable=True)
     version = Column(Integer, nullable=False)
+    public_visible = Column(Boolean, nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)
     __table_args__ = (UniqueConstraint("report_id", "version"),)
+
+

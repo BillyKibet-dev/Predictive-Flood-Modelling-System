@@ -150,6 +150,25 @@ def test_native_migration_up_down_is_repeatable_preserves_legacy_report_rows(nat
         conn.execute(text("UPDATE citizen_reports SET location_description='fixture location'"))
         with pytest.raises(ValueError,match='archived'):
             migrate(conn,schema=schema,downgrade=True)
+        # Publication needs a pin, a time and a staff member (database constraint).
+        with pytest.raises(Exception):
+            with conn.begin_nested():
+                conn.execute(text("UPDATE citizen_reports SET public_visible=true"))
+        # 007: a report needs a zone or a sub-county; a sub-county-only report blocks rollback.
+        with pytest.raises(Exception):
+            with conn.begin_nested():
+                conn.execute(text("UPDATE citizen_reports SET zone_id=NULL"))
+        conn.execute(text("INSERT INTO citizen_reports(area_id,timestamp,observed_condition,perceived_severity) VALUES ('nairobi-subcounty-kibra',CURRENT_TIMESTAMP,'Other','Mild')"))
+        with pytest.raises(ValueError,match='sub-county'):
+            migrate(conn,schema=schema,downgrade=True,allow_data_loss=True)
+        # 008: an advisory needs a valid level; tracking codes block rollback.
+        with pytest.raises(Exception):
+            with conn.begin_nested():
+                conn.execute(text("INSERT INTO area_advisories(area_id,message,level,created_by,expires_at) VALUES ('x','fixture','Panic',1,CURRENT_TIMESTAMP+interval '1 hour')"))
+        conn.execute(text("DELETE FROM citizen_reports WHERE zone_id IS NULL"))
+        conn.execute(text("UPDATE citizen_reports SET tracking_hash=repeat('a',64)"))
+        with pytest.raises(ValueError,match='tracking codes'):
+            migrate(conn,schema=schema,downgrade=True,allow_data_loss=True)
 
 
 def test_native_public_to_staff_and_conflicting_review_are_transactional(native_reports):
@@ -199,3 +218,33 @@ def test_native_concurrent_admin_demotion_cannot_remove_all_administrators(nativ
             assert db.query(User).filter_by(role='admin',status='Active').count()==1
     finally:
         app.dependency_overrides.clear();app.dependency_overrides.update(previous)
+
+
+def test_staff_publish_checked_reports_to_public_map_for_24_hours_only(api):
+    from datetime import timedelta
+    c,db=api
+    saved=c.post('/citizen-report',json=report(description='Private detail 0712 000 000',latitude=-1.312345,longitude=36.812345)).json()
+    no_pin=c.post('/citizen-report',json=report(latitude=None,longitude=None,location_accuracy_m=None)).json()
+    assert c.get('/community-reports/recent').json()['items']==[]  # nothing published yet
+    review=lambda rid,version,**extra:c.patch(f'/citizen-reports/{rid}/review',headers=token(),
+                                             json={'status':'Reviewed','expected_version':version,**extra})
+    assert review(no_pin['id'],0,public=True).status_code==422  # a pin is required
+    published=review(saved['id'],0,public=True,note='Internal note')
+    assert published.status_code==200 and published.json()['public_visible'] is True and published.json()['published_at']
+    body=c.get('/community-reports/recent')
+    assert body.headers['cache-control']=='no-store'
+    item=body.json()['items'][0]
+    assert (item['latitude'],item['longitude'])==(-1.312,36.812) and item['observed_condition']=='Blocked drainage'
+    for private in ('description','review_note','ip_hash','reviewed_by_name','location_accuracy_m'):
+        assert private not in item
+    assert '0712' not in body.text and 'Internal note' not in body.text
+    assert db.query(ReportReviewEvent).filter_by(report_id=saved['id']).one().public_visible is True
+    # Omitting the choice keeps it; resolving withdraws it.
+    assert review(saved['id'],1,note='changed').json()['public_visible'] is True
+    resolved=c.patch(f'/citizen-reports/{saved["id"]}/review',headers=token(),json={'status':'Resolved','expected_version':2})
+    assert resolved.json()['public_visible'] is False and c.get('/community-reports/recent').json()['items']==[]
+    # Reports older than 24 hours leave the public map even if still published.
+    again=c.patch(f'/citizen-reports/{saved["id"]}/review',headers=token(),json={'status':'Reviewed','expected_version':3,'public':True})
+    assert again.status_code==200 and len(c.get('/community-reports/recent').json()['items'])==1
+    db.get(CitizenReport,saved['id']).timestamp=datetime.now(timezone.utc)-timedelta(hours=25);db.commit()
+    assert c.get('/community-reports/recent').json()['items']==[]

@@ -1,0 +1,44 @@
+{
+  "zones": [
+    {
+      "id": "cbd",
+      "latitude": -1.286,
+      "longitude": 36.817
+    },
+    {
+      "id": "dagoretti",
+      "latitude": -1.295,
+      "longitude": 36.754
+    },
+    {
+      "id": "embakasi",
+      "latitude": -1.32,
+      "longitude": 36.895
+    },
+    {
+      "id": "kasarani",
+      "latitude": -1.221,
+      "longitude": 36.897
+    },
+    {
+      "id": "kibera",
+      "latitude": -1.314,
+      "longitude": 36.784
+    },
+    {
+      "id": "mathare",
+      "latitude": -1.26,
+      "longitude": 36.86
+    },
+    {
+      "id": "ruaraka",
+      "latitude": -1.241,
+      "longitude": 36.876
+    },
+    {
+      "id": "westlands",
+      "latitude": -1.264,
+      "longitude": 36.807
+    }
+  ]
+}

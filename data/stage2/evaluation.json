@@ -1,0 +1,231 @@
+{
+  "protocol": "Stage 2: does a small XGBoost beat the Stage 1 rule on genuinely live-available inputs?\n\n    python -m src.modeling.stage2.train\n\nData: archived ECMWF IFS 00 UTC runs (issue day I) + IMERG Early observed days + CHIRPS\nv1 labels for target I+1, 8 zones, Mar 2024 - Sep 2026.\n\nPre-declared protocol (fixed before any result was seen):\n* Validation: leave-one-season-out over 10 seasonal blocks (MAM, JJAS, OND, JF by year),\n  plus a forward check training only on earlier blocks.\n* Contenders: Stage 1 rule (live), old tomorrow-only rule, XGBoost with fixed\n  hyper-parameters (no tuning), balanced class weights, arg-max class.\n* Primary metric: zone-day High-or-above critical success index (CSI).\n* Adoption: XGBoost replaces the rule only if mean CSI gain > 0, the 95 % date-cluster\n  bootstrap interval of the gain is entirely above 0, and Extreme recall falls by no more\n  than 0.05. Otherwise the rule stays live and XGBoost is reported as an experiment.\n",
+  "skipped": {
+    "FeatureError": 8
+  },
+  "decision": {
+    "primary_metric": "zone-day High-or-above CSI, leave-one-season-out",
+    "csi_gain": 0.13023239952940374,
+    "bootstrap_95": [
+      0.07650360426865108,
+      0.18553611571040893
+    ],
+    "extreme_recall_drop": -0.01282051282051283,
+    "adopted": true,
+    "live_method": "stage2_xgboost"
+  },
+  "leave_one_season_out": {
+    "stage1_rule": {
+      "rows": 7384,
+      "macro_f1": 0.5501210470288245,
+      "high_or_above": {
+        "hits": 439,
+        "misses": 540,
+        "false_alarms": 136,
+        "pod": 0.4484167517875383,
+        "far": 0.23652173913043478,
+        "csi": 0.3937219730941704
+      },
+      "extreme": {
+        "hits": 95,
+        "misses": 217,
+        "false_alarms": 44,
+        "pod": 0.30448717948717946,
+        "far": 0.31654676258992803,
+        "csi": 0.26685393258426965
+      },
+      "date_level_high_or_above": {
+        "hits": 84,
+        "misses": 77,
+        "false_alarms": 23,
+        "pod": 0.5217391304347826,
+        "far": 0.21495327102803738,
+        "csi": 0.45652173913043476
+      }
+    },
+    "old_tomorrow_rule": {
+      "rows": 7384,
+      "macro_f1": 0.31656874087319536,
+      "high_or_above": {
+        "hits": 63,
+        "misses": 916,
+        "false_alarms": 73,
+        "pod": 0.06435137895812053,
+        "far": 0.5367647058823529,
+        "csi": 0.05988593155893536
+      },
+      "extreme": {
+        "hits": 0,
+        "misses": 312,
+        "false_alarms": 3,
+        "pod": 0.0,
+        "far": 1.0,
+        "csi": 0.0
+      },
+      "date_level_high_or_above": {
+        "hits": 27,
+        "misses": 134,
+        "false_alarms": 15,
+        "pod": 0.16770186335403728,
+        "far": 0.35714285714285715,
+        "csi": 0.1534090909090909
+      }
+    },
+    "xgboost": {
+      "rows": 7384,
+      "macro_f1": 0.5674348833453126,
+      "high_or_above": {
+        "hits": 689,
+        "misses": 290,
+        "false_alarms": 336,
+        "pod": 0.7037793667007151,
+        "far": 0.3278048780487805,
+        "csi": 0.5239543726235741
+      },
+      "extreme": {
+        "hits": 99,
+        "misses": 213,
+        "false_alarms": 131,
+        "pod": 0.3173076923076923,
+        "far": 0.5695652173913044,
+        "csi": 0.2234762979683973
+      },
+      "date_level_high_or_above": {
+        "hits": 126,
+        "misses": 35,
+        "false_alarms": 51,
+        "pod": 0.782608695652174,
+        "far": 0.288135593220339,
+        "csi": 0.5943396226415094
+      }
+    }
+  },
+  "forward_only": {
+    "stage1_rule": {
+      "rows": 5096,
+      "macro_f1": 0.4808135071865974,
+      "high_or_above": {
+        "hits": 228,
+        "misses": 270,
+        "false_alarms": 89,
+        "pod": 0.4578313253012048,
+        "far": 0.2807570977917981,
+        "csi": 0.38841567291311757
+      },
+      "extreme": {
+        "hits": 4,
+        "misses": 147,
+        "false_alarms": 3,
+        "pod": 0.026490066225165563,
+        "far": 0.42857142857142855,
+        "csi": 0.025974025974025976
+      },
+      "date_level_high_or_above": {
+        "hits": 48,
+        "misses": 34,
+        "false_alarms": 15,
+        "pod": 0.5853658536585366,
+        "far": 0.23809523809523808,
+        "csi": 0.4948453608247423
+      }
+    },
+    "old_tomorrow_rule": {
+      "rows": 5096,
+      "macro_f1": 0.3292588172115673,
+      "high_or_above": {
+        "hits": 30,
+        "misses": 468,
+        "false_alarms": 54,
+        "pod": 0.060240963855421686,
+        "far": 0.6428571428571429,
+        "csi": 0.05434782608695652
+      },
+      "extreme": {
+        "hits": 0,
+        "misses": 151,
+        "false_alarms": 0,
+        "pod": 0.0,
+        "far": null,
+        "csi": 0.0
+      },
+      "date_level_high_or_above": {
+        "hits": 16,
+        "misses": 66,
+        "false_alarms": 11,
+        "pod": 0.1951219512195122,
+        "far": 0.4074074074074074,
+        "csi": 0.17204301075268819
+      }
+    },
+    "xgboost": {
+      "rows": 5096,
+      "macro_f1": 0.483698085805601,
+      "high_or_above": {
+        "hits": 342,
+        "misses": 156,
+        "false_alarms": 226,
+        "pod": 0.6867469879518072,
+        "far": 0.397887323943662,
+        "csi": 0.4723756906077348
+      },
+      "extreme": {
+        "hits": 1,
+        "misses": 150,
+        "false_alarms": 51,
+        "pod": 0.006622516556291391,
+        "far": 0.9807692307692307,
+        "csi": 0.0049504950495049506
+      },
+      "date_level_high_or_above": {
+        "hits": 67,
+        "misses": 15,
+        "false_alarms": 40,
+        "pod": 0.8170731707317073,
+        "far": 0.37383177570093457,
+        "csi": 0.5491803278688525
+      }
+    }
+  },
+  "by_season": {
+    "2024-JJAS": {
+      "stage1_rule": 0.0,
+      "xgboost": 0.03333333333333333
+    },
+    "2024-MAM": {
+      "stage1_rule": 0.4830508474576271,
+      "xgboost": 0.6236263736263736
+    },
+    "2024-OND": {
+      "stage1_rule": 0.2702702702702703,
+      "xgboost": 0.49
+    },
+    "2025-JF": {
+      "stage1_rule": 0.42,
+      "xgboost": 0.5915492957746479
+    },
+    "2025-JJAS": {
+      "stage1_rule": 0.18181818181818182,
+      "xgboost": 0.0
+    },
+    "2025-MAM": {
+      "stage1_rule": 0.10067114093959731,
+      "xgboost": 0.33760683760683763
+    },
+    "2025-OND": {
+      "stage1_rule": 0.30392156862745096,
+      "xgboost": 0.49523809523809526
+    },
+    "2026-JF": {
+      "stage1_rule": 0.7108433734939759,
+      "xgboost": 0.74
+    },
+    "2026-JJAS": {
+      "stage1_rule": null,
+      "xgboost": null
+    },
+    "2026-MAM": {
+      "stage1_rule": 0.5208333333333334,
+      "xgboost": 0.5771144278606966
+    }
+  }
+}

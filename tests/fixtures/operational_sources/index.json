@@ -1,0 +1,12 @@
+{
+  "available_12utc": {
+    "path": "readiness/sha256/33/3378e774c964cf063bafa34d298e2c1a4da1598d52f176feb7bcd9c2cad2fca6.json",
+    "sha256": "3378e774c964cf063bafa34d298e2c1a4da1598d52f176feb7bcd9c2cad2fca6",
+    "bytes": 185601
+  },
+  "unavailable_18utc": {
+    "path": "readiness/sha256/63/63e903fbf66444debaf86609c839cbde69c33c036d08a45593f7e4f0f8c5c594.json",
+    "sha256": "63e903fbf66444debaf86609c839cbde69c33c036d08a45593f7e4f0f8c5c594",
+    "bytes": 8447
+  }
+}

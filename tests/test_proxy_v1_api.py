@@ -311,7 +311,7 @@ def test_default_api_lifespan_has_no_database_scheduler_or_weather_side_effects(
 
 def test_corrupt_legacy_artifact_does_not_break_api_module_import(monkeypatch):
     from src.api.services.ml_service import MLService
-    monkeypatch.setattr("src.api.services.ml_service.joblib.load", Mock(side_effect=ValueError("corrupt fixture")))
+    monkeypatch.setattr("src.api.services.ml_service.load_json_artifacts", Mock(side_effect=ValueError("corrupt fixture")))
     service = MLService()
     assert service.is_loaded is False
 

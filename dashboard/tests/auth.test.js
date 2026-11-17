@@ -69,3 +69,19 @@ test('never sends bearer to an arbitrary URL', async()=>{
     await assert.rejects(session.authorizedRequest('//untrusted.test'),/Invalid API path/)
   } finally {session.logout()}
 })
+test('operator collection timeout stays bounded and is not forwarded as a fetch option', async()=>{
+  const calls=[]
+  const session=createAuthSession({now:()=>now,fetchImpl:async(path,options)=>{
+    calls.push(options)
+    return reply(path.endsWith('/auth/login')?{access_token:token,token_type:'bearer'}:active)
+  }})
+  try{
+    await session.login('fixture@example.test','fixture-password')
+    await session.authorizedRequest('/monitoring-areas/collection',{method:'POST',timeoutMs:75000})
+    assert.equal('timeoutMs' in calls.at(-1),false)
+    const before=calls.length
+    for(const timeoutMs of [0,NaN,Infinity,90001])
+      await assert.rejects(session.authorizedRequest('/monitoring-areas/collection',{timeoutMs}),/timeout/)
+    assert.equal(calls.length,before)
+  }finally{session.logout()}
+})

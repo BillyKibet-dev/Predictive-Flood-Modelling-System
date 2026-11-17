@@ -1,8 +1,17 @@
-"""Loads the trained XGBoost flood-risk model and runs inference."""
-import logging
+"""Loads the original 9-feature XGBoost flood-risk model (legacy pipeline) and runs inference.
 
-import joblib
-import pandas as pd
+Reads models/legacy-v2/ (XGBoost JSON + the scaler's numbers), converted from the original
+pickles by src.scripts.export_legacy_model with identical outputs. No pickle is loaded, so
+library upgrades cannot change behaviour silently and no file can run code on load.
+"""
+import hashlib
+import json
+import logging
+from pathlib import Path
+
+import numpy as np
+from types import SimpleNamespace
+import xgboost as xgb
 
 from src.api.config import settings
 from src.api.services.model_contract import (
@@ -13,6 +22,22 @@ from src.api.services.model_contract import (
 logger = logging.getLogger("nairobifloodwatch.ml_service")
 
 RISK_LABELS = {0: "Low", 1: "Moderate", 2: "High", 3: "Extreme"}
+
+
+def load_json_artifacts(directory: Path):
+    """Model, scaler numbers and feature order, each checked against the export manifest."""
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
+    for name, expected in manifest["files_sha256"].items():
+        if hashlib.sha256((directory / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"{name} does not match its manifest")
+    features = json.loads((directory / "features.json").read_text(encoding="utf-8"))
+    scaler = json.loads((directory / "scaler.json").read_text(encoding="utf-8"))
+    scaler = dict(scale=np.asarray(scaler["scale"], dtype=np.float64), min=np.asarray(scaler["min"], dtype=np.float64))
+    booster = xgb.Booster()
+    booster.load_model(directory / "model.json")
+    validate_artifacts(SimpleNamespace(n_features_in_=booster.num_features(), classes_=list(range(int(json.loads(booster.save_config())["learner"]["learner_model_param"]["num_class"])))),
+                       SimpleNamespace(n_features_in_=len(scaler["scale"])), features)
+    return booster, scaler, features
 
 
 class MLService:
@@ -27,10 +52,7 @@ class MLService:
 
     def _load(self):
         try:
-            self.model = joblib.load(settings.MODEL_PATH)
-            self.scaler = joblib.load(settings.SCALER_PATH)
-            self.feature_cols = joblib.load(settings.FEATURE_COLS_PATH)
-            validate_artifacts(self.model, self.scaler, self.feature_cols)
+            self.model, self.scaler, self.feature_cols = load_json_artifacts(Path(settings.LEGACY_MODEL_DIR))
             logger.info("MLService: model, scaler, and feature columns loaded successfully")
         except Exception as exc:
             # Legacy pickle/version errors must not prevent the separate research API
@@ -49,11 +71,10 @@ class MLService:
             raise ModelUnavailableError("Model artefacts are unavailable")
 
         values = validate_feature_row(weather_data)
-        frame = pd.DataFrame([values], columns=self.feature_cols)
-        scaled = self.scaler.transform(frame.values)
-
-        risk_class = int(self.model.predict(scaled)[0])
-        probabilities = self.model.predict_proba(scaled)[0]
+        row = np.asarray([values], dtype=np.float64)  # validate_feature_row returns the trained order
+        scaled = (row * self.scaler["scale"] + self.scaler["min"]).astype(np.float32)
+        probabilities = self.model.predict(xgb.DMatrix(scaled))[0]
+        risk_class = int(probabilities.argmax())
         confidence = float(max(probabilities))
         all_probabilities = {
             RISK_LABELS[i]: float(p) for i, p in enumerate(probabilities)

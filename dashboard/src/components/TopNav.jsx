@@ -1,126 +1,51 @@
 import { Droplets, LogOut, Moon, Sun } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useLanguage } from '../context/LanguageContext'
 import { useTheme } from '../context/ThemeContext'
+import { LANGUAGES } from '../i18n/strings'
 
-const APP_LINKS = [
-  { to: '/', label: 'Map' },
-  { to: '/officer', label: 'Dashboard' },
-  { to: '/officer/alerts', label: 'Advisories' },
-  { to: '/officer/reports', label: 'Reports' },
-  { to: '/environmental-data', label: 'Rainfall history' },
+const STAFF_LINKS = [
+  { to: '/officer', label: 'Overview' }, { to: '/officer/reports', label: 'Reports' }, { to: '/advisories', label: 'Advisories' },
+  { to: '/weather-outlook', label: 'Weather' }, { to: '/history', label: 'Rainfall history' }, { to: '/downloads', label: 'Downloads' },
 ]
 
-// Universal top navigation — adapts between the public (map/citizen) shell
-// and the authenticated app shell (officer/admin) used across protected pages.
-export default function TopNav({ variant = 'public', active, unacknowledgedCount = 0 }) {
+// The bar on public pages (map, report form, route checker). Signed-in staff use the
+// sidebar in StaffLayout; here they get a link back to it and a compact menu.
+export default function TopNav({ active }) {
   const { user, logout } = useAuth()
   const { dark, toggleTheme } = useTheme()
+  const { lang, setLang, t } = useLanguage()
   const navigate = useNavigate()
-
-  function handleSignOut() {
-    logout()
-    navigate('/')
-  }
-
-  const ThemeToggle = (
-    <button
-      onClick={toggleTheme}
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="w-9 h-9 flex items-center justify-center rounded-btn text-muted hover:text-ink hover:bg-bg transition-colors"
-    >
-      {dark ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
-  )
-
+  const link = (to, key, name) => <Link to={to} className={`hidden md:inline text-sm font-medium ${active === name ? 'text-ink' : 'text-muted hover:text-ink'}`}
+    aria-current={active === name ? 'page' : undefined}>{t(key)}</Link>
   return (
-    <nav className="min-h-16 bg-surface border-b border-border flex flex-wrap gap-y-2 items-center px-4 sm:px-6 sticky top-0 z-[1100]">
-      <Link to="/" className="flex items-center gap-2 font-semibold text-brand" aria-label="NairobiFloodWatch home">
-        <Droplets size={22} />
-        NairobiFloodWatch
-        {variant === 'app' && user?.role === 'admin' && (
-          <span className="text-xs font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-badge">Admin</span>
-        )}
+    <nav className="min-h-14 bg-surface border-b border-border flex flex-wrap gap-y-2 items-center gap-x-5 px-4 sm:px-6 sticky top-0 z-[1100]">
+      <Link to="/" className="flex items-center gap-2 font-semibold text-ink tracking-tight" aria-label="NairobiFloodWatch home">
+        <span className="w-7 h-7 rounded-btn bg-brand text-white grid place-items-center"><Droplets size={16} /></span>
+        <span className="hidden min-[400px]:inline">NairobiFloodWatch</span>
       </Link>
+      {link('/citizen', 'nav.report', 'citizen')}
+      {link('/route', 'nav.route', 'route')}
 
-      {variant === 'app' && (
-        <div className="hidden lg:flex items-center gap-4 mx-auto" aria-label="Primary">
-          {APP_LINKS.filter((l) => l.to !== '/admin' || user?.role === 'admin').map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className={`text-sm font-medium pb-1 border-b-2 transition-colors ${
-                active === l.label ? 'text-brand border-brand' : 'text-muted border-transparent hover:text-ink'
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
-          {user?.role === 'admin' && (
-            <Link
-              to="/admin"
-              className={`text-sm font-medium pb-1 border-b-2 transition-colors ${
-                active === 'Admin' ? 'text-brand border-brand' : 'text-muted border-transparent hover:text-ink'
-              }`}
-            >
-              Admin
-            </Link>
-          )}
+      <div className="flex items-center gap-2 ml-auto">
+        <div role="group" aria-label={t('nav.language')} className="flex p-0.5 rounded-btn bg-surface-2 text-xs font-semibold">
+          {LANGUAGES.map(l => <button key={l.code} type="button" lang={l.code} aria-pressed={lang === l.code} title={l.label}
+            onClick={() => setLang(l.code)} className={`h-7 px-2 rounded-[6px] ${lang === l.code ? 'bg-surface text-ink shadow-card-rest' : 'text-muted hover:text-ink'}`}>{l.short}</button>)}
         </div>
-      )}
-
-      <div className="flex items-center gap-3 ml-auto">
-        {user && <select aria-label="Staff navigation" className="lg:hidden max-w-28 text-xs bg-surface text-ink border border-border rounded-btn p-1" value="" onChange={event => navigate(event.target.value)}><option value="" disabled>Menu</option>{APP_LINKS.map(link => <option key={link.to} value={link.to}>{link.label}</option>)}{user.role === 'admin' && <option value="/admin">Admin</option>}</select>}
-        {variant === 'public' && (
-          <Link
-            to="/citizen"
-            className={`hidden sm:inline text-sm font-medium ${active === 'citizen' ? 'text-brand underline underline-offset-4' : 'text-muted hover:text-ink'}`}
-          >
-            View Warnings
-          </Link>
-        )}
-
-        {variant === 'app' && unacknowledgedCount > 0 && (
-          <span
-            className="text-xs font-semibold bg-risk-extreme text-white rounded-full w-6 h-6 flex items-center justify-center"
-            style={{ animation: 'marker-pulse 2s ease-in-out infinite' }}
-            aria-label={`${unacknowledgedCount} unacknowledged alerts`}
-          >
-            {unacknowledgedCount}
-          </span>
-        )}
-
-        {ThemeToggle}
-
-        {!user && variant === 'public' && (
-          <Link
-            to="/login"
-            className="text-sm font-medium border border-brand text-brand rounded-btn px-4 h-10 flex items-center hover:bg-brand hover:text-white transition-colors"
-          >
-            Sign In
-          </Link>
-        )}
-
-        {user && (
-          <>
-            {variant === 'public' && (
-              <Link
-                to={user.role === 'admin' ? '/admin' : '/officer'}
-                className="text-sm font-medium text-brand hover:underline"
-              >
-                Go to {user.role === 'admin' ? 'Admin' : 'Dashboard'} →
-              </Link>
-            )}
-            <span className="hidden sm:inline text-sm text-ink">{user.name}</span>
-            <button
-              onClick={handleSignOut}
-              aria-label="Sign out"
-              className="flex items-center gap-1 text-sm font-medium text-muted hover:text-ink"
-            >
-              <LogOut size={16} /> Sign Out
-            </button>
-          </>
-        )}
+        <button onClick={toggleTheme} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="w-9 h-9 flex items-center justify-center rounded-btn text-muted hover:text-ink hover:bg-surface-2">
+          {dark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+        {!user && <Link to="/login" className="press text-sm font-medium border border-border bg-surface text-ink rounded-btn px-3.5 h-9 flex items-center hover:bg-surface-2">{t('nav.signIn')}</Link>}
+        {user && <>
+          <select aria-label="Staff navigation" className="md:hidden max-w-28 text-xs bg-surface text-ink border border-border rounded-btn h-9 px-1" value="" onChange={event => navigate(event.target.value)}>
+            <option value="" disabled>Menu</option>{STAFF_LINKS.map(l => <option key={l.to} value={l.to}>{l.label}</option>)}
+            {user.role === 'admin' && <option value="/admin">Admin</option>}
+          </select>
+          <Link to={user.role === 'admin' ? '/admin' : '/officer'} className="hidden md:inline text-sm font-medium text-accent">Back to workspace →</Link>
+          <button onClick={() => { logout(); navigate('/') }} aria-label="Sign out" title="Sign out" className="w-9 h-9 grid place-items-center rounded-btn text-muted hover:text-ink hover:bg-surface-2"><LogOut size={16} /></button>
+        </>}
       </div>
     </nav>
   )

@@ -1,17 +1,14 @@
 import { useMemo, useState } from 'react'
 import { DEFAULT_REPLAY_DATE, predictionViewConfiguration } from '../services/proxyPredictions'
-import usePredictions from './usePredictions'
 import useProxyPredictions from './useProxyPredictions'
 
 export default function usePredictionView() {
-  const [view, setView] = useState('legacy')
+  const [view, setView] = useState('v1_replay')
   const [inputDate, setInputDate] = useState(DEFAULT_REPLAY_DATE)
   const configuration = useMemo(() => predictionViewConfiguration(view, inputDate), [view, inputDate])
-  const legacy = usePredictions(true)
-  const proxy = useProxyPredictions(view === 'legacy' ? null : configuration)
+  const proxy = useProxyPredictions(configuration)
   return {
-    ...(view === 'legacy' ? legacy : proxy),
-    current: legacy,
+    ...proxy,
     selection: { view, inputDate, setView, setInputDate },
   }
 }

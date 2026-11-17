@@ -1,0 +1,25 @@
+# INERT EXAMPLE. Review paths, entitlement, NTP, backups, users and secrets before installation.
+[Unit]
+Description=NairobiFloodWatch source collection only (no inference)
+Wants=network-online.target time-sync.target
+After=network-online.target time-sync.target
+
+[Service]
+Type=oneshot
+User=floodwatch
+Group=floodwatch
+WorkingDirectory=/srv/nairobifloodwatch
+EnvironmentFile=/etc/nairobifloodwatch/collection.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/srv/nairobifloodwatch/.venv/bin/python -m src.scripts.run_forecast_collection --execute --require-synced-clock --store-root /var/lib/nairobifloodwatch/operational_sources
+# No automatic retry: resume verified receipts or label a new attempt explicitly.
+Restart=no
+TimeoutStartSec=300
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/nairobifloodwatch/operational_sources
+StandardOutput=journal
+StandardError=journal

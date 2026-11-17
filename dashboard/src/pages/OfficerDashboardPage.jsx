@@ -1,112 +1,114 @@
+import { ArrowRight, RefreshCw } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import TopNav from '../components/TopNav'
-import RiskBadge from '../components/RiskBadge'
+import StaffLayout, { PageHeader, buttonClass } from '../components/StaffLayout'
+import { riskColor } from '../constants/colors'
+import { useAuth } from '../context/AuthContext'
+import useCommunityReports from '../hooks/useCommunityReports'
+import useMonitoringAreas from '../hooks/useMonitoringAreas'
+import useMonitoringOutlook from '../hooks/useMonitoringOutlook'
 import useStaffList from '../hooks/useStaffList'
-import { formatPredictionTime } from '../services/predictions'
+import { timeAgo } from '../services/communityReports'
+import { CLASSES } from '../services/monitoringOutlook'
+import { watchClosely, watchOrder } from '../services/susceptibility'
+import useSusceptibility from '../hooks/useSusceptibility'
 
-export default function OfficerDashboardPage({ predictions }) {
-  const { data, error, refresh, isRefreshing } = predictions
-  const reports = useStaffList('/citizen-reports?review_status=New&limit=1')
-  const zones = data?.zones ?? []
-  return (
-    <div className="min-h-screen bg-bg">
-      <TopNav variant="app" active="Dashboard" />
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-6 text-ink">
-        <div className="flex flex-wrap justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-semibold">Officer overview</h1>
-            <p className="text-sm text-muted mt-1">
-              Latest saved weather advisories and community reports support your assessment.
-              Decisions remain with officers.
-            </p>
-          </div>
-          <Link className="text-brand underline" to="/">
-            Open risk map
-          </Link>
-        </div>
-        {error && (
-          <p role="alert">
-            Could not refresh advisories.{' '}
-            {data ? 'The last fetched records remain visible.' : 'No data is confirmed.'}
-          </p>
-        )}
-        <div className="grid sm:grid-cols-3 gap-4">
-          {[
-            ['Study zones', data ? zones.length : 'Unavailable'],
-            [
-              'New citizen reports',
-              reports.data?.total ?? (reports.error ? 'Unavailable' : 'Loading...'),
-            ],
-            ['Latest saved advisory', formatPredictionTime(data?.lastUpdated)],
-          ].map(([label, value]) => (
-            <div key={label} className="bg-surface border border-border rounded-card p-4">
-              <p className="text-sm text-muted">{label}</p>
-              <p className="font-semibold mt-2">{value}</p>
-            </div>
-          ))}
-        </div>
-        {reports.error && (
-          <p role="alert">
-            Report inbox could not be loaded.{' '}
-            <Link className="underline" to="/officer/reports">
-              Open inbox to retry
-            </Link>
-            .
-          </p>
-        )}
-        <div className="flex gap-4 text-sm">
-          <Link className="text-brand underline" to="/officer/reports">
-            Review citizen reports
-          </Link>
-          <Link className="text-brand underline" to="/officer/alerts">
-            Review saved advisories
-          </Link>
-          <Link className="text-brand underline" to="/environmental-data">
-            Inspect rainfall history
-          </Link>
-        </div>
-        <section className="space-y-3">
-          <div className="flex justify-between">
-            <h2 className="text-lg font-semibold">Saved zone indications</h2>
-            <button
-              onClick={refresh}
-              disabled={isRefreshing}
-              className="border border-border rounded-btn p-2 text-sm"
-            >
-              Refresh advisories
-            </button>
-          </div>
-          <p className="text-sm text-muted">
-            The older model shares Nairobi weather across study zones. Check the timestamps; these
-            records do not resolve street drainage or predict inundation.
-          </p>
-          <div className="overflow-x-auto bg-surface rounded-card border border-border">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr>
-                  {['Study zone', 'Advisory class', 'Saved at'].map((label) => (
-                    <th key={label} className="p-3">
-                      {label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {zones.map((zone) => (
-                  <tr className="border-t border-border" key={zone.id}>
-                    <td className="p-3">{zone.name}</td>
-                    <td className="p-3">
-                      <RiskBadge risk={zone.risk} size="sm" />
-                    </td>
-                    <td className="p-3">{formatPredictionTime(zone.timestamp)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {!zones.length && <p className="p-4">No zone advisories loaded.</p>}
-          </div>
-        </section>
-      </main>
+const STATUS_LABEL = { New: 'New', Reviewed: 'Reviewed', ActionNeeded: 'Action needed', Resolved: 'Resolved' }
+const time = value => new Intl.DateTimeFormat('en-KE', { timeZone: 'Africa/Nairobi', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
+const greeting = () => { const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Nairobi', hour: 'numeric' }).format(new Date())); return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening' }
+
+function Tile({ label, value, to, hint, tone }) {
+  return <Link to={to} className="panel card-hover p-5 flex flex-col group">
+    <span className="eyebrow">{label}</span>
+    <span className="text-3xl font-semibold tracking-tight mt-2 tabular" style={tone ? { color: tone } : undefined}>{value}</span>
+    <span className="text-xs text-muted mt-auto pt-3 flex items-center gap-1 group-hover:text-accent">{hint}<ArrowRight size={12} aria-hidden="true" /></span>
+  </Link>
+}
+
+// Tomorrow at a glance: one bar split by category, each part labelled with its count.
+function OutlookBar({ counts, total }) {
+  return <div>
+    <div className="flex h-2.5 rounded-full overflow-hidden gap-0.5 bg-surface-2" aria-hidden="true">
+      {CLASSES.map(c => counts[c] ? <span key={c} style={{ flexGrow: counts[c], background: riskColor(c) }} /> : null)}
     </div>
-  )
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-sm" aria-label="Places by category tomorrow">
+      {[...CLASSES].reverse().filter(c => counts[c]).map(c => <li key={c} className="flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full" style={{ background: riskColor(c) }} aria-hidden="true" />
+        <span className="tabular font-medium">{counts[c]}</span><span className="text-muted">{c}</span></li>)}
+      {total > 0 && <li className="text-muted">of {total} places</li>}
+    </ul>
+  </div>
+}
+
+export default function OfficerDashboardPage() {
+  const { user } = useAuth()
+  const incoming = useStaffList('/citizen-reports?review_status=New&limit=1')
+  const action = useStaffList('/citizen-reports?review_status=ActionNeeded&limit=1')
+  const recent = useStaffList('/citizen-reports?limit=6')
+  const outlook = useMonitoringOutlook(), areas = useMonitoringAreas(), published = useCommunityReports(), susceptibility = useSusceptibility()
+  const count = state => state.error ? '—' : state.data?.total ?? '…'
+  const available = outlook.data?.areas.filter(a => a.status === 'AVAILABLE') ?? []
+  const counts = Object.fromEntries(CLASSES.map(c => [c, available.filter(a => a.proxy_class === c).length]))
+  const names = Object.fromEntries((areas.data?.sites ?? []).map(s => [s.id, s]))
+  const local = susceptibility.data?.byArea ?? {}
+  const watch = available.filter(a => ['High', 'Extreme'].includes(a.proxy_class))
+  // Rank by tomorrow's category, then by how easily the place floods, then by rainfall.
+  const ranked = [...available].sort((a, b) => watchOrder(b.proxy_class, local[b.area_id]) - watchOrder(a.proxy_class, local[a.area_id]) || (b.rainfall_mm ?? 0) - (a.rainfall_mm ?? 0))
+  const closely = ranked.filter(a => watchClosely(a.proxy_class, local[a.area_id]))
+  const updated = available[0]?.received_at
+  const refresh = () => { incoming.refresh(); action.refresh(); recent.refresh(); outlook.refresh(); published.refresh() }
+  return <StaffLayout>
+    <PageHeader title={`${greeting()}, ${user?.name.split(' ')[0] ?? ''}`} description="Reports waiting for you and tomorrow's rainfall outlook.">
+      <button className={buttonClass} onClick={refresh}><RefreshCw size={15} />Refresh</button>
+    </PageHeader>
+
+    <section className="grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Report workload">
+      <Tile label="New reports" value={count(incoming)} to="/officer/reports?review_status=New" hint="Review" tone={incoming.data?.total ? 'var(--accent)' : undefined} />
+      <Tile label="Action needed" value={count(action)} to="/officer/reports?review_status=ActionNeeded" hint="Follow up" />
+      <Tile label="On public map" value={published.data ? published.data.items.length : published.error ? '—' : '…'} to="/" hint="Last 24 hours" />
+      <Tile label="High or Extreme" value={outlook.data ? watch.length : '…'} to="/" hint="Places tomorrow" tone={watch.length ? riskColor(watch[0].proxy_class) : undefined} />
+    </section>
+    {(incoming.error || action.error) && <p role="alert" className="text-sm mt-2">Could not check report counts. {incoming.error || action.error}</p>}
+
+    <div className="grid lg:grid-cols-5 gap-4 mt-6">
+      <section className="panel lg:col-span-3 overflow-hidden" aria-labelledby="recent-heading">
+        <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
+          <h2 id="recent-heading" className="font-semibold">Recent community reports</h2>
+          <Link className="text-sm text-accent font-medium" to="/officer/reports">Open inbox</Link>
+        </div>
+        {recent.error && <p role="alert" className="px-5 pb-4 text-sm">Reports could not be refreshed. {recent.data ? 'Showing the last ones retrieved.' : ''}</p>}
+        {recent.loading && !recent.data && <p role="status" className="px-5 pb-5 text-sm text-muted">Loading reports…</p>}
+        {recent.data?.items.length === 0 && <p className="px-5 pb-5 text-sm text-muted">No reports yet.</p>}
+        <ul className="divide-y divide-border">{recent.data?.items.map(r => <li key={r.id}>
+          <Link to="/officer/reports" className="px-5 py-3 flex gap-3 items-start hover:bg-surface-2">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">{r.observed_condition} <span className="text-muted font-normal">· {r.perceived_severity}</span></p>
+              <p className="text-xs text-muted truncate mt-0.5">{r.zone_name}{r.location_description ? ` · ${r.location_description}` : ''}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className={`text-xs font-semibold ${r.review_status === 'New' ? 'text-accent' : r.review_status === 'ActionNeeded' ? 'text-risk-high' : 'text-muted'}`}>{STATUS_LABEL[r.review_status] ?? r.review_status}</p>
+              <p className="text-xs text-muted mt-0.5">{timeAgo(r.timestamp)}</p>
+            </div>
+          </Link></li>)}</ul>
+      </section>
+
+      <section className="panel lg:col-span-2 p-5 space-y-4" aria-labelledby="tomorrow-heading">
+        <div className="flex items-baseline justify-between gap-3"><h2 id="tomorrow-heading" className="font-semibold">Tomorrow</h2>
+          {updated && <span className="text-xs text-muted">Updated {time(updated)}</span>}</div>
+        {outlook.loading && !outlook.data && <p role="status" className="text-sm text-muted">Checking the outlook…</p>}
+        {outlook.data && !available.length && <p className="text-sm">No fresh outlook. Check System or the Weather page.</p>}
+        {available.length > 0 && <OutlookBar counts={counts} total={outlook.data.located_count} />}
+        {ranked.length > 0 && <div><p className="eyebrow mb-2">{closely.length ? `Watch closely · ${closely.length}` : 'Check first'}</p>
+          <ul className="space-y-1.5 text-sm" aria-label="Places to check first">{ranked.slice(0, 5).map(a => {
+            const row = local[a.area_id]
+            return <li key={a.area_id} className="flex gap-2 items-baseline">
+              <span className="w-2.5 h-2.5 rounded-full shrink-0 translate-y-[-1px]" style={{ background: riskColor(a.proxy_class), boxShadow: row?.level === 'Higher' ? '0 0 0 2px #111827' : undefined }} aria-hidden="true" />
+              <Link to={`/?area=${a.area_id}&inspect=1`} className="flex-1 min-w-0 truncate hover:text-accent">{names[a.area_id]?.display_name ?? a.area_id}</Link>
+              <span className="text-xs text-muted shrink-0">{a.proxy_class}{row ? ` · ${row.level === 'Higher' ? 'floods easily' : row.level === 'Lower' ? 'higher ground' : 'average'}` : ''}</span></li>
+          })}</ul>
+          <p className="text-xs text-muted mt-2">Ranked by tomorrow's category, then by how easily the place floods (ringed).</p>
+        </div>}
+        <p className="text-xs text-muted">Rainfall categories, not flood warnings. Reviewing a report does not issue a public warning.</p>
+      </section>
+    </div>
+  </StaffLayout>
 }

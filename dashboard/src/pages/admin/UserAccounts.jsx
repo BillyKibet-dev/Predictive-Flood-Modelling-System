@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import useStaffList from '../../hooks/useStaffList'
+import { Search, UserPlus } from 'lucide-react'
+import { PageHeader, buttonClass, primaryButtonClass } from '../../components/StaffLayout'
 
 const initial = { name: '', email: '', role: 'officer', status: 'Active', password: '' }
-const input = 'w-full border border-border rounded-btn bg-surface text-ink p-2'
+const input = 'mt-1 w-full h-9 border border-border rounded-btn bg-surface text-ink px-2.5 text-sm'
 export default function UserAccounts() {
   const { user: actor, authorizedRequest } = useAuth()
   const list = useStaffList('/admin/users')
@@ -79,80 +81,48 @@ export default function UserAccounts() {
   const rows = (list.data ?? []).filter((account) =>
     `${account.name} ${account.email}`.toLowerCase().includes(search.toLowerCase())
   )
+  const initials = name => name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()
   return (
-    <section className="space-y-5 text-ink">
-      <div className="flex flex-wrap justify-between gap-3">
-        <h1 className="text-2xl font-semibold">User accounts</h1>
-        <div className="flex gap-2">
-          <button className="border border-border rounded-btn p-2" onClick={list.refresh}>
-            Refresh accounts
-          </button>
-          <button className="bg-brand text-white rounded-btn p-2" onClick={() => open()}>
-            Add user
-          </button>
-        </div>
+    <section className="text-ink">
+      <PageHeader title="Users" description="Who can sign in. Deactivate an account to remove access but keep its review history.">
+        <button className={buttonClass} onClick={list.refresh}>Refresh accounts</button>
+        <button className={primaryButtonClass} onClick={() => open()}><UserPlus size={15} />Add user</button>
+      </PageHeader>
+      <div className="relative mb-4 max-w-sm">
+        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />
+        <input className="w-full h-9 border border-border rounded-btn bg-surface text-sm pl-9 pr-3" aria-label="Search accounts"
+          placeholder="Search name or email" value={search} onChange={(event) => setSearch(event.target.value)} />
       </div>
-      <p className="text-sm text-muted">
-        Accounts are saved in the database. Deactivate an account to revoke access while retaining
-        its review history. Changes are checked by the server.
-      </p>
-      <input
-        className={input}
-        aria-label="Search accounts"
-        placeholder="Search name or email"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
-      {list.loading && <p role="status">Loading accounts...</p>}
-      {(list.error || error) && (
-        <p role="alert" className="text-risk-extreme">
-          {error || list.error}
-        </p>
-      )}
-      {notice && <p role="status">{notice}</p>}
-      {list.data && !rows.length && <p>No accounts match your search.</p>}
-      {rows.map((account) => (
-        <article
-          key={account.id}
-          aria-label={`Account ${account.id}`}
-          className="border border-border bg-surface rounded-card p-4 flex flex-wrap items-center gap-3"
-        >
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold">
-              {account.name}
-              {actor.id === account.id ? ' (you)' : ''}
-            </p>
-            <p className="text-sm text-muted break-all">{account.email}</p>
-            <p className="text-xs text-muted">
-              {account.role} / {account.status}
-            </p>
-          </div>
-          <button
-            className="border border-border rounded-btn p-2"
-            disabled={busy}
-            onClick={() => open(account)}
-          >
-            Edit
-          </button>
-          <button
-            className="border border-border rounded-btn p-2 text-risk-extreme"
-            disabled={busy || actor.id === account.id}
-            onClick={() => remove(account)}
-          >
-            Remove
-          </button>
-        </article>
-      ))}
+      {list.loading && !list.data && <p role="status" className="text-sm text-muted">Loading accounts…</p>}
+      {(list.error || error) && <p role="alert" className="text-sm text-risk-extreme mb-3">{error || list.error}</p>}
+      {notice && <p role="status" className="text-sm mb-3">{notice}</p>}
+      {list.data && !rows.length && <p className="text-sm text-muted">No accounts match your search.</p>}
+      {rows.length > 0 && <div className="panel divide-y divide-border">
+        {rows.map((account) => (
+          <article key={account.id} aria-label={`Account ${account.id}`} className="p-4 flex flex-wrap items-center gap-3">
+            <span aria-hidden="true" className={`w-9 h-9 rounded-full grid place-items-center text-xs font-semibold ${account.status === 'Active' ? 'bg-brand text-white' : 'bg-surface-2 text-muted'}`}>{initials(account.name)}</span>
+            <div className="min-w-0 flex-1">
+              <p className="font-medium">{account.name}{actor.id === account.id ? <span className="text-muted font-normal"> (you)</span> : ''}</p>
+              <p className="text-sm text-muted break-all">{account.email}</p>
+            </div>
+            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-surface-2 text-muted">{account.role === 'admin' ? 'Administrator' : 'Officer'} / {account.status}</span>
+            <div className="flex gap-2">
+              <button className={buttonClass} disabled={busy} onClick={() => open(account)}>Edit</button>
+              <button className={buttonClass + ' text-risk-extreme'} disabled={busy || actor.id === account.id} onClick={() => remove(account)}>Remove</button>
+            </div>
+          </article>
+        ))}
+      </div>}
       {editing !== undefined && (
         <div
-          className="fixed inset-0 z-[1500] bg-black/40 flex justify-end"
+          className="fixed inset-0 z-[1500] bg-black/30 flex justify-end"
           role="dialog"
           aria-modal="true"
           aria-label={editing ? 'Edit account' : 'Add account'}
         >
           <form
             onSubmit={save}
-            className="bg-surface w-full max-w-md p-6 overflow-y-auto space-y-4"
+            className="bg-surface w-full max-w-md p-6 overflow-y-auto space-y-4 border-l border-border modal-scale-in"
           >
             <h2 className="text-xl font-semibold">{editing ? 'Edit account' : 'Add account'}</h2>
             {['name', 'email'].map((field) => (
@@ -224,13 +194,13 @@ export default function UserAccounts() {
               </p>
             )}
             <div className="flex gap-3">
-              <button disabled={busy} className="bg-brand text-white px-4 py-2 rounded-btn">
+              <button disabled={busy} className={primaryButtonClass}>
                 {busy ? 'Saving...' : 'Save account'}
               </button>
               <button
                 type="button"
                 disabled={busy}
-                className="border border-border p-2 rounded-btn"
+                className={buttonClass}
                 onClick={() => {
                   setForm(initial)
                   setEditing(undefined)

@@ -1,0 +1,3857 @@
+{
+  "attribution": [
+    "OpenStreetMap contributors, ODbL 1.0: https://www.openstreetmap.org/copyright",
+    "Contains modified Copernicus Sentinel data (2026), via Microsoft Planetary Computer.",
+    "Copernicus DEM GLO-30: https://registry.opendata.aws/copernicus-dem/; see product licence.",
+    "Terrain derivatives produced using Copernicus WorldDEM-30 \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+    "Administrative polygons: geoBoundaries / IEBC / OCHA ROSEA, CC BY 3.0 IGO."
+  ],
+  "collection_outcomes": [
+    {
+      "http_status": 502,
+      "identity": {
+        "body": null,
+        "label": "cbd-junction-roads",
+        "params": {
+          "data": "[out:json][timeout:20];way[\"highway\"][\"name\"~\"Kenyatta|Moi Avenue|Uhuru\",i](-1.292,36.808,-1.278,36.826);out meta geom;"
+        },
+        "url": "https://overpass-api.de/api/interpreter"
+      },
+      "raw": {
+        "bytes": 534,
+        "path": "raw/sha256/80/8084e21e11df846a2e41bb93ddaf66961aa2ef71e9a9fc1f46debc960b303042.bin",
+        "sha256": "8084e21e11df846a2e41bb93ddaf66961aa2ef71e9a9fc1f46debc960b303042"
+      },
+      "received_at_utc": "2026-11-11T10:23:10.211362+00:00",
+      "requested_at_utc": "2026-11-11T10:23:08.743537+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "cbd-osm-map",
+        "params": {
+          "bbox": "36.810,-1.290,36.826,-1.282"
+        },
+        "url": "https://api.openstreetmap.org/api/0.6/map"
+      },
+      "raw": {
+        "bytes": 3355640,
+        "path": "raw/sha256/39/396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6.bin",
+        "sha256": "396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6"
+      },
+      "received_at_utc": "2026-11-11T10:24:48.015699+00:00",
+      "requested_at_utc": "2026-11-11T10:24:45.010936+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "copernicus-dem-metadata",
+        "params": null,
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_10_S02_00_E036_00.xml"
+      },
+      "raw": {
+        "bytes": 44756,
+        "path": "raw/sha256/e2/e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446.bin",
+        "sha256": "e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446"
+      },
+      "received_at_utc": "2026-11-11T10:33:03.302948+00:00",
+      "requested_at_utc": "2026-11-11T10:33:02.219033+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "copernicus-dem-tile",
+        "params": null,
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_COG_10_S02_00_E036_00_DEM.tif"
+      },
+      "raw": {
+        "bytes": 38977060,
+        "path": "raw/sha256/e7/e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed.bin",
+        "sha256": "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed"
+      },
+      "received_at_utc": "2026-11-11T10:33:02.112609+00:00",
+      "requested_at_utc": "2026-11-11T10:32:53.574522+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "dem-tile-list",
+        "params": {
+          "list-type": "2",
+          "prefix": "Copernicus_DSM_COG_10_S02_00_E036_00_DEM/"
+        },
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/"
+      },
+      "raw": {
+        "bytes": 4871,
+        "path": "raw/sha256/60/6017d64b63832c5ee24c325158ede456d49c700eafcb5da21437cabbee087c10.bin",
+        "sha256": "6017d64b63832c5ee24c325158ede456d49c700eafcb5da21437cabbee087c10"
+      },
+      "received_at_utc": "2026-11-11T10:22:35.108098+00:00",
+      "requested_at_utc": "2026-11-11T10:22:33.767869+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "globe",
+        "params": {
+          "addressdetails": 1,
+          "bounded": 1,
+          "countrycodes": "ke",
+          "format": "jsonv2",
+          "limit": 5,
+          "q": "Globe Roundabout Nairobi Kenya",
+          "viewbox": "36.65,-1.15,37.05,-1.45"
+        },
+        "url": "https://nominatim.openstreetmap.org/search"
+      },
+      "raw": {
+        "bytes": 3808,
+        "path": "raw/sha256/0e/0e421766b20a8d69e16a4e8c8a4419d451bb8ca593b9f8fc71d9cfdb0b783da0.bin",
+        "sha256": "0e421766b20a8d69e16a4e8c8a4419d451bb8ca593b9f8fc71d9cfdb0b783da0"
+      },
+      "received_at_utc": "2026-11-11T10:21:48.657045+00:00",
+      "requested_at_utc": "2026-11-11T10:21:46.490185+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "gumba",
+        "params": {
+          "addressdetails": 1,
+          "bounded": 1,
+          "countrycodes": "ke",
+          "format": "jsonv2",
+          "limit": 5,
+          "q": "Gumba Bridge Nairobi Kenya",
+          "viewbox": "36.65,-1.15,37.05,-1.45"
+        },
+        "url": "https://nominatim.openstreetmap.org/search"
+      },
+      "raw": {
+        "bytes": 1636,
+        "path": "raw/sha256/0d/0dc1ad6d20b655636271cbd34927747c8cdea811f8cd56d10043895081630a3c.bin",
+        "sha256": "0dc1ad6d20b655636271cbd34927747c8cdea811f8cd56d10043895081630a3c"
+      },
+      "received_at_utc": "2026-11-11T10:21:54.794383+00:00",
+      "requested_at_utc": "2026-11-11T10:21:53.085681+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "mathare-school",
+        "params": {
+          "addressdetails": 1,
+          "bounded": 1,
+          "countrycodes": "ke",
+          "format": "jsonv2",
+          "limit": 5,
+          "q": "Mathare North Primary School Nairobi Kenya",
+          "viewbox": "36.65,-1.15,37.05,-1.45"
+        },
+        "url": "https://nominatim.openstreetmap.org/search"
+      },
+      "raw": {
+        "bytes": 2617,
+        "path": "raw/sha256/c5/c5b994e99abfcce36efe16d1f389303d0164ba2d054bc29b22b2f43fab300468.bin",
+        "sha256": "c5b994e99abfcce36efe16d1f389303d0164ba2d054bc29b22b2f43fab300468"
+      },
+      "received_at_utc": "2026-11-11T10:21:51.856580+00:00",
+      "requested_at_utc": "2026-11-11T10:21:49.885276+00:00"
+    },
+    {
+      "http_status": 502,
+      "identity": {
+        "body": null,
+        "label": "named-roads-and-bridges",
+        "params": {
+          "data": "[out:json][timeout:30];(way[\"highway\"][\"name\"~\"Kenyatta|Moi Avenue|Uhuru|Langata|Mbagathi\",i](-1.33,36.79,-1.27,36.83);way[\"highway\"][\"junction\"=\"roundabout\"](around:350,-1.3122,36.8169);way[\"bridge\"](around:250,-1.2787,36.8212););out meta geom;"
+        },
+        "url": "https://overpass-api.de/api/interpreter"
+      },
+      "raw": {
+        "bytes": 534,
+        "path": "raw/sha256/80/8084e21e11df846a2e41bb93ddaf66961aa2ef71e9a9fc1f46debc960b303042.bin",
+        "sha256": "8084e21e11df846a2e41bb93ddaf66961aa2ef71e9a9fc1f46debc960b303042"
+      },
+      "received_at_utc": "2026-11-11T10:22:30.653986+00:00",
+      "requested_at_utc": "2026-11-11T10:22:29.606405+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "planetary-api",
+        "params": null,
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/openapi.json"
+      },
+      "raw": {
+        "bytes": 437402,
+        "path": "raw/sha256/17/170a901e8f356b5f1d2c339d74da50f069cae6504eea0b109ba5630dca91d1d8.bin",
+        "sha256": "170a901e8f356b5f1d2c339d74da50f069cae6504eea0b109ba5630dca91d1d8"
+      },
+      "received_at_utc": "2026-11-11T10:22:33.726966+00:00",
+      "requested_at_utc": "2026-11-11T10:22:30.687090+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-point-NFW-S002",
+        "params": {
+          "assets": [
+            "B04",
+            "B08",
+            "SCL"
+          ],
+          "collection": "sentinel-2-l2a",
+          "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8235782,-1.2834062"
+      },
+      "raw": {
+        "bytes": 110,
+        "path": "raw/sha256/68/68f7455066b0351612b2426bec560618a1258e0b4d458a15d0103146a06bee71.bin",
+        "sha256": "68f7455066b0351612b2426bec560618a1258e0b4d458a15d0103146a06bee71"
+      },
+      "received_at_utc": "2026-11-11T10:35:49.519337+00:00",
+      "requested_at_utc": "2026-11-11T10:35:47.752751+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-point-NFW-S003",
+        "params": {
+          "assets": [
+            "B04",
+            "B08",
+            "SCL"
+          ],
+          "collection": "sentinel-2-l2a",
+          "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8173471,-1.286549"
+      },
+      "raw": {
+        "bytes": 109,
+        "path": "raw/sha256/f1/f1246cd69b4a9cb9208cd10a204d86010156551bb7c64530cf81098dcf0f0f84.bin",
+        "sha256": "f1246cd69b4a9cb9208cd10a204d86010156551bb7c64530cf81098dcf0f0f84"
+      },
+      "received_at_utc": "2026-11-11T10:35:50.669617+00:00",
+      "requested_at_utc": "2026-11-11T10:35:49.546429+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-point-NFW-S028",
+        "params": {
+          "assets": [
+            "B04",
+            "B08",
+            "SCL"
+          ],
+          "collection": "sentinel-2-l2a",
+          "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.868957,-1.253949"
+      },
+      "raw": {
+        "bytes": 108,
+        "path": "raw/sha256/cc/ccfc0b8035c88a7a4fe558e0f416b1af7f95d0e726d2624133ec663e8e3f0d50.bin",
+        "sha256": "ccfc0b8035c88a7a4fe558e0f416b1af7f95d0e726d2624133ec663e8e3f0d50"
+      },
+      "received_at_utc": "2026-11-11T10:35:53.708798+00:00",
+      "requested_at_utc": "2026-11-11T10:35:52.211708+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-point-NFW-S037",
+        "params": {
+          "assets": [
+            "B04",
+            "B08",
+            "SCL"
+          ],
+          "collection": "sentinel-2-l2a",
+          "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8158078,-1.3126653"
+      },
+      "raw": {
+        "bytes": 110,
+        "path": "raw/sha256/8d/8d61158765fd2063a90bf3f16f1195d1e08df5075523f327b67dc98b109cdff1.bin",
+        "sha256": "8d61158765fd2063a90bf3f16f1195d1e08df5075523f327b67dc98b109cdff1"
+      },
+      "received_at_utc": "2026-11-11T10:35:52.186425+00:00",
+      "requested_at_utc": "2026-11-11T10:35:50.685951+00:00"
+    },
+    {
+      "http_status": 409,
+      "identity": {
+        "body": null,
+        "label": "sentinel-product-metadata",
+        "params": null,
+        "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+      },
+      "raw": {
+        "bytes": 248,
+        "path": "raw/sha256/ea/eab30bb643adfe2be55613daa9ee78aab017c646f671596ae7d1f172457cae86.bin",
+        "sha256": "eab30bb643adfe2be55613daa9ee78aab017c646f671596ae7d1f172457cae86"
+      },
+      "received_at_utc": "2026-11-11T10:32:53.554192+00:00",
+      "requested_at_utc": "2026-11-11T10:32:52.087469+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-product-metadata-authorized",
+        "params": null,
+        "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+      },
+      "raw": {
+        "bytes": 55078,
+        "path": "raw/sha256/0d/0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d.bin",
+        "sha256": "0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d"
+      },
+      "received_at_utc": "2026-11-11T10:33:31.684735+00:00",
+      "requested_at_utc": "2026-11-11T10:33:28.232016+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-search",
+        "params": {
+          "bbox": "36.80,-1.33,36.88,-1.24",
+          "collections": "sentinel-2-l2a",
+          "datetime": "2026-08-01T00:00:00Z/2026-10-31T23:59:59Z",
+          "limit": 8,
+          "sortby": "+properties.eo:cloud_cover"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+      },
+      "raw": {
+        "bytes": 122707,
+        "path": "raw/sha256/4b/4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10.bin",
+        "sha256": "4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10"
+      },
+      "received_at_utc": "2026-11-11T10:23:12.826949+00:00",
+      "requested_at_utc": "2026-11-11T10:23:10.244872+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "sentinel-tmall-sample",
+        "params": {
+          "assets": [
+            "B04",
+            "B08",
+            "SCL"
+          ],
+          "collection": "sentinel-2-l2a",
+          "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+        },
+        "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8169419,-1.3122475"
+      },
+      "raw": {
+        "bytes": 110,
+        "path": "raw/sha256/96/9634189065685ebed29107b6616e89f759b777fc260e61842680e20a5be39dd8.bin",
+        "sha256": "9634189065685ebed29107b6616e89f759b777fc260e61842680e20a5be39dd8"
+      },
+      "received_at_utc": "2026-11-11T10:24:52.590816+00:00",
+      "requested_at_utc": "2026-11-11T10:24:50.378371+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "tmall",
+        "params": {
+          "addressdetails": 1,
+          "bounded": 1,
+          "countrycodes": "ke",
+          "format": "jsonv2",
+          "limit": 5,
+          "q": "T Mall Nairobi Kenya",
+          "viewbox": "36.65,-1.15,37.05,-1.45"
+        },
+        "url": "https://nominatim.openstreetmap.org/search"
+      },
+      "raw": {
+        "bytes": 699,
+        "path": "raw/sha256/66/66985d53a2322a76e65b2c517d9850b71c6037b52947bc4b640d9899c6afbe46.bin",
+        "sha256": "66985d53a2322a76e65b2c517d9850b71c6037b52947bc4b640d9899c6afbe46"
+      },
+      "received_at_utc": "2026-11-11T10:21:45.256205+00:00",
+      "requested_at_utc": "2026-11-11T10:21:43.412942+00:00"
+    },
+    {
+      "http_status": 200,
+      "identity": {
+        "body": null,
+        "label": "tmall-osm-map",
+        "params": {
+          "bbox": "36.813,-1.316,36.821,-1.308"
+        },
+        "url": "https://api.openstreetmap.org/api/0.6/map"
+      },
+      "raw": {
+        "bytes": 1651148,
+        "path": "raw/sha256/d1/d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354.bin",
+        "sha256": "d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354"
+      },
+      "received_at_utc": "2026-11-11T10:24:50.202244+00:00",
+      "requested_at_utc": "2026-11-11T10:24:48.301160+00:00"
+    }
+  ],
+  "corridors": [
+    {
+      "area": "Kiambiu",
+      "area_id": "NFW-C001",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kiambiu, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Dandora",
+      "area_id": "NFW-C002",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Dandora, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kariobangi",
+      "area_id": "NFW-C003",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kariobangi, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kayole",
+      "area_id": "NFW-C004",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kayole, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Komarock",
+      "area_id": "NFW-C005",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Komarock, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Njiru",
+      "area_id": "NFW-C006",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Njiru, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Kasarani",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Ruai",
+      "area_id": "NFW-C007",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Ruai, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Kasarani",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Mwiki",
+      "area_id": "NFW-C008",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Mwiki, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Kasarani",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Donholm",
+      "area_id": "NFW-C009",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Donholm, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Savannah",
+      "area_id": "NFW-C010",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Savannah, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Tassia",
+      "area_id": "NFW-C011",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Tassia, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Fedha",
+      "area_id": "NFW-C012",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Fedha, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi East",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Madaraka",
+      "area_id": "NFW-C013",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Madaraka, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Langata proposed",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Nairobi West",
+      "area_id": "NFW-C014",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Nairobi West, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Langata proposed",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Langata",
+      "area_id": "NFW-C015",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Langata, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Langata proposed",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kawangware",
+      "area_id": "NFW-C016",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kawangware, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Dagoretti",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kangemi",
+      "area_id": "NFW-C017",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kangemi, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Lavington",
+      "area_id": "NFW-C018",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Lavington, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Dagoretti",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Westlands",
+      "area_id": "NFW-C019",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Westlands, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Parklands",
+      "area_id": "NFW-C020",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Parklands, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kitisuru",
+      "area_id": "NFW-C021",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kitisuru, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Spring Valley",
+      "area_id": "NFW-C022",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Spring Valley, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kileleshwa",
+      "area_id": "NFW-C023",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kileleshwa, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Chiromo",
+      "area_id": "NFW-C024",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Chiromo, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Westlands",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi West",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Mathare",
+      "area_id": "NFW-C025",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Mathare, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Mathare",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi North",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Korogocho",
+      "area_id": "NFW-C026",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Korogocho, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Ruaraka",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi North",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Lucky Summer",
+      "area_id": "NFW-C027",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Lucky Summer, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Ruaraka",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi North",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Central Business District",
+      "area_id": "NFW-C028",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Central Business District, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "CBD",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi Central",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Globe",
+      "area_id": "NFW-C029",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Globe, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "CBD",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi Central",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Gikomba",
+      "area_id": "NFW-C030",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Gikomba, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "CBD",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi Central",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Eastleigh",
+      "area_id": "NFW-C031",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Eastleigh, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi Central",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Industrial Area",
+      "area_id": "NFW-C032",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Industrial Area, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi Central",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kilimani",
+      "area_id": "NFW-C033",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kilimani, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Unassigned",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kibera",
+      "area_id": "NFW-C034",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kibera, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Kibera",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "South C",
+      "area_id": "NFW-C035",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "South C, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Langata proposed",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "South B",
+      "area_id": "NFW-C036",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "South B, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Langata proposed",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Mukuru Kwa Reuben",
+      "area_id": "NFW-C037",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Mukuru Kwa Reuben, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    },
+    {
+      "area": "Kwa Njenga",
+      "area_id": "NFW-C038",
+      "coordinate_status": "NOT_YET_VERIFIED",
+      "evidence_category": "GOVERNMENT_CORRIDOR_SCREEN",
+      "flood_occurrence_verified": "NO_CORRIDOR_SCREEN_ONLY",
+      "geocode_search": "Kwa Njenga, Nairobi, Kenya",
+      "geometry_status": "NULL_PENDING_GEOCODING",
+      "latitude": "",
+      "longitude": "",
+      "monitoring_group_provisional": "Embakasi",
+      "notes": "Broad neighbourhood/riparian screening; not a point hotspot; source says 37 but names 38",
+      "report_date": "2026-03-15",
+      "reported_corridor": "Nairobi South",
+      "source_id": "GOV37",
+      "source_url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/"
+    }
+  ],
+  "geocoding_review_notes": [
+    "Globe search found several road segments and a park, not an unambiguous damaged bridge: unlocated.",
+    "Gumba search found a Bridge International Academy school and toilets, not a verified bridge: unlocated.",
+    "Mathare school search first result is drinking water: rejected; selected the school amenity node."
+  ],
+  "groups": [
+    {
+      "located_count": 2,
+      "name": "CBD",
+      "site_count": 4,
+      "zone_id": "cbd"
+    },
+    {
+      "located_count": 0,
+      "name": "Dagoretti",
+      "site_count": 1,
+      "zone_id": "dagoretti"
+    },
+    {
+      "located_count": 0,
+      "name": "Embakasi",
+      "site_count": 8,
+      "zone_id": "embakasi"
+    },
+    {
+      "located_count": 0,
+      "name": "Kasarani",
+      "site_count": 6,
+      "zone_id": "kasarani"
+    },
+    {
+      "located_count": 0,
+      "name": "Kibera",
+      "site_count": 6,
+      "zone_id": "kibera"
+    },
+    {
+      "located_count": 1,
+      "name": "Mathare",
+      "site_count": 4,
+      "zone_id": "mathare"
+    },
+    {
+      "located_count": 0,
+      "name": "Ruaraka",
+      "site_count": 4,
+      "zone_id": "ruaraka"
+    },
+    {
+      "located_count": 0,
+      "name": "Westlands",
+      "site_count": 3,
+      "zone_id": "westlands"
+    },
+    {
+      "located_count": 1,
+      "name": "Langata (proposed)",
+      "site_count": 4,
+      "zone_id": null
+    }
+  ],
+  "information_type": "candidate_hotspot_inventory",
+  "inventory_limitations": [
+    "All package coordinates were blank. Four landmark references were independently reviewed against cached OSM features.",
+    "Inventory groups are provisional project associations, not an administrative spatial join.",
+    "Press reports describe historical impacts or warnings; neither proves a current flood or surveyed footprint.",
+    "The supplied manifest has a stale self-entry; all other member hashes match.",
+    "Source headline reports 37 corridors but the literal list contains 38. These broad names are not point hotspots.",
+    "The reported county inventory of 246 geocoded hotspots was not supplied."
+  ],
+  "inventory_sha256": "d0ea8b1893b38a151ccfbefc03b9c8b142062830c8a360a42be2b61686076005",
+  "schema_version": "hotspot-inventory-v1",
+  "sites": [
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2026-03",
+      "evidence_summary": "Nairobi River bridge protection damaged by March 2026 floods; closure followed.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "CBD",
+      "id": "NFW-S001",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Globe Roundabout Nairobi River Bridge",
+      "reported_mechanism_hypothesis": "river/bridge",
+      "risk_score": null,
+      "source_ids": [
+        "GLOBE26"
+      ],
+      "subarea_context": "Globe/CBD",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P1",
+      "zone_id": "cbd"
+    },
+    {
+      "administrative_context": [
+        {
+          "id": "nairobi-subcounty-starehe",
+          "method": "Point covered by repository administrative polygon; independent of inventory group",
+          "name": "Starehe",
+          "source_sha256": "923dabba4fd48a243cd9758fed51729bb7a6bdaf0d6d186b5eee942e01aa5c8c",
+          "source_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
+          "source_year": "2020"
+        }
+      ],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "blockage": null,
+        "capacity": null,
+        "condition": null,
+        "extract_bbox": [
+          36.81,
+          -1.29,
+          36.826,
+          -1.282
+        ],
+        "limitations": "OSM mapping may be incomplete. Absence is not evidence of no drainage. Proximity does not establish overflow, flow connectivity, capacity or blockage.",
+        "mapped_culverts": [],
+        "method": "Shortest planar distance to clipped mapped waterway lines in this bounded OSM extract; local WGS84 metre approximation",
+        "nearest_mapped_waterway": null,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "cbd-osm-map",
+            "params": {
+              "bbox": "36.810,-1.290,36.826,-1.282"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 3355640,
+            "path": "raw/sha256/39/396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6.bin",
+            "sha256": "396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6"
+          },
+          "received_at_utc": "2026-11-11T10:24:48.015699+00:00",
+          "requested_at_utc": "2026-11-11T10:24:45.010936+00:00"
+        },
+        "status": "NOT_MAPPED_IN_EXTRACT",
+        "surveyed": false
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2024-01-13",
+      "evidence_summary": "Pedestrians photographed wading through flooding at this junction, January 2024.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": {
+        "coordinates": [
+          36.8235782,
+          -1.2834062
+        ],
+        "type": "Point"
+      },
+      "group": "CBD",
+      "id": "NFW-S002",
+      "live_flood_status": null,
+      "location": {
+        "coordinates": [
+          36.8235782,
+          -1.2834062
+        ],
+        "description": "Junction reference point; lane geometry is generalized to one pin.",
+        "field_verified": false,
+        "limitations": "OpenStreetMap reference, not a field-checked flood location, boundary or inundation extent.",
+        "method": "Mean of unique nodes shared by the two named carriageways",
+        "osm_node_ids": [
+          "10873342302",
+          "10873342303",
+          "56238136",
+          "565304919"
+        ],
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "cbd-osm-map",
+            "params": {
+              "bbox": "36.810,-1.290,36.826,-1.282"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 3355640,
+            "path": "raw/sha256/39/396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6.bin",
+            "sha256": "396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6"
+          },
+          "received_at_utc": "2026-11-11T10:24:48.015699+00:00",
+          "requested_at_utc": "2026-11-11T10:24:45.010936+00:00"
+        },
+        "source_label": "cbd-osm-map",
+        "status": "LANDMARK_REFERENCE"
+      },
+      "name": "Kenyatta Avenue / Moi Avenue junction",
+      "reported_mechanism_hypothesis": "urban drainage",
+      "risk_score": null,
+      "source_ids": [
+        "CBD24"
+      ],
+      "subarea_context": "Nairobi CBD",
+      "terrain": {
+        "acquisition_period": "2011\u20132015 main TanDEM-X acquisition period; not a current terrain survey",
+        "dataset": "Copernicus DEM GLO-30 public DSM tile; EGM2008 orthometric heights",
+        "elevation_m": 1670.83,
+        "limitations": "Surface model includes buildings and vegetation. Cannot resolve roadside drains, capacity, blockage or flood depth.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-metadata",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_10_S02_00_E036_00.xml"
+          },
+          "raw": {
+            "bytes": 44756,
+            "path": "raw/sha256/e2/e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446.bin",
+            "sha256": "e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446"
+          },
+          "received_at_utc": "2026-11-11T10:33:03.302948+00:00",
+          "requested_at_utc": "2026-11-11T10:33:02.219033+00:00"
+        },
+        "method": "Horn 3x3 gradient; WGS84 radii convert native angular spacing to metres at the central pixel",
+        "native_3x3_m": [
+          [
+            1671.031494140625,
+            1671.0770263671875,
+            1673.564208984375
+          ],
+          [
+            1672.4415283203125,
+            1670.8253173828125,
+            1672.3814697265625
+          ],
+          [
+            1669.719970703125,
+            1672.8880615234375,
+            1671.46533203125
+          ]
+        ],
+        "native_col": 2965,
+        "native_crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]]",
+        "native_row": 1020,
+        "pixel_center": [
+          36.823611111111106,
+          -1.2833333333333332
+        ],
+        "pixel_spacing_m": [
+          30.914376386437453,
+          30.71523132629595
+        ],
+        "resolution": "1 arc-second, approximately 30 m; slope uses a 3x3 neighbourhood",
+        "slope_degrees": 0.964,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-tile",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_COG_10_S02_00_E036_00_DEM.tif"
+          },
+          "raw": {
+            "bytes": 38977060,
+            "path": "raw/sha256/e7/e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed.bin",
+            "sha256": "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed"
+          },
+          "received_at_utc": "2026-11-11T10:33:02.112609+00:00",
+          "requested_at_utc": "2026-11-11T10:32:53.574522+00:00"
+        },
+        "source_url": "https://registry.opendata.aws/copernicus-dem/",
+        "status": "DERIVED_CONTEXT"
+      },
+      "vegetation": {
+        "accepted_scl_classes": [
+          4,
+          5,
+          6
+        ],
+        "acquired_at_utc": "2026-08-12T07:40:31.024000Z",
+        "catalog_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-search",
+            "params": {
+              "bbox": "36.80,-1.33,36.88,-1.24",
+              "collections": "sentinel-2-l2a",
+              "datetime": "2026-08-01T00:00:00Z/2026-10-31T23:59:59Z",
+              "limit": 8,
+              "sortby": "+properties.eo:cloud_cover"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+          },
+          "raw": {
+            "bytes": 122707,
+            "path": "raw/sha256/4b/4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10.bin",
+            "sha256": "4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10"
+          },
+          "received_at_utc": "2026-11-11T10:23:12.826949+00:00",
+          "requested_at_utc": "2026-11-11T10:23:10.244872+00:00"
+        },
+        "limitations": "Dated vegetation context, not live vegetation or vegetation at the historical flood event. No uncertainty or flood effect is calibrated.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-product-metadata-authorized",
+            "params": null,
+            "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+          },
+          "raw": {
+            "bytes": 55078,
+            "path": "raw/sha256/0d/0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d.bin",
+            "sha256": "0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d"
+          },
+          "received_at_utc": "2026-11-11T10:33:31.684735+00:00",
+          "requested_at_utc": "2026-11-11T10:33:28.232016+00:00"
+        },
+        "method": "BOA=(DN+band offset)/quantification; NDVI=(B08-B04)/(B08+B04); accept SCL vegetation/bare/water only",
+        "offsets": {
+          "B04": -1000.0,
+          "B08": -1000.0
+        },
+        "quantification": 10000.0,
+        "raw_dn": {
+          "B04": 2203.0,
+          "B08": 2345.0
+        },
+        "resolution": "Single nearest 10 m red/NIR pixels and native 20 m SCL class at a landmark; not a site area mean",
+        "scene_id": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812",
+        "scene_selection": "Lowest scene cloud cover among first eight results ordered by cloud cover, 1 August\u201331 October 2026",
+        "scl": 5.0,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-point-NFW-S002",
+            "params": {
+              "assets": [
+                "B04",
+                "B08",
+                "SCL"
+              ],
+              "collection": "sentinel-2-l2a",
+              "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8235782,-1.2834062"
+          },
+          "raw": {
+            "bytes": 110,
+            "path": "raw/sha256/68/68f7455066b0351612b2426bec560618a1258e0b4d458a15d0103146a06bee71.bin",
+            "sha256": "68f7455066b0351612b2426bec560618a1258e0b4d458a15d0103146a06bee71"
+          },
+          "received_at_utc": "2026-11-11T10:35:49.519337+00:00",
+          "requested_at_utc": "2026-11-11T10:35:47.752751+00:00"
+        },
+        "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+        "status": "DERIVED_CONTEXT",
+        "units": "NDVI, dimensionless",
+        "value": 0.05573
+      },
+      "verification_priority": "P1",
+      "zone_id": "cbd"
+    },
+    {
+      "administrative_context": [
+        {
+          "id": "nairobi-subcounty-kilimani",
+          "method": "Point covered by repository administrative polygon; independent of inventory group",
+          "name": "Kilimani",
+          "source_sha256": "923dabba4fd48a243cd9758fed51729bb7a6bdaf0d6d186b5eee942e01aa5c8c",
+          "source_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
+          "source_year": "2020"
+        }
+      ],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "blockage": null,
+        "capacity": null,
+        "condition": null,
+        "extract_bbox": [
+          36.81,
+          -1.29,
+          36.826,
+          -1.282
+        ],
+        "limitations": "OSM mapping may be incomplete. Absence is not evidence of no drainage. Proximity does not establish overflow, flow connectivity, capacity or blockage.",
+        "mapped_culverts": [],
+        "method": "Shortest planar distance to clipped mapped waterway lines in this bounded OSM extract; local WGS84 metre approximation",
+        "nearest_mapped_waterway": null,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "cbd-osm-map",
+            "params": {
+              "bbox": "36.810,-1.290,36.826,-1.282"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 3355640,
+            "path": "raw/sha256/39/396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6.bin",
+            "sha256": "396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6"
+          },
+          "received_at_utc": "2026-11-11T10:24:48.015699+00:00",
+          "requested_at_utc": "2026-11-11T10:24:45.010936+00:00"
+        },
+        "status": "NOT_MAPPED_IN_EXTRACT",
+        "surveyed": false
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2024-01-13",
+      "evidence_summary": "Flooding photographed at junction in January 2024.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": {
+        "coordinates": [
+          36.8173471,
+          -1.286549
+        ],
+        "type": "Point"
+      },
+      "group": "CBD",
+      "id": "NFW-S003",
+      "live_flood_status": null,
+      "location": {
+        "coordinates": [
+          36.8173471,
+          -1.286549
+        ],
+        "description": "Junction reference point; lane geometry is generalized to one pin.",
+        "field_verified": false,
+        "limitations": "OpenStreetMap reference, not a field-checked flood location, boundary or inundation extent.",
+        "method": "Mean of unique nodes shared by the two named carriageways",
+        "osm_node_ids": [
+          "260573357",
+          "260573434",
+          "260573453",
+          "260573454"
+        ],
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "cbd-osm-map",
+            "params": {
+              "bbox": "36.810,-1.290,36.826,-1.282"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 3355640,
+            "path": "raw/sha256/39/396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6.bin",
+            "sha256": "396c7fc7a10623f7c5347d355bc0996818a872a9609551460441d42a81c257c6"
+          },
+          "received_at_utc": "2026-11-11T10:24:48.015699+00:00",
+          "requested_at_utc": "2026-11-11T10:24:45.010936+00:00"
+        },
+        "source_label": "cbd-osm-map",
+        "status": "LANDMARK_REFERENCE"
+      },
+      "name": "Uhuru Highway / Kenyatta Avenue intersection",
+      "reported_mechanism_hypothesis": "urban drainage",
+      "risk_score": null,
+      "source_ids": [
+        "CBD24"
+      ],
+      "subarea_context": "Nairobi CBD",
+      "terrain": {
+        "acquisition_period": "2011\u20132015 main TanDEM-X acquisition period; not a current terrain survey",
+        "dataset": "Copernicus DEM GLO-30 public DSM tile; EGM2008 orthometric heights",
+        "elevation_m": 1670.73,
+        "limitations": "Surface model includes buildings and vegetation. Cannot resolve roadside drains, capacity, blockage or flood depth.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-metadata",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_10_S02_00_E036_00.xml"
+          },
+          "raw": {
+            "bytes": 44756,
+            "path": "raw/sha256/e2/e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446.bin",
+            "sha256": "e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446"
+          },
+          "received_at_utc": "2026-11-11T10:33:03.302948+00:00",
+          "requested_at_utc": "2026-11-11T10:33:02.219033+00:00"
+        },
+        "method": "Horn 3x3 gradient; WGS84 radii convert native angular spacing to metres at the central pixel",
+        "native_3x3_m": [
+          [
+            1671.168212890625,
+            1671.09716796875,
+            1672.5941162109375
+          ],
+          [
+            1671.2996826171875,
+            1670.734130859375,
+            1671.959716796875
+          ],
+          [
+            1672.3482666015625,
+            1669.576904296875,
+            1670.109619140625
+          ]
+        ],
+        "native_col": 2942,
+        "native_crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]]",
+        "native_row": 1032,
+        "pixel_center": [
+          36.81722222222222,
+          -1.2866666666666666
+        ],
+        "pixel_spacing_m": [
+          30.91433631324004,
+          30.715232130891895
+        ],
+        "resolution": "1 arc-second, approximately 30 m; slope uses a 3x3 neighbourhood",
+        "slope_degrees": 1.02,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-tile",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_COG_10_S02_00_E036_00_DEM.tif"
+          },
+          "raw": {
+            "bytes": 38977060,
+            "path": "raw/sha256/e7/e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed.bin",
+            "sha256": "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed"
+          },
+          "received_at_utc": "2026-11-11T10:33:02.112609+00:00",
+          "requested_at_utc": "2026-11-11T10:32:53.574522+00:00"
+        },
+        "source_url": "https://registry.opendata.aws/copernicus-dem/",
+        "status": "DERIVED_CONTEXT"
+      },
+      "vegetation": {
+        "accepted_scl_classes": [
+          4,
+          5,
+          6
+        ],
+        "acquired_at_utc": "2026-08-12T07:40:31.024000Z",
+        "catalog_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-search",
+            "params": {
+              "bbox": "36.80,-1.33,36.88,-1.24",
+              "collections": "sentinel-2-l2a",
+              "datetime": "2026-08-01T00:00:00Z/2026-10-31T23:59:59Z",
+              "limit": 8,
+              "sortby": "+properties.eo:cloud_cover"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+          },
+          "raw": {
+            "bytes": 122707,
+            "path": "raw/sha256/4b/4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10.bin",
+            "sha256": "4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10"
+          },
+          "received_at_utc": "2026-11-11T10:23:12.826949+00:00",
+          "requested_at_utc": "2026-11-11T10:23:10.244872+00:00"
+        },
+        "limitations": "Dated vegetation context, not live vegetation or vegetation at the historical flood event. No uncertainty or flood effect is calibrated.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-product-metadata-authorized",
+            "params": null,
+            "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+          },
+          "raw": {
+            "bytes": 55078,
+            "path": "raw/sha256/0d/0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d.bin",
+            "sha256": "0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d"
+          },
+          "received_at_utc": "2026-11-11T10:33:31.684735+00:00",
+          "requested_at_utc": "2026-11-11T10:33:28.232016+00:00"
+        },
+        "method": "BOA=(DN+band offset)/quantification; NDVI=(B08-B04)/(B08+B04); accept SCL vegetation/bare/water only",
+        "offsets": {
+          "B04": -1000.0,
+          "B08": -1000.0
+        },
+        "quantification": 10000.0,
+        "raw_dn": {
+          "B04": 1900.0,
+          "B08": 1999.0
+        },
+        "resolution": "Single nearest 10 m red/NIR pixels and native 20 m SCL class at a landmark; not a site area mean",
+        "scene_id": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812",
+        "scene_selection": "Lowest scene cloud cover among first eight results ordered by cloud cover, 1 August\u201331 October 2026",
+        "scl": 5.0,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-point-NFW-S003",
+            "params": {
+              "assets": [
+                "B04",
+                "B08",
+                "SCL"
+              ],
+              "collection": "sentinel-2-l2a",
+              "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8173471,-1.286549"
+          },
+          "raw": {
+            "bytes": 109,
+            "path": "raw/sha256/f1/f1246cd69b4a9cb9208cd10a204d86010156551bb7c64530cf81098dcf0f0f84.bin",
+            "sha256": "f1246cd69b4a9cb9208cd10a204d86010156551bb7c64530cf81098dcf0f0f84"
+          },
+          "received_at_utc": "2026-11-11T10:35:50.669617+00:00",
+          "requested_at_utc": "2026-11-11T10:35:49.546429+00:00"
+        },
+        "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+        "status": "DERIVED_CONTEXT",
+        "units": "NDVI, dimensionless",
+        "value": 0.05213
+      },
+      "verification_priority": "P1",
+      "zone_id": "cbd"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County warned traders along the river at Gikomba; belongs to Kamukunji administratively, not CBD.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "CBD",
+      "id": "NFW-S004",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gikomba riverside traders",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Gikomba/Pumwani",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "cbd"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2025",
+      "evidence_summary": "Reported households flooded by sewage and rainfall, with allegedly blocked drainage outlet.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Dagoretti",
+      "id": "NFW-S005",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Kamitha households",
+      "reported_mechanism_hypothesis": "blocked drain/sewage",
+      "risk_score": null,
+      "source_ids": [
+        "KAMITHA25"
+      ],
+      "subarea_context": "Kamitha, Kawangware/Gatina",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P1",
+      "zone_id": "dagoretti"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Embakasi South Mukuru Kwa Reuben.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S006",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Reuben Riverside Zone",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mukuru Kwa Reuben",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Embakasi South Mukuru Kwa Reuben.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S007",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Reuben Gatoto Zone",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mukuru Kwa Reuben",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Embakasi South Mukuru Kwa Reuben.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S008",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Reuben Feed the Children Zone",
+      "reported_mechanism_hypothesis": "drainage/river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mukuru Kwa Reuben",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named micro-zone in Mukuru Kwa Reuben; not interchangeable with wider Kariobangi neighbourhood.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S009",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Reuben Kariobangi Zone",
+      "reported_mechanism_hypothesis": "drainage/river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mukuru Kwa Reuben",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Mukuru Kwa Reuben (source spells Cosovo).",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S010",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Reuben Cosovo Zone",
+      "reported_mechanism_hypothesis": "drainage/river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mukuru Kwa Reuben",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Embakasi North Dandora Area 3.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S011",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Dandora Area 3 Two Rivers",
+      "reported_mechanism_hypothesis": "river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Dandora Area 3",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Named evacuation hotspot in Embakasi North Dandora Area 3.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S012",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Dandora Area 3 Block G",
+      "reported_mechanism_hypothesis": "drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Dandora Area 3",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-21",
+      "evidence_summary": "April 2024 Citizen reporting describes Red Cross response to Mukuru Kwa Njenga and Mukuru Kayaba, not a confirmed exact flood point.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Embakasi",
+      "id": "NFW-S013",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mukuru Kwa Njenga / Kayaba response area",
+      "reported_mechanism_hypothesis": "drainage/river",
+      "risk_score": null,
+      "source_ids": [
+        "TMALL24"
+      ],
+      "subarea_context": "Mukuru Kwa Njenga/Kayaba",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "embakasi"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S014",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mwisho wa Lami, Mwiki",
+      "reported_mechanism_hypothesis": "riparian/drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mwiki",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S015",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Budalangi, Clay City",
+      "reported_mechanism_hypothesis": "riparian/drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Clay City",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot; precise landmark not verified.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S016",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Infinity, Kasarani",
+      "reported_mechanism_hypothesis": "drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Kasarani",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S017",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gachieko, Ruai",
+      "reported_mechanism_hypothesis": "river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Ruai",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S018",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gituamba, Ruai",
+      "reported_mechanism_hypothesis": "river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Ruai",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "Explicitly listed county evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kasarani",
+      "id": "NFW-S019",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mwengenye, Njiru",
+      "reported_mechanism_hypothesis": "river",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Njiru",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kasarani"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named riverside hotspot in Sarangombe ward.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S020",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gatwekera Riverside",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Gatwekera/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named locality for evacuation.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S021",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gatwekera Sokomoko",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Gatwekera/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named locality for evacuation.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S022",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gatwekera Kwa Mwangi",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Gatwekera/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named Kwa Foot Bridge locality.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S023",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Soweto West footbridge",
+      "reported_mechanism_hypothesis": "footbridge/riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Soweto West/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named riverside locality (spelling varies among reports).",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S024",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Kianda Riverside Holy Unity",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Kianda/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "2024 county list described households living along Ngong River.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Kibera",
+      "id": "NFW-S025",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Raila informal settlement along Ngong River",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Raila/Kibera",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "kibera"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2024-04-23",
+      "evidence_summary": "Kenya Red Cross reportedly rescued people stranded in floods at Mradi/Mathare 4A in April 2024.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Mathare",
+      "id": "NFW-S026",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mradi / Mathare 4A",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "MRADI24"
+      ],
+      "subarea_context": "Mathare 4A",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P1",
+      "zone_id": "mathare"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County listed both areas in 2024 evacuation hotspots.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Mathare",
+      "id": "NFW-S027",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Mathare North Area 1 and Area 2",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mathare North",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "mathare"
+    },
+    {
+      "administrative_context": [
+        {
+          "id": "nairobi-subcounty-mathare",
+          "method": "Point covered by repository administrative polygon; independent of inventory group",
+          "name": "Mathare",
+          "source_sha256": "923dabba4fd48a243cd9758fed51729bb7a6bdaf0d6d186b5eee942e01aa5c8c",
+          "source_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
+          "source_year": "2020"
+        }
+      ],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "No reviewed local waterway extract; field drainage survey remains required",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named school environs as hotspot; not proof of school building inundation.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": {
+        "coordinates": [
+          36.868957,
+          -1.253949
+        ],
+        "type": "Point"
+      },
+      "group": "Mathare",
+      "id": "NFW-S028",
+      "live_flood_status": null,
+      "location": {
+        "coordinates": [
+          36.868957,
+          -1.253949
+        ],
+        "description": "School landmark for the reported environs; the affected households remain unlocated.",
+        "field_verified": false,
+        "limitations": "OpenStreetMap reference, not a field-checked flood location, boundary or inundation extent.",
+        "method": "Reviewed school amenity node, excluding same-name water and toilet amenities",
+        "osm_node_ids": [
+          "6445132387"
+        ],
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "mathare-school",
+            "params": {
+              "addressdetails": 1,
+              "bounded": 1,
+              "countrycodes": "ke",
+              "format": "jsonv2",
+              "limit": 5,
+              "q": "Mathare North Primary School Nairobi Kenya",
+              "viewbox": "36.65,-1.15,37.05,-1.45"
+            },
+            "url": "https://nominatim.openstreetmap.org/search"
+          },
+          "raw": {
+            "bytes": 2617,
+            "path": "raw/sha256/c5/c5b994e99abfcce36efe16d1f389303d0164ba2d054bc29b22b2f43fab300468.bin",
+            "sha256": "c5b994e99abfcce36efe16d1f389303d0164ba2d054bc29b22b2f43fab300468"
+          },
+          "received_at_utc": "2026-11-11T10:21:51.856580+00:00",
+          "requested_at_utc": "2026-11-11T10:21:49.885276+00:00"
+        },
+        "source_label": "mathare-school",
+        "status": "LANDMARK_REFERENCE"
+      },
+      "name": "Mathare North Primary environs",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mathare North",
+      "terrain": {
+        "acquisition_period": "2011\u20132015 main TanDEM-X acquisition period; not a current terrain survey",
+        "dataset": "Copernicus DEM GLO-30 public DSM tile; EGM2008 orthometric heights",
+        "elevation_m": 1606.92,
+        "limitations": "Surface model includes buildings and vegetation. Cannot resolve roadside drains, capacity, blockage or flood depth.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-metadata",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_10_S02_00_E036_00.xml"
+          },
+          "raw": {
+            "bytes": 44756,
+            "path": "raw/sha256/e2/e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446.bin",
+            "sha256": "e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446"
+          },
+          "received_at_utc": "2026-11-11T10:33:03.302948+00:00",
+          "requested_at_utc": "2026-11-11T10:33:02.219033+00:00"
+        },
+        "method": "Horn 3x3 gradient; WGS84 radii convert native angular spacing to metres at the central pixel",
+        "native_3x3_m": [
+          [
+            1610.83984375,
+            1608.58251953125,
+            1607.107177734375
+          ],
+          [
+            1607.9713134765625,
+            1606.92138671875,
+            1604.572998046875
+          ],
+          [
+            1606.3839111328125,
+            1605.18115234375,
+            1602.0146484375
+          ]
+        ],
+        "native_col": 3128,
+        "native_crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]]",
+        "native_row": 914,
+        "pixel_center": [
+          36.86888888888889,
+          -1.2538888888888888
+        ],
+        "pixel_spacing_m": [
+          30.914725852382706,
+          30.715224309619945
+        ],
+        "resolution": "1 arc-second, approximately 30 m; slope uses a 3x3 neighbourhood",
+        "slope_degrees": 5.129,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-tile",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_COG_10_S02_00_E036_00_DEM.tif"
+          },
+          "raw": {
+            "bytes": 38977060,
+            "path": "raw/sha256/e7/e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed.bin",
+            "sha256": "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed"
+          },
+          "received_at_utc": "2026-11-11T10:33:02.112609+00:00",
+          "requested_at_utc": "2026-11-11T10:32:53.574522+00:00"
+        },
+        "source_url": "https://registry.opendata.aws/copernicus-dem/",
+        "status": "DERIVED_CONTEXT"
+      },
+      "vegetation": {
+        "accepted_scl_classes": [
+          4,
+          5,
+          6
+        ],
+        "acquired_at_utc": "2026-08-12T07:40:31.024000Z",
+        "catalog_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-search",
+            "params": {
+              "bbox": "36.80,-1.33,36.88,-1.24",
+              "collections": "sentinel-2-l2a",
+              "datetime": "2026-08-01T00:00:00Z/2026-10-31T23:59:59Z",
+              "limit": 8,
+              "sortby": "+properties.eo:cloud_cover"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+          },
+          "raw": {
+            "bytes": 122707,
+            "path": "raw/sha256/4b/4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10.bin",
+            "sha256": "4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10"
+          },
+          "received_at_utc": "2026-11-11T10:23:12.826949+00:00",
+          "requested_at_utc": "2026-11-11T10:23:10.244872+00:00"
+        },
+        "limitations": "Dated vegetation context, not live vegetation or vegetation at the historical flood event. No uncertainty or flood effect is calibrated.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-product-metadata-authorized",
+            "params": null,
+            "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+          },
+          "raw": {
+            "bytes": 55078,
+            "path": "raw/sha256/0d/0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d.bin",
+            "sha256": "0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d"
+          },
+          "received_at_utc": "2026-11-11T10:33:31.684735+00:00",
+          "requested_at_utc": "2026-11-11T10:33:28.232016+00:00"
+        },
+        "method": "BOA=(DN+band offset)/quantification; NDVI=(B08-B04)/(B08+B04); accept SCL vegetation/bare/water only",
+        "offsets": {
+          "B04": -1000.0,
+          "B08": -1000.0
+        },
+        "quantification": 10000.0,
+        "raw_dn": {
+          "B04": 2216.0,
+          "B08": 2411.0
+        },
+        "resolution": "Single nearest 10 m red/NIR pixels and native 20 m SCL class at a landmark; not a site area mean",
+        "scene_id": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812",
+        "scene_selection": "Lowest scene cloud cover among first eight results ordered by cloud cover, 1 August\u201331 October 2026",
+        "scl": 5.0,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-point-NFW-S028",
+            "params": {
+              "assets": [
+                "B04",
+                "B08",
+                "SCL"
+              ],
+              "collection": "sentinel-2-l2a",
+              "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.868957,-1.253949"
+          },
+          "raw": {
+            "bytes": 108,
+            "path": "raw/sha256/cc/ccfc0b8035c88a7a4fe558e0f416b1af7f95d0e726d2624133ec663e8e3f0d50.bin",
+            "sha256": "ccfc0b8035c88a7a4fe558e0f416b1af7f95d0e726d2624133ec663e8e3f0d50"
+          },
+          "received_at_utc": "2026-11-11T10:35:53.708798+00:00",
+          "requested_at_utc": "2026-11-11T10:35:52.211708+00:00"
+        },
+        "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+        "status": "DERIVED_CONTEXT",
+        "units": "NDVI, dimensionless",
+        "value": 0.07423
+      },
+      "verification_priority": "P2",
+      "zone_id": "mathare"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County listed Utalii 4A locality.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Mathare",
+      "id": "NFW-S029",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Utalii 4A",
+      "reported_mechanism_hypothesis": "riparian/drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mathare",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "mathare"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County listed Baba Dogo Laundry site in Mathare sub-county; grouped as Ruaraka for project review, not a confirmed admin join.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Ruaraka",
+      "id": "NFW-S030",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Baba Dogo Laundry",
+      "reported_mechanism_hypothesis": "riparian/drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Baba Dogo",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "ruaraka"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named Kasabuni as evacuation hotspot.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Ruaraka",
+      "id": "NFW-S031",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Kasabuni",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Baba Dogo/Mathare corridor",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "ruaraka"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County listed bridge among flood hotspots.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Ruaraka",
+      "id": "NFW-S032",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Gumba Bridge",
+      "reported_mechanism_hypothesis": "bridge/riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Mathare/Baba Dogo corridor",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "ruaraka"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County listed Lucky Summer along the Ruaka River.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Ruaraka",
+      "id": "NFW-S033",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Lucky Summer along Ruaka River",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Lucky Summer",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "ruaraka"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County warned households along Waititi River; warning applies to riverbank reach, not all Kangemi.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Westlands",
+      "id": "NFW-S034",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Kangemi / Mountain View households along Waititi River",
+      "reported_mechanism_hypothesis": "riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Kangemi/Mountain View",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "westlands"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County named Githogoro near Astrol in Karura Ward.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Westlands",
+      "id": "NFW-S035",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Githogoro near Astrol",
+      "reported_mechanism_hypothesis": "riparian/drainage",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Githogoro",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "westlands"
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2024-04-24",
+      "evidence_summary": "County warned households near Kibagare Dam; not all Kitisuru.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Westlands",
+      "id": "NFW-S036",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Kitisuru households along Kibagare Dam",
+      "reported_mechanism_hypothesis": "dam/riparian",
+      "risk_score": null,
+      "source_ids": [
+        "COUNTY24"
+      ],
+      "subarea_context": "Kitisuru/Kibagare",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": "westlands"
+    },
+    {
+      "administrative_context": [
+        {
+          "id": "nairobi-subcounty-langata",
+          "method": "Point covered by repository administrative polygon; independent of inventory group",
+          "name": "Langata",
+          "source_sha256": "923dabba4fd48a243cd9758fed51729bb7a6bdaf0d6d186b5eee942e01aa5c8c",
+          "source_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
+          "source_year": "2020"
+        }
+      ],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "blockage": null,
+        "capacity": null,
+        "condition": null,
+        "extract_bbox": [
+          36.813,
+          -1.316,
+          36.821,
+          -1.308
+        ],
+        "limitations": "OSM mapping may be incomplete. Absence is not evidence of no drainage. Proximity does not establish overflow, flow connectivity, capacity or blockage.",
+        "mapped_culverts": [
+          {
+            "distance_m": 188.9,
+            "name": "Ngong River",
+            "osm_way_id": "895700730",
+            "tunnel": "culvert",
+            "waterway": "stream"
+          },
+          {
+            "distance_m": 191.5,
+            "name": "Ngong River",
+            "osm_way_id": "895700737",
+            "tunnel": "culvert",
+            "waterway": "stream"
+          }
+        ],
+        "method": "Shortest planar distance to clipped mapped waterway lines in this bounded OSM extract; local WGS84 metre approximation",
+        "nearest_mapped_waterway": {
+          "distance_m": 53.7,
+          "name": "Ngong river",
+          "osm_way_id": "25606127",
+          "tunnel": null,
+          "waterway": "river"
+        },
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "tmall-osm-map",
+            "params": {
+              "bbox": "36.813,-1.316,36.821,-1.308"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 1651148,
+            "path": "raw/sha256/d1/d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354.bin",
+            "sha256": "d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354"
+          },
+          "received_at_utc": "2026-11-11T10:24:50.202244+00:00",
+          "requested_at_utc": "2026-11-11T10:24:48.301160+00:00"
+        },
+        "status": "MAPPED_CONTEXT",
+        "surveyed": false
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2024-04-21",
+      "evidence_summary": "Observed road flooding April 2024 and March 2026.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": {
+        "coordinates": [
+          36.8158078,
+          -1.3126653
+        ],
+        "type": "Point"
+      },
+      "group": "Langata (proposed)",
+      "id": "NFW-S037",
+      "live_flood_status": null,
+      "location": {
+        "coordinates": [
+          36.8158078,
+          -1.3126653
+        ],
+        "description": "Roundabout reference point, west of the T-Mall building; not a flooded-road survey.",
+        "field_verified": false,
+        "limitations": "OpenStreetMap reference, not a field-checked flood location, boundary or inundation extent.",
+        "method": "Mean of unique native nodes of the reviewed T-Mall roundabout carriageways",
+        "osm_way_ids": [
+          "659301392",
+          "1115305149",
+          "1117239310",
+          "1117239311",
+          "1120644824",
+          "1151077120",
+          "1153342971"
+        ],
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "tmall-osm-map",
+            "params": {
+              "bbox": "36.813,-1.316,36.821,-1.308"
+            },
+            "url": "https://api.openstreetmap.org/api/0.6/map"
+          },
+          "raw": {
+            "bytes": 1651148,
+            "path": "raw/sha256/d1/d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354.bin",
+            "sha256": "d1669f97477e806bd0d2e24d8ae3da2249aa978f5c9e44c724a7d36b72569354"
+          },
+          "received_at_utc": "2026-11-11T10:24:50.202244+00:00",
+          "requested_at_utc": "2026-11-11T10:24:48.301160+00:00"
+        },
+        "source_label": "tmall-osm-map",
+        "status": "LANDMARK_REFERENCE"
+      },
+      "name": "T-Mall Roundabout, Langata Road",
+      "reported_mechanism_hypothesis": "urban drainage",
+      "risk_score": null,
+      "source_ids": [
+        "TMALL24",
+        "TMALL26"
+      ],
+      "subarea_context": "T-Mall/Langata Road",
+      "terrain": {
+        "acquisition_period": "2011\u20132015 main TanDEM-X acquisition period; not a current terrain survey",
+        "dataset": "Copernicus DEM GLO-30 public DSM tile; EGM2008 orthometric heights",
+        "elevation_m": 1666.38,
+        "limitations": "Surface model includes buildings and vegetation. Cannot resolve roadside drains, capacity, blockage or flood depth.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-metadata",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_10_S02_00_E036_00.xml"
+          },
+          "raw": {
+            "bytes": 44756,
+            "path": "raw/sha256/e2/e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446.bin",
+            "sha256": "e241f66fcb4d5607308741c4362cd22fe7ab7e909864a02892ea005505d4a446"
+          },
+          "received_at_utc": "2026-11-11T10:33:03.302948+00:00",
+          "requested_at_utc": "2026-11-11T10:33:02.219033+00:00"
+        },
+        "method": "Horn 3x3 gradient; WGS84 radii convert native angular spacing to metres at the central pixel",
+        "native_3x3_m": [
+          [
+            1663.0845947265625,
+            1665.7578125,
+            1664.30029296875
+          ],
+          [
+            1666.064697265625,
+            1666.3828125,
+            1665.6383056640625
+          ],
+          [
+            1667.260986328125,
+            1667.852783203125,
+            1667.433349609375
+          ]
+        ],
+        "native_col": 2937,
+        "native_crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]]",
+        "native_row": 1126,
+        "pixel_center": [
+          36.81583333333333,
+          -1.3127777777777778
+        ],
+        "pixel_spacing_m": [
+          30.914018810682347,
+          30.71523850572146
+        ],
+        "resolution": "1 arc-second, approximately 30 m; slope uses a 3x3 neighbourhood",
+        "slope_degrees": 2.682,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "copernicus-dem-tile",
+            "params": null,
+            "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S02_00_E036_00_DEM/Copernicus_DSM_COG_10_S02_00_E036_00_DEM.tif"
+          },
+          "raw": {
+            "bytes": 38977060,
+            "path": "raw/sha256/e7/e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed.bin",
+            "sha256": "e7984d6826564293fff54b518250b9e3f8b0fd68b119d618ae6f66a515d145ed"
+          },
+          "received_at_utc": "2026-11-11T10:33:02.112609+00:00",
+          "requested_at_utc": "2026-11-11T10:32:53.574522+00:00"
+        },
+        "source_url": "https://registry.opendata.aws/copernicus-dem/",
+        "status": "DERIVED_CONTEXT"
+      },
+      "vegetation": {
+        "accepted_scl_classes": [
+          4,
+          5,
+          6
+        ],
+        "acquired_at_utc": "2026-08-12T07:40:31.024000Z",
+        "catalog_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-search",
+            "params": {
+              "bbox": "36.80,-1.33,36.88,-1.24",
+              "collections": "sentinel-2-l2a",
+              "datetime": "2026-08-01T00:00:00Z/2026-10-31T23:59:59Z",
+              "limit": 8,
+              "sortby": "+properties.eo:cloud_cover"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+          },
+          "raw": {
+            "bytes": 122707,
+            "path": "raw/sha256/4b/4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10.bin",
+            "sha256": "4be8f07dba7afc7be0ac1ef5690a05e9b752bdab55d8295b5a935e7159ca6c10"
+          },
+          "received_at_utc": "2026-11-11T10:23:12.826949+00:00",
+          "requested_at_utc": "2026-11-11T10:23:10.244872+00:00"
+        },
+        "limitations": "Dated vegetation context, not live vegetation or vegetation at the historical flood event. No uncertainty or flood effect is calibrated.",
+        "metadata_source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-product-metadata-authorized",
+            "params": null,
+            "url": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/37/M/BU/2026/08/12/S2A_MSIL2A_20260812T074031_N0512_R092_T37MBU_20260812T125812.SAFE/MTD_MSIL2A.xml"
+          },
+          "raw": {
+            "bytes": 55078,
+            "path": "raw/sha256/0d/0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d.bin",
+            "sha256": "0d1db5ada72818866d630c24868fb53d704f71a9edd96407817a31bf66a18d5d"
+          },
+          "received_at_utc": "2026-11-11T10:33:31.684735+00:00",
+          "requested_at_utc": "2026-11-11T10:33:28.232016+00:00"
+        },
+        "method": "BOA=(DN+band offset)/quantification; NDVI=(B08-B04)/(B08+B04); accept SCL vegetation/bare/water only",
+        "offsets": {
+          "B04": -1000.0,
+          "B08": -1000.0
+        },
+        "quantification": 10000.0,
+        "raw_dn": {
+          "B04": 2224.0,
+          "B08": 2399.0
+        },
+        "resolution": "Single nearest 10 m red/NIR pixels and native 20 m SCL class at a landmark; not a site area mean",
+        "scene_id": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812",
+        "scene_selection": "Lowest scene cloud cover among first eight results ordered by cloud cover, 1 August\u201331 October 2026",
+        "scl": 5.0,
+        "source": {
+          "http_status": 200,
+          "identity": {
+            "body": null,
+            "label": "sentinel-point-NFW-S037",
+            "params": {
+              "assets": [
+                "B04",
+                "B08",
+                "SCL"
+              ],
+              "collection": "sentinel-2-l2a",
+              "item": "S2A_MSIL2A_20260812T074031_R092_T37MBU_20260812T125812"
+            },
+            "url": "https://planetarycomputer.microsoft.com/api/data/v1/item/point/36.8158078,-1.3126653"
+          },
+          "raw": {
+            "bytes": 110,
+            "path": "raw/sha256/8d/8d61158765fd2063a90bf3f16f1195d1e08df5075523f327b67dc98b109cdff1.bin",
+            "sha256": "8d61158765fd2063a90bf3f16f1195d1e08df5075523f327b67dc98b109cdff1"
+          },
+          "received_at_utc": "2026-11-11T10:35:52.186425+00:00",
+          "requested_at_utc": "2026-11-11T10:35:50.685951+00:00"
+        },
+        "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+        "status": "DERIVED_CONTEXT",
+        "units": "NDVI, dimensionless",
+        "value": 0.06672
+      },
+      "verification_priority": "P1",
+      "zone_id": null
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2026-03-21",
+      "evidence_summary": "March 2026 WRA downstream warning; risk notice, not observed flood boundary.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Langata (proposed)",
+      "id": "NFW-S038",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Nairobi Dam Estate downstream",
+      "reported_mechanism_hypothesis": "dam/riparian",
+      "risk_score": null,
+      "source_ids": [
+        "DAM26"
+      ],
+      "subarea_context": "Nairobi Dam Estate",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": null
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OFFICIAL_WARNING_NAMED_SITE",
+      "evidence_date": "2026-03-21",
+      "evidence_summary": "March 2026 WRA downstream warning; verify administrative grouping.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Langata (proposed)",
+      "id": "NFW-S039",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "Nyayo Highrise downstream of Nairobi Dam",
+      "reported_mechanism_hypothesis": "dam/riparian",
+      "risk_score": null,
+      "source_ids": [
+        "DAM26"
+      ],
+      "subarea_context": "Nyayo Highrise",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P2",
+      "zone_id": null
+    },
+    {
+      "administrative_context": [],
+      "association_status": "PROVISIONAL_INVENTORY_GROUP",
+      "drainage": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "evidence_category": "OBSERVED_FLOOD_OR_IMPACT",
+      "evidence_date": "2026-03-07",
+      "evidence_summary": "March 2026 rain floodwater damaged substation; provisional grouping only.",
+      "flood_depth": null,
+      "flood_extent": null,
+      "geometry": null,
+      "group": "Langata (proposed)",
+      "id": "NFW-S040",
+      "live_flood_status": null,
+      "location": {
+        "field_verified": false,
+        "reason": "Named reach, informal subarea or ambiguous landmark requires GIS or field review; no zone-centroid substitution.",
+        "status": "UNLOCATED"
+      },
+      "name": "South C electrical substation",
+      "reported_mechanism_hypothesis": "urban drainage",
+      "risk_score": null,
+      "source_ids": [
+        "SOUTHC26"
+      ],
+      "subarea_context": "South C",
+      "terrain": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "vegetation": {
+        "reason": "Location not established",
+        "status": "UNAVAILABLE",
+        "value": null
+      },
+      "verification_priority": "P1",
+      "zone_id": null
+    }
+  ],
+  "source_member_checks": {
+    "01_Specific_Hotspots.csv": {
+      "bytes": 25055,
+      "matches_supplied_manifest": true,
+      "sha256": "7d362b10e2e588f50367bdfc59c75f6b80b0d0f0c2cfafdca20f03f9c844783f"
+    },
+    "02_Government_Corridor_Names.csv": {
+      "bytes": 14431,
+      "matches_supplied_manifest": true,
+      "sha256": "5d0c5eacd1b32eeefe8d687c8cd5ab7cc405eee0ffb538b0548cd56db8f5e66c"
+    },
+    "03_Evidence_Sources.csv": {
+      "bytes": 2580,
+      "matches_supplied_manifest": true,
+      "sha256": "a9c32066fc6c75fbbbb4e185bd797f099d5cdd478563abad78b7515c833fd657"
+    },
+    "04_Geocoding_Review_Queue.csv": {
+      "bytes": 7121,
+      "matches_supplied_manifest": true,
+      "sha256": "299332d6682bd8c9e0994bfbaa47b253c68fed8d3dcbc8e711b50971c788eeb5"
+    },
+    "05_Unlocated_Hotspot_Features.geojson": {
+      "bytes": 50088,
+      "matches_supplied_manifest": true,
+      "sha256": "1789ec7578cddc6c39d2d2efb95b116f7c29f1d3efc4da7811545645a3efb74b"
+    },
+    "06_Zone_Summary.csv": {
+      "bytes": 156,
+      "matches_supplied_manifest": true,
+      "sha256": "c05e6936ac7d0149165b4eac5637bc8d2c5d7afd2dfbe0faa325c8508d536edf"
+    },
+    "07_Hotspot_Inventory.xlsx": {
+      "bytes": 19379,
+      "matches_supplied_manifest": true,
+      "sha256": "1b4e94d015d5a652f7fd41be42df0c008b6e68b09e82e13030cddd666c62c3f1"
+    },
+    "MANIFEST.json": {
+      "bytes": 1665,
+      "matches_supplied_manifest": false,
+      "sha256": "4808e9a2fc4067079ec98372a929e96af9d7e54dd0d31acc854e19de83f9c130"
+    },
+    "README_Hotspot_Inventory.md": {
+      "bytes": 4846,
+      "matches_supplied_manifest": true,
+      "sha256": "4f2df2264f5642f76d81e0072ff8521d9427ff2d747aa2de9ab4f5a1614ef58a"
+    }
+  },
+  "sources": [
+    {
+      "source_date": "2026-03-15",
+      "source_id": "GOV37",
+      "title": "Government corridor screening reported by Citizen Digital",
+      "url": "https://citizen.digital/article/37-neighbourhoods-in-nairobi-flagged-as-flood-prone-areas-list-n379078/",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2024-04-24",
+      "source_id": "COUNTY24",
+      "title": "Nairobi County evacuation hotspot list reported by The Star",
+      "url": "https://www.the-star.co.ke/news/2024-04-24-floods-hot-spots-nairobi-county-lists-areas-residents-should-vacate",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2024-04-21",
+      "source_id": "TMALL24",
+      "title": "Observed road flooding T-Mall Citizen Digital",
+      "url": "https://citizen.digital/article/nairobi-the-green-city-under-the-sun-marooned-by-floods-n340750",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2026-03-06",
+      "source_id": "TMALL26",
+      "title": "Observed T-Mall road flooding Citizen Digital",
+      "url": "https://test.citizen.digital/article/nairobi-streets-turn-to-filthy-rivers-as-rain-pounds-city-vehicles-nearly-submerged-n378622",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2025",
+      "source_id": "KAMITHA25",
+      "title": "Observed rain/sewage flooding Kamitha Citizen Digital",
+      "url": "https://citizen.digital/article/over-50-families-stranded-in-kawangware-as-raw-sewage-floods-homes-n372494",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2024-04-23",
+      "source_id": "MRADI24",
+      "title": "Reported rescue in Mradi Mathare 4A The Star",
+      "url": "https://www.the-star.co.ke/counties/rift-valley/2024-04-25-12-people-killed-hundreds-displaced-as-rains-wreak-havoc-in-nairobi-city",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2024-01-13",
+      "source_id": "CBD24",
+      "title": "Observed flooding CBD junction and roads The Standard",
+      "url": "https://standardmedia.co.ke/business/amp/nairobi/article/2001488865/pictures-nairobi-city-covered-in-floods",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2026-03",
+      "source_id": "GLOBE26",
+      "title": "Flood-related damage to Nairobi River bridge at Globe The Standard",
+      "url": "https://www.standardmedia.co.ke/nairobi/article/2001543844/kenha-reopens-globe-roundabout-after-13-day-closure",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2026-03-21",
+      "source_id": "DAM26",
+      "title": "WRA Nairobi Dam downstream risk warning reported by KBC",
+      "url": "https://www.kbc.co.ke/flood-alert-issued-over-nairobi-dam-rising-water-levels/",
+      "use": "Primary site/corridor evidence"
+    },
+    {
+      "source_date": "2026-09-11",
+      "source_id": "COUNT246",
+      "title": "Nairobi county 246 geocoded hotspots reported by The Standard",
+      "url": "https://tnx.africa/environment%20%26%20climate/article/2001557521/nairobi-maps-246-flood-hotspots-as-el-nino-rains-threaten-100-000-residents",
+      "use": "Context only, no point extraction performed"
+    },
+    {
+      "source_date": "2024-05-03",
+      "source_id": "UNOSAT24",
+      "title": "UNOSAT 1 May 2024 satellite surface water mapping",
+      "url": "https://unosat.org/products/3833",
+      "use": "Context only, no point extraction performed"
+    },
+    {
+      "source_date": "2026-03-07",
+      "source_id": "SOUTHC26",
+      "title": "Observed flooded South C electricity substation The Star",
+      "url": "https://www.the-star.co.ke/news/2026-03-07-heavy-rains-flood-south-c-substation-cause-power-outages",
+      "use": "Primary site/corridor evidence"
+    }
+  ]
+}

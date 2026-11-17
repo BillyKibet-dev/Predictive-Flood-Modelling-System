@@ -1,373 +1,251 @@
 # NairobiFloodWatch
 
-Flood-risk monitoring prototype for Nairobi County, Kenya —
-a Strathmore University industry capstone project.
+Nairobi weather and community-report monitoring prototype, built with FastAPI,
+PostgreSQL/PostGIS and React/Leaflet for a final-year capstone.
 
-A trained XGBoost model classifies weather-based risk into four levels (**Low,
-Moderate, High, Extreme**). One shared Nairobi weather indication is displayed
-against **8 monitoring locations** and summarised by sub-county. Street-level
-flooding and local drainage are not assessed. Predictions, alerts, and citizen reports are served through a
-FastAPI backend to a React dashboard used by three kinds of users:
+The application combines genuine forecast rainfall, mapped monitoring locations,
+dated geographic context, historical satellite water mapping and citizen reports.
+Its current live outlook uses **transparent rainfall thresholds**, not a validated
+street-flood classifier. Environmental proxy classes, historical satellite-detected
+water and predicted inundation are different things; the application supplies no
+validated inundation depth/extent or calibrated flood probabilities.
 
-- **Citizens** — view current risk per zone and submit flood condition reports, no login required
-- **Authorities (officers)** — monitor the live risk map, manage and acknowledge alerts
-- **System administrators** — manage user accounts, alert thresholds, and review model performance
+## Current application
 
-## Selected v1 research integration
+- **Map `/`:** 36 monitored records, all located, at 34 physical pins, grouped
+  under the stored administrative boundaries. Seven were located by the user on
+  15 November 2026 and four that could not be found were removed.
+  Pins are coloured by tomorrow's rainfall-risk category (grey when no fresh outlook).
+  Selecting an area shows a short summary first; technical detail is under More details.
+- **Weather `/weather-outlook`:** the same monitored-location outlook, source/run,
+  next complete Nairobi target day, receipt time and expiry. A six-hour receipt
+  limit, 24-hour run-age guard and target-day boundary can withhold old values.
+  Low rainfall does not establish flood safety. Shared provider grids are explicit.
+- **Citizens `/citizen`:** submit observations with a specific landmark/address and
+  optional actual coordinates. Reports are stored in PostgreSQL; they do not
+  automatically change rainfall categories or become confirmed flood events.
+- **Community reports on the map:** an officer can tick **Show on the public map** when
+  reviewing a report with a map pin. It then appears as a purple triangle for 24 hours
+  after it was reported (`GET /community-reports/recent`): condition, severity and
+  specific location, at about 100 m. Descriptions, notes and contact details are never
+  public. Marking a report Resolved removes it. Every publish/withdraw is in the review
+  audit. Needs `python -m src.scripts.migrate_reports` (additive migration 006).
+- **Reporting by sub-county:** citizens choose one of the 17 Nairobi sub-counties (the OSM
+  outlines on the map), and dropping a pin fills it in automatically (`POST /reporting-areas/locate`,
+  so a pin never appears in a URL or access log). A pin outside the chosen sub-county is refused
+  with a plain explanation. Older reports keep their original zone. Needs migration 007 (same
+  command as above).
+- **Same-day outlook (`/monitoring-areas/today`):** forecast rain in the next 3 h and 3-6 h at each
+  place (light/moderate/heavy by hourly rate: <2.5, <7.6, >=7.6 mm/h) and today's category from
+  the Stage 2 model run with today as the target day: newest ECMWF run where it covers the hour,
+  else the collection made yesterday for today; NASA IMERG observed rain for yesterday and the five
+  days before. Falls back to the rule (lower bound) when inputs are missing. The public map opens on
+  Today with a Today/Tomorrow switch. Reads stored collections only; storm timing is uncertain.
+- **Local flood susceptibility:** the 36 places share only 7 forecast cells, so each also gets a
+  fixed-weight score (Higher / Medium / Lower) from 30 m terrain (height above the nearest mapped
+  river, ground lower than its surroundings), OpenStreetMap rivers, the 1 May 2024 satellite water
+  map, built-up cover and recorded flooding (`python -m src.scripts.prepare_susceptibility`,
+  served at `/monitoring-areas/susceptibility`). Ringed pins flood more easily; staff lists rank
+  by tomorrow's category, then susceptibility. A ranking, not a validated probability.
+- **Report tracking, photos and advisories (migration 008):** each new report returns a one-time
+  tracking code (only its hash is stored); residents check status with reference + code
+  (`POST /citizen-report/status`). One photo per report within 2 hours, re-encoded with Pillow so
+  no GPS/camera metadata survives, stored in `REPORT_PHOTO_DIR` and visible to staff only.
+  Officers post time-limited advisories for a sub-county (`/advisories`), shown on the public map
+  without staff names.
+- **Route checker (`/route`):** OpenRouteService routing and place search through the API
+  (`OPENROUTESERVICE_API_KEY`, server-side only, rate-limited). Lists checked reports, advisories,
+  river crossings and flood-prone places along the route and can re-route around reported
+  flooding. Never states a route is safe; start and end are not stored or logged.
+- **Kiswahili:** the map, report form and route checker switch between English and Kiswahili
+  (`dashboard/src/i18n/strings.js`; a test keeps both languages in step). Have a native speaker
+  review the Kiswahili before launch.
+- **Original model files:** the API reads `models/legacy-v2/` (XGBoost JSON + scaler numbers,
+  converted by `python -m src.scripts.export_legacy_model` with identical outputs) instead of the
+  version-mismatched pickles.
+- **Staff workspace:** a grouped sidebar (Today, Data, Admin) replaces the long top menu.
+  New pages: **Models** (`/admin/models`, the live model's validation against the rule, by
+  season), **Rainfall history** (`/history`, CHIRPS 2016 to 2026), and **Downloads**
+  (`/downloads`, CSV files of reports, tomorrow's outlook and rainfall history). Downloads are
+  built on the server (`/exports/*.csv`, staff only), never include the IP hash, and neutralise
+  spreadsheet formulas in citizen text.
+- **Officers:** review persisted reports and notes, inspect nearby reports at a
+  monitored point, and review saved advisories. Reporting forms are citizen-only.
+- **Administrators:** manage real accounts, review reports and check system state.
+  **System status → Collect latest weather** makes one explicit bounded source
+  request. Repeated request IDs recover/reuse evidence. A lost acknowledgement is
+  unconfirmed; use **Resume same attempt**, not an automatic new request. New admin
+  requests have a 15-minute limit. Status refreshes never fetch provider weather.
+- **Staff research `/research`:** historical v1 replay and an on-demand binary
+  next-day rainfall research result are separate from the public weather outlook. Historical UNOSAT layers
+  are optional, dated staff context, with cloud/coverage limitations.
 
-The selected **XGBoost v1 next-day environmental proxy-risk model** has a separate
-20-feature contract and native inference runtime. Historical research replay,
-source freshness/limitations, real frozen evaluation and per-zone results are
-available through `/api/v1/*` and an explicit dashboard view selector. Live v1
-forecasts remain unavailable: CHIRPS publication timing, retrospective ERA5
-availability and day-boundary parity are unresolved. Scores are not calibrated
-flood probabilities and the map does not predict inundation.
+**Automatic weather collection:** with `MONITORING_POINT_COLLECTION_AUTOMATED=true`
+the API collects the forecast and observed satellite rain itself every hour at
+minute 5 UTC (`MONITORING_POINT_COLLECTION_INTERVAL_HOURS`). It runs a catch-up after a
+restart if the stored forecast is stale, uses one label per hour and a lock (so several
+workers or a backup timer never double-request), and records each run on the admin
+**System status** page. Collection does not generate alerts or write prediction records;
+the outlook is classified when it is read. No public SMS/email emergency delivery is
+active. The legacy inference scheduler stays off. The binary research model is
+staff-only, runs on demand against a verified stored source, and never writes alerts.
 
-The original nine-feature shared-weather model, tables and old APIs remain
-available as the **legacy** view. Historical v1 results never replace legacy
-current-condition records. API startup now performs no automatic schema creation
-or scheduled predictions by default. An explicitly enabled legacy worker is
-protected against duplicate hourly writes; v1 is not scheduled and sends no
-emergency alerts.
+## Model boundaries
 
-Start with the [v1 runbook](docs/integration/model_v1_runbook.md),
-[contract](docs/integration/model_v1_contract.md), [audit](docs/integration/model_v1_audit.md)
-and [verification evidence](docs/integration/model_v1_validation.md).
-Ignored local model/data files must be restored and hash-verified; do not commit
-the handoff binaries or private source exports. Prompt 2 is outside this change.
+| Component | Current use |
+|---|---|
+| Rainfall rule (Stage 1, explanation and fallback) | v1's label rule applied to live inputs: the higher of tomorrow's ECMWF forecast class (5/20/40 mm) and the 7-day total class (25/80/150 mm), where the 7-day total = 5 days of observed NASA IMERG Early satellite rain + forecast. Incomplete inputs give a flagged lower bound. See [rainfall_risk_rule.md](docs/integration/rainfall_risk_rule.md). Provisional environmental categories, not observed floods. |
+| **Stage 2 XGBoost (live public outlook)** | Guarded XGBoost on the same live inputs (tomorrow's ECMWF forecast, rest-of-today forecast, 5 days of IMERG Early observed rain), trained on 924 real forecast runs (Mar 2024–Sep 2026) with CHIRPS v1 labels. Adopted by a pre-declared season-held-out test (High-or-above CSI 0.524 vs rule 0.394). Extreme only when the rule reaches High. The rule is shown alongside and used when inputs are incomplete. See [stage2_rainfall_risk_model.md](docs/integration/stage2_rainfall_risk_model.md). Not a flood probability. |
+| XGBoost v1 | Frozen 20-feature historical replay, isolated pinned runtime. Live CHIRPS/weather source parity remains unresolved. |
+| Binary rainfall research | Supplied ten-feature XGBoost binary model. It estimates an ERA5-estimated next-day rainfall threshold from forecast weather, not flooding. Scores are uncalibrated and monitored-area transfer is unvalidated. |
 
-## Architecture
+The new monitoring locations' dated NDVI, slope and land-cover context do not
+automatically become inputs to any of these frozen models. Drain capacity,
+blockage and measured imperviousness remain unavailable where not surveyed.
 
-```mermaid
-flowchart LR
-    W["Open-Meteo API<br/>(weather data)"] --> P["Legacy Pipeline<br/>(hourly only when explicitly enabled)"]
-    P --> M["XGBoost Model<br/>(src/api/services/ml_service.py)"]
-    M --> DB[("PostgreSQL<br/>zones, predictions, alerts, users, reports")]
-    DB --> API["FastAPI Backend<br/>src/api/"]
-    API <--> UI["React Dashboard<br/>dashboard/"]
-```
+## Local setup
 
-## Repository structure
-
-```
-Predictive-Flood-Modelling-System/
-├── dashboard/        React + Vite frontend (citizen, officer, and admin views)
-├── src/
-│   ├── api/          FastAPI backend (routers, services, models, utils)
-│   └── scripts/      init_db.py, run_pipeline.py
-├── models/           Trained XGBoost model + scaler + feature columns (.joblib)
-├── data/             Raw/processed data used for model training
-├── notebooks/        Model training & evaluation notebook (FloodHub.ipynb)
-├── tests/            Backend API smoke tests (pytest)
-├── requirements.txt  Backend Python dependencies
-└── .env.example      Backend environment variable template
-```
-
-## Quick start
-
-Two independent apps make up the system — run them side by side during development.
-
-### 1. Backend (FastAPI + PostgreSQL)
-
-Install dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-Set up PostgreSQL:
-
-```
-createdb nairobifloodwatch
-```
-
-or via `psql`:
-
-```sql
-CREATE DATABASE nairobifloodwatch;
-```
-
-Copy the environment file and edit it with your DB password and secret key:
-
-```
-cp .env.example .env
-```
-
-Generate a secret key (minimum 32 characters):
-
-```
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-
-Initialise the database and seed zones/users/initial predictions:
-
-```
-python -m src.scripts.init_db
-```
-
-Start the API server:
-
-```
-uvicorn src.api.main:app --reload --port 8000
-```
-
-Access the API docs:
-
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-
-Run isolated backend tests (source fixtures and explicitly enabled PostGIS integration have their own requirements; see the v1 runbook):
-
-```
-pytest tests/ -v
-```
-
-Run the prediction pipeline manually:
-
-```
-python -m src.scripts.run_pipeline
-```
-
-To use your own trained model, drop these three files into `models/` (see
-`MODEL_PATH`/`SCALER_PATH`/`FEATURE_COLS_PATH` in `.env` if you rename them),
-then restart the server:
-
-```
-models/flood_model_final.joblib
-models/scaler_final.joblib
-models/feature_cols_final.joblib
-```
-
-### 2. Frontend (React dashboard)
-
-```
-cd dashboard
-npm install
-npm start
-```
-
-The dashboard runs at http://localhost:5173 with routes `/` (public map),
-`/citizen`, `/login`, `/officer`, `/officer/alerts`, and `/admin`.
-
-### Prediction refresh (issue #9)
-
-The map, citizen risk cards, and officer risk table share one live `GET /dashboard`
-subscription. Keep the backend running alongside Vite. To change the API origin or
-refresh timing, copy `dashboard/.env.example` to `dashboard/.env.local` and restart
-Vite (or rebuild for deployment).
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `VITE_API_BASE_URL` | `http://localhost:8000` | Backend origin; allow the frontend origin via backend `FRONTEND_URL` |
-| `VITE_PREDICTION_POLL_INTERVAL_MS` | `60000` | Delay between completed prediction requests |
-| `VITE_PREDICTION_STALE_AFTER_MS` | `3900000` | Mark predictions older than 65 minutes as stale |
-
-Predictions are fetched immediately on page load, then every minute after the
-previous request settles. This checks saved results from the hourly backend
-pipeline; it never triggers inference. Manual refresh, returning to the tab, and
-regaining connectivity also check for updates. Requests time out after 15 seconds;
-requests do not overlap, and unmounting cancels requests and timers.
-
-Failed refreshes retain the last successful snapshot with a visible warning.
-Each zone displays its actual prediction timestamp in Africa/Nairobi time. Zones
-without predictions show **Unknown**, and empty results do not imply low risk.
-The API does not supply rainfall totals, so those fields show **Unavailable**.
-
-Only prediction data and the summary alert count are connected in this issue.
-Authentication, alert actions, user management, and model/system panels still use
-the existing demo implementation and require separate integration work. Citizen
-report submission is connected as described below.
-
-Run the polling/response regression tests and production build from `dashboard/`:
+Use the repository root for backend commands. Install the backend dependencies in
+a Python virtual environment and prepare a private PostgreSQL database:
 
 ```text
-npm test
-npm run build
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements.txt
 ```
 
-### Public citizen warnings and reports (issue #25)
+On Linux, use `.venv/bin/python` instead. Copy `.env.example` to `.env`, privately
+fill `DATABASE_URL` and a strong `SECRET_KEY`, and set the frontend origin. Keep
+`AUTO_CREATE_LEGACY_TABLES`, `LEGACY_SCHEDULER_ENABLED` and
+the binary rainfall research endpoint staff-only. The private `.env` is never committed.
 
-At `/citizen`, residents can filter the live warning cards by zone and select
-**Report conditions** on a card to preselect that zone in the reporting form.
-Warnings with old prediction timestamps are labelled as saved warnings.
-
-The form submits anonymously to `POST /citizen-report`, using zone IDs from the
-dashboard API. Supported conditions are Street flooding, River overflow, Blocked
-drainage, and Other; severities are Mild, Serious, and Dangerous. Descriptions are
-optional, limited to 200 characters, trimmed, and stored as null when blank.
-The frontend validates entries, and the backend enforces the same values and
-length limits. Zone IDs must exist in the database; the form offers no unsupported
-"Other" zone.
-
-While submitting, the form blocks repeated submissions. Success appears only
-after HTTP 201 confirms the saved report ID and timestamp. Failures preserve the
-entered details and show a retry message or field errors. Requests time out after
-15 seconds and are cancelled when navigating away. Submissions are never retried
-automatically because a lost response can follow a successful save. Reports do
-not directly change model predictions or displayed risk levels.
-
-Reports persist in `citizen_reports` and are available through the existing
-admin-only `GET /citizen-reports` endpoint. The admin dashboard's report list still
-uses demo data pending authentication/admin API integration.
-
-Run the frontend tests/build above and the isolated report API tests from the
-project root (with the normal backend environment configured):
+For a **new database only**, explicitly initialize the tables, original reporting
+zones and first administrator:
 
 ```text
-python -m pytest tests/test_reports.py -v
+python -m src.scripts.init_db --admin-email your-address@example.org --admin-name "Administrator"
 ```
 
-These report tests use an in-memory SQLite database and do not write to the
-configured PostgreSQL database or start the prediction scheduler.
+The command prompts privately for the password and confirmation. Noninteractive
+operators can supply `FLOODWATCH_BOOTSTRAP_PASSWORD` through private environment
+configuration; never put it on a command line or in Git. There are no default
+passwords/officers and no initial prediction run. Repeating setup preserves the
+existing administrator and password; additional accounts are created in the admin
+UI. Existing installations keep their accounts: this change does not reset them.
 
-### Nairobi administrative boundary (issue #16)
-
-With the backend environment configured, load the committed county and 17
-sub-county boundaries:
+Apply the existing additive migrations explicitly to the intended development or
+staging database, after its backup; API startup does not apply them:
 
 ```text
+python -m src.scripts.migrate_model_v1 --schema public
+python -m src.scripts.migrate_environmental --schema public
+python -m src.scripts.migrate_reports --schema public
+python -m src.scripts.migrate_operational_sources --schema public
 python -m src.scripts.load_boundaries
 ```
 
-The command enables the PostGIS extension and applies
-`src/api/migrations/001_administrative_boundaries.sql`. PostgreSQL must have
-PostGIS installed, and the database user needs permission to enable it (a database
-administrator can run `CREATE EXTENSION IF NOT EXISTS postgis` first). Existing
-API features can start without this optional spatial setup.
+The boundary importer requires PostgreSQL's PostGIS extension and appropriate
+permissions. The committed county and 17 sub-county outlines come from OpenStreetMap
+(the basemap's source), checked for no overlaps or gaps; they are community-mapped,
+not an official survey. Re-run the loader after any boundary update. Never run a downgrade on
+preserved histories without a reviewed backup and rollback plan.
 
-The importer validates the GeoJSON, stores a valid non-empty MultiPolygon with
-SRID 4326 and a GiST index, and retains source/licence/year metadata. Repeat runs
-update the same 18 boundary IDs; the entire import is transactional. To use another
-file with the same feature/property contract, pass `--path path/to/file.geojson`.
-
-Public GeoJSON endpoints:
-
-- `GET /boundaries` — administrative FeatureCollection.
-- `GET /boundaries/nairobi-county` — the county Feature.
-
-Unknown boundary IDs return 404; unavailable spatial setup returns 503. The data
-uses provider-simplified **2020 administrative boundaries**. Each sub-county
-includes `monitoring_zone_ids`, calculated from monitoring coordinates with
-PostGIS `ST_Covers`, rather than matching neighbourhood names. See
-[data/README.md](data/README.md) for provenance and attribution.
-
-### Sub-county risk map (issue #4)
-
-The public map fetches `/boundaries` on entry and draws the county outline and
-17 sub-county polygons. Colours follow the highest available prediction among
-monitoring points inside each polygon and update with the existing prediction
-polling. Areas without a point or an available prediction show **Unknown**.
-Dashed outlines and popup messages identify old predictions; partial coverage
-is stated in the popup. This aggregation describes monitored risk within an
-administrative area; it does not estimate flood extent across the polygon.
-
-Popups show contributing monitoring points, model scores, update times, source
-year, and licence. **Sub-county risk** and **Monitoring points** toggle the two
-layers; **Fit county** restores the county view. Prediction refreshes preserve
-the current map position. Boundaries load independently of predictions: a failed
-initial request leaves monitoring points available with a retry button, and a
-failed reload retains the previous outlines. Boundary requests time out after
-15 seconds and are cancelled on navigation. Attribution stays visible below
-the map controls, including on mobile.
-
-Run boundary validation/API tests plus existing report tests:
+Start the backend and frontend separately:
 
 ```text
-python -m pytest tests/test_boundaries.py tests/test_reports.py -v
+python -m uvicorn src.api.main:app --reload --port 8000
 ```
-
-After importing, enable native PostGIS tests in PowerShell:
-
-```powershell
-$env:RUN_POSTGIS_TESTS = "1"
-python -m pytest tests/test_boundaries.py tests/test_reports.py -v
-Remove-Item Env:RUN_POSTGIS_TESTS
-```
-
-Spatial tests use and remove a UUID-named temporary schema. They leave application
-tables intact. Set `POSTGIS_TEST_DATABASE_URL` to use a separate test database;
-otherwise the configured database is used. The connection needs CREATE SCHEMA
-permission and an already enabled PostGIS extension.
-
-
-## Model input audit (issue #19, first step)
-
-See [docs/model-input-audit.md](docs/model-input-audit.md) for the exact feature
-contract, proxy labels, training/serving mismatches, conflicting saved metrics
-and the staged plan for local flood evidence and validation. Reproduce the
-artefact inspection without network/database access:
 
 ```text
-python -m src.scripts.audit_model
-python -m pytest tests/test_model_inputs.py tests/test_prediction_pipeline.py tests/test_model_audit.py -v
+cd dashboard
+npm ci
+npm run dev
 ```
 
-The live pipeline requires complete recent weather and compatible model files.
-Failed runs preserve prior data and create no new predictions/alerts. The
-dashboard's `prediction_context` declares shared Nairobi coverage, same-day
-proxy labels and uncalibrated class scores. Missing predictions return Unknown
-with null timestamps. A missing/invalid model evaluation report returns 503
-instead of hard-coded performance values. The audit's structural checks do not
-establish street-level accuracy or resolve the documented daily/hourly mismatch.
+The frontend defaults to `http://localhost:8000`; configure
+`VITE_API_BASE_URL` before building for another host. API documentation is at
+`/docs`. Sign in with the administrator you explicitly created, then add officers
+through **User Accounts**. No sample authentication or user-management data is used.
 
-The original CSVs have now been inspected locally. Their common period ends in
-2025; the candidate export scripts sample one central Nairobi point. Replay the
-daily proxy task with:
+## Forecast collection and source evidence
+
+Source requests explicitly select an IFS 00/12 UTC run at least six hours old.
+That release guard is not independent producer publication evidence. Request,
+receipt and storage timestamps remain actual, and original publication is null
+when unknown. The request-time outlook is separate from the frozen 06:00 EAT
+research issue policy; a late capture cannot be backdated.
+
+Use the admin control or the existing manual CLI:
 
 ```text
-python -m src.scripts.evaluate_proxy_model --output docs/dataset-evaluation.json
+python -m src.scripts.collect_monitoring_point_weather --plan --current --all
+python -m src.scripts.collect_monitoring_point_weather --collect --current --all
+python -m src.scripts.verify_point_weather_store --round-trip
 ```
 
-See [docs/dataset-evaluation.md](docs/dataset-evaluation.md) for data provenance,
-the actual metric comparisons and the frozen snapshot's load failure under its
-recorded library versions. `requirements-evaluation.txt` defines a separate
-diagnostic environment; application dependencies and deployed model weights are
-unchanged. An optional `--reference-fit` runs the documented recipe in memory
-and never exports a model. These checks do not establish local flood accuracy.
+The collector caps one request at 40 points and 2 MiB retained body size, with no
+redirects or automatic retries. It checks source units, complete physical-day
+intervals, coordinates and missingness. Missing values never become zero rain.
+Failed latest collections remain visible instead of falling back to an old
+success. The CLI preserves its context/attempt labels for resumable collection.
 
-## Notes
+`MONITORING_POINT_SOURCE_STORE` configures the shared API/collector/audit path;
+unset uses `data/hotspots/point_weather`. Relative paths resolve from the repository.
+Use an absolute durable mount on a server. The separate
+`OPERATIONAL_SOURCE_STORE` contains Phase 2 source/snapshot evidence. Restore both
+stores with PostgreSQL. Committed catalogues can be served without raw GIS runtime
+dependencies; ignored raw source/model bundles must be restored separately.
 
-- If the model/scaler/feature files are missing or their input contract does not
-  match, the API still starts and reports the model as unavailable. The pipeline
-  does not save placeholder predictions.
-- The legacy nine model inputs exclude location, terrain and drainage features.
-  All zones share the same weather indication; administrative polygons do not
-  increase model resolution.
-- Original training data and a compatible re-export are needed to reproduce
-  evaluation. Saved notebook metrics describe proxy-label classification, not
-  validated street flooding probabilities.
+Refreshing a page reads saved data; it does not queue a forecast. Stale or missing
+sources show unavailable (grey pins). With automatic collection on, a failed run is
+recorded and the next hourly run tries again; the outlook expires 6 hours after the last
+successful collection. Keep the server clock synchronised (NTP). Do not enable legacy
+automated inference.
 
-## Historical environmental data
+## Verification
 
-The selected v1 model has a separate 20-feature next-day proxy contract and
-verified historical replay. See its [runbook](docs/integration/model_v1_runbook.md).
-Operational v1 inference and emergency delivery remain disabled.
-
-The application supports verified historical-source ingestion/QC,
-versioned environmental observations, authorized rainfall APIs and the
-`/environmental-data` screen. Sign-in now uses the real backend; sample
-administrative/alert mutations are disabled pending their persistence workstream.
-Water-level measurements and predicted inundation remain unavailable.
-
-## Citizen reports and staff review
-
-Citizens submit observations at `/citizen` with a specific landmark or address
-and optional device/manual coordinates. Officers and administrators review the
-same persisted reports in `/officer/reports` or the admin report inbox; only the
-citizen page has a submission form. Review status and notes retain their reviewer
-and version. Administrator account changes and advisory acknowledgements use the
-backend database; sample accounts/reports/alerts are not used by the dashboard.
-
-Before running this version against an existing approved development database,
-apply the additive report migration from the repository root:
-
-```powershell
-.venv/Scripts/python.exe -m src.scripts.migrate_environmental --schema public
-.venv/Scripts/python.exe -m src.scripts.migrate_reports --schema public
+```text
+python -m pytest tests/ -k "not reference_refit" -q
 ```
 
-Map view controls are a compact overlay. Other dashboards use the latest saved
-advisories independently of map exploration. The rainfall-history page shows
-stored estimates for a zone and selected past window. **Live readiness has no
-release-time estimate:** missing verified live inputs are a setup/data gap,
-not a queued prediction. Refreshing checks saved data and status.
+```text
+cd dashboard
+node --test --experimental-test-isolation=none
+npm run build
+```
+
+From the repository root, `node dashboard/scripts/verifyStaffUI.mjs` checks browser
+workflows using explicitly controlled auth/report/account/collection fixtures.
+Historical and forecast browser scripts also use stored genuine evidence. These
+are local checks, not proof of production reliability. Optional native PostgreSQL
+tests use disposable schemas only; see the individual runbooks for their flags.
+The reference-refit test is excluded to avoid fitting a model during normal checks.
+
+## Deployment and backup
+
+`deploy/examples/` contains **inert** API, reverse-proxy and collection-only systemd
+examples. They are not installed by this repository. The environment template
+keeps both inference schedulers disabled. The API and optional point collector
+use the same service identity and durable point-store setting. Provision the
+configured directories and permissions before starting a hardened service.
+
+Before deployment: use a clean checkout plus verified private source/model
+bundles, install locked Python/Node dependencies, apply the intended migrations,
+configure HTTPS/CORS and private secrets, test actual login/report review and
+explicit weather collection, and exercise an isolated paired restore. Verify NTP
+before any approved unattended collection. Never expose old manual inference
+routes just because scheduler flags are false; the proxy examples block them.
+
+Back up the PostgreSQL custom-format dump **together with both complete source
+stores**, including immutable objects, indexes, journals, current pointers and
+manual-control records. Quiesce collection or use the documented lock order,
+record hashes, restore into an isolated database/store pair and verify snapshots,
+source hashes, account/report flows and interrupted-request recovery. A database
+dump alone cannot restore source verification. No production deployment or timer
+activation is performed by setup/build/test commands in this README.
+
+See the [monitoring-area runbook](docs/integration/monitoring_areas.md),
+[source persistence runbook](docs/integration/operational_source_persistence.md),
+[v1 runbook](docs/integration/model_v1_runbook.md),
+[binary rainfall research note](docs/integration/binary_rainfall_research.md) and
+[historical UNOSAT runbook](docs/integration/historical_unosat_runbook.md)
+for contracts, provenance, recovery procedures and remaining scientific limits.
