@@ -1,4 +1,5 @@
-# INERT EXAMPLE: install/start only after explicit deployment approval and staging checks.
+# Installed by docs: deploy/AZURE_DEPLOYMENT.md (step 7). One worker only: the hourly
+# collection scheduler runs inside this process.
 [Unit]
 Description=NairobiFloodWatch application API (inference scheduling disabled)
 Wants=network-online.target
@@ -21,7 +22,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/lib/nairobifloodwatch/operational_sources /var/lib/nairobifloodwatch/point_weather /var/lib/nairobifloodwatch/imerg_early
+ReadWritePaths=/var/lib/nairobifloodwatch/operational_sources /var/lib/nairobifloodwatch/point_weather /var/lib/nairobifloodwatch/imerg_early /var/lib/nairobifloodwatch/report_photos
 StandardOutput=journal
 StandardError=journal
 

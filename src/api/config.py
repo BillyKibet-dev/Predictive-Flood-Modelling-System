@@ -52,9 +52,18 @@ class Settings(BaseSettings):
     NAIROBI_LON: float = 36.817223
 
     ENVIRONMENT: str = "development"
+    # One origin or several, comma-separated (e.g. the domain, www and the Netlify address).
     FRONTEND_URL: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+
+def allowed_origins(frontend_url: str, environment: str) -> list[str]:
+    """Browser origins allowed to call the API; localhost only outside production."""
+    origins = [o.strip().rstrip("/") for o in frontend_url.split(",") if o.strip()]
+    if environment != "production":
+        origins.append("http://localhost:5173")
+    return list(dict.fromkeys(origins))
 
 
 settings = Settings()
