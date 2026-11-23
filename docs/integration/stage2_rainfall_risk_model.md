@@ -104,6 +104,27 @@ If the new evaluation does not pass, the package is written to
 `models/stage2-rainfall-risk-rejected/` and the live package is untouched. A passing
 retrain replaces it; restart the API to load it.
 
+## Live verification (`GET /staff/model-verification`, `src/api/services/live_verification.py`)
+
+The adoption test above ran once, before launch. After launch every past target day is
+scored again, automatically, from evidence the system already stores:
+
+- **Issued:** the last forecast receipt stored before the target day began, rebuilt
+  through `point_outlook.summarize` at the time it was stored. Satellite days received
+  after that time are hidden, so the rebuild cannot use information the live map lacked.
+- **Observed:** IMERG Early at the place's cell for the target day and the 6 days before,
+  scored with the label rule (daily 5/20/40 mm, 7-day 25/80/150 mm). Days with any of the
+  7 satellite days missing are reported as waiting.
+- **Scores:** High-or-above and Moderate-or-above hits, misses and false alarms, exact and
+  within-one agreement, a confusion matrix and the forecast amount error, for the map's
+  category and for the rule alone on the same place-days. Shown on *Model checks*
+  (officers) and *Models* (administrators).
+
+Caveats: IMERG Early at ~11 km is the reference, not gauges or observed flooding; UTC
+satellite days are offset 3 h from Nairobi forecast days; nearby places share forecast and
+satellite cells (the distinct cell-day count is shown); small samples and dry spells give
+few High days.
+
 ## Limitations
 
 - Training used 00 UTC runs of the issue day. In the morning, the live system may use the

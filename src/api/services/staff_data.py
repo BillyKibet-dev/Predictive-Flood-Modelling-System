@@ -68,6 +68,12 @@ def model_card(live_status: dict | None = None) -> dict:
             rule=_metrics(loso["stage1_rule"]), model=_metrics(loso["xgboost"]),
             forward_rule=_metrics(forward["stage1_rule"]), forward_model=_metrics(forward["xgboost"]),
             seasons=seasons),
+        features=[dict(name=f, plain=FEATURE_WORDS.get(f, f.replace("_", " "))) for f in manifest.get("feature_columns", [])],
+        training=dict(issue_days=manifest.get("issue_days"), xgboost=manifest.get("xgboost_version"),
+                      trees=(manifest.get("params") or {}).get("n_estimators"), depth=(manifest.get("params") or {}).get("max_depth"),
+                      retrain="python -m src.modeling.stage2.train",
+                      schedule="Monthly, after CHIRPS publishes the previous month (usually mid-month)."),
+        candidate=_rejected_candidate(),
         calibration=dict(calibrated=False,
                          note="Class scores come from a model trained with balanced class weights. They rank "
                               "the categories but are not probabilities, so they are not shown to the public."),
@@ -82,6 +88,32 @@ def model_card(live_status: dict | None = None) -> dict:
                      "every monitored point's own forecast grid cell.",
                      "Extreme days are rare (312 of 7,384 zone-days), so Extreme skill is uncertain.",
                      "No drainage, terrain or river-level inputs."])
+
+
+REJECTED_MANIFEST = ROOT / "models/stage2-rainfall-risk-rejected/manifest.json"
+# What each model input means, in words an officer would use.
+FEATURE_WORDS = dict(
+    tomorrow_rain_mm="Rain forecast for the day", tomorrow_max_1h_mm="Heaviest forecast hour",
+    tomorrow_max_3h_mm="Heaviest 3 forecast hours", tomorrow_max_6h_mm="Heaviest 6 forecast hours",
+    tomorrow_rainy_hours="Number of rainy hours", tomorrow_humidity_mean_pct="Humidity",
+    tomorrow_temperature_mean_c="Temperature", tomorrow_wind_max_kmh="Strongest wind",
+    tomorrow_soil_moisture_mean_m3m3="Soil wetness (forecast)", today_forecast_rain_mm="Rain forecast for the rest of today",
+    observed_yesterday_mm="Rain that fell yesterday (satellite)", observed_3d_mm="Rain that fell, last 3 days",
+    observed_5d_mm="Rain that fell, last 5 days", accumulation_7d_mm="7-day total (fallen + forecast)",
+    rule_tomorrow_level="Rule level from the day's rain", rule_accumulation_level="Rule level from the 7-day total",
+    rule_class_level="Rule category", target_month_sin="Time of year", target_month_cos="Time of year")
+
+
+def _rejected_candidate() -> dict | None:
+    """The last retrain that failed the adoption test (kept aside, never served), if any."""
+    try:
+        manifest = json.loads(REJECTED_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    decision = manifest.get("decision") or {}
+    return dict(trained_at=manifest.get("created_at_utc"), csi_gain=decision.get("csi_gain"),
+                csi_gain_95=decision.get("bootstrap_95"), extreme_recall_change=-(decision.get("extreme_recall_drop") or 0),
+                version=(manifest.get("model_sha256") or "")[:12] or None)
 
 
 def live_status_from_outlook(outlook: dict) -> dict:

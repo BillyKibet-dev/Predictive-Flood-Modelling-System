@@ -53,6 +53,39 @@ export function historyHighlights(history) {
   }
 }
 
+// ---- Live track record: each past day's categories against the rain that fell ----
+
+const ratioOrNull = v => v === null || (num(v) && v >= 0 && v <= 1)
+function verifiedScores(s, classes) {
+  const counts = ['n', 'hits', 'misses', 'false_alarms', 'correct_quiet'].every(k => Number.isInteger(s?.[k]) && s[k] >= 0)
+  if (!counts || !['pod', 'far', 'csi', 'exact', 'within_one'].every(k => ratioOrNull(s[k])) ||
+      s.hits + s.misses + s.false_alarms + s.correct_quiet !== s.n || !Array.isArray(s.confusion) || s.confusion.length !== classes.length ||
+      s.confusion.flat().reduce((a, b) => a + b, 0) !== s.n || !s.wet || !Number.isInteger(s.wet.hits))
+    fail('Live track record')
+}
+
+export function parseVerification(payload) {
+  if (payload?.contract_version !== 'live-verification-v1' || !Array.isArray(payload.daily) || !Array.isArray(payload.classes) ||
+      !Number.isInteger(payload.place_days) || !Number.isInteger(payload.days_verified) || !payload.amounts)
+    fail('Live track record')
+  for (const key of ['shown', 'rule', 'model_only']) verifiedScores(payload[key], payload.classes)
+  if (payload.shown.n !== payload.place_days || payload.rule.n !== payload.place_days) fail('Live track record')
+  return payload
+}
+
+// "3 of 4" style counts read better than a percentage on a small sample.
+export const share = (part, whole) => whole ? `${part} of ${whole}` : '—'
+
+// One plain sentence for the headline, honest about small samples and dry spells.
+export function trackRecordHeadline(v) {
+  if (!v.days_verified) return 'No days checked yet. The first result appears once the satellite rain for a forecast day is in (about two days later).'
+  const heavyDays = v.shown.hits + v.shown.misses
+  const days = `${v.days_verified} day${v.days_verified === 1 ? '' : 's'}`
+  if (!heavyDays && !v.shown.false_alarms) return `${days} checked. No heavy rain fell and none was forecast, so heavy-rain skill cannot be judged yet.`
+  if (!heavyDays) return `${days} checked. No heavy rain fell; heavy rain was forecast for ${v.shown.false_alarms} place-days (false alarms).`
+  return `${days} checked. Heavy rain fell on ${heavyDays} place-days and the map had flagged ${v.shown.hits} of them.`
+}
+
 // ---- Rainfall the system collected (NASA IMERG Early), growing by one day each day ----
 
 const isDay = v => /^\d{4}-\d{2}-\d{2}$/.test(v)

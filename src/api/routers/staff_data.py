@@ -64,6 +64,18 @@ def rainfall_history(response: Response, user: User = Depends(require_staff)):
         raise HTTPException(503, str(exc))
 
 
+@router.get("/staff/model-verification")
+def model_verification(response: Response, user: User = Depends(require_staff)):
+    """Each past day's live categories against the rain that fell (rebuilt from stored evidence)."""
+    from src.api.services import live_verification
+    response.headers["Cache-Control"] = "private, max-age=600"
+    try:
+        return live_verification.evaluation()
+    except (OSError, ValueError) as exc:
+        logger.warning("model verification unavailable: %s", exc)
+        raise HTTPException(503, "Live verification is unavailable.") from exc
+
+
 @router.get("/staff/observed-rainfall")
 def observed_rainfall(response: Response, user: User = Depends(require_staff)):
     """Rainfall the system has collected (NASA IMERG Early), growing by one day each day."""
