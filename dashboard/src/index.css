@@ -235,6 +235,42 @@ button, .press { transition: transform 120ms var(--ease-out), background-color 1
   }
 }
 
+/* ---------- Map cards: frosted glass that floats above every map layer ---------- */
+.glass {
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 18px 48px rgba(15, 23, 42, 0.2), 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+[data-theme='dark'] .glass {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+/* Without blur support, the card is simply opaque so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: var(--surface); }
+}
+.glass-inset { background: color-mix(in srgb, var(--surface-2) 70%, transparent); }
+
+@keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes card-in { from { transform: translateY(-6px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+.map-card { animation: sheet-up 260ms var(--ease-out); }
+@media (min-width: 768px) { .map-card { animation: card-in 200ms var(--ease-out); transform-origin: top right; } }
+
+/* Leaflet popups (reports, advisories) share the glass look and a larger close target. */
+.leaflet-popup-content-wrapper {
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.leaflet-container a.leaflet-popup-close-button {
+  width: 32px; height: 32px; font-size: 22px; line-height: 30px; color: var(--text-muted);
+}
+.leaflet-container a.leaflet-popup-close-button:hover { color: var(--text); }
+
 /* Horizontal chip rows scroll without a visible bar. */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }

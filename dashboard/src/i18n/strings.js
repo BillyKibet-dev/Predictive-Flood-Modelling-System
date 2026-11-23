@@ -46,6 +46,10 @@ export const STRINGS = {
     'map.sharePlace': '{count} monitored records share this place.',
     'map.noOutlookPlace': 'No current rainfall outlook for this place.',
     'map.riskTomorrow': 'rainfall risk tomorrow',
+    'map.otherRecords': 'Other records at this place',
+    'zone.kind': 'Sub-county', 'zone.places': '{count} monitored places', 'zone.noPlaces': 'No monitored places in this sub-county yet.',
+    'zone.placeList': 'Monitored places, highest risk first', 'zone.showAll': 'Show all {count}', 'zone.showFewer': 'Show fewer',
+    'zone.outline': 'Outline from OpenStreetMap ({year}). It is not a flood boundary.', 'zone.close': 'Close sub-county details',
 
     'area.subCounty': '{name} sub-county',
     'area.checking': 'Checking the rainfall outlook…',
@@ -231,6 +235,10 @@ export const STRINGS = {
     'map.sharePlace': 'Rekodi {count} zinazofuatiliwa ziko mahali hapa.',
     'map.noOutlookPlace': 'Hakuna utabiri wa sasa wa mvua kwa mahali hapa.',
     'map.riskTomorrow': 'hatari ya mvua kesho',
+    'map.otherRecords': 'Rekodi nyingine mahali hapa',
+    'zone.kind': 'Kaunti ndogo', 'zone.places': 'Maeneo {count} yanayofuatiliwa', 'zone.noPlaces': 'Bado hakuna maeneo yanayofuatiliwa katika kaunti ndogo hii.',
+    'zone.placeList': 'Maeneo yanayofuatiliwa, hatari kubwa kwanza', 'zone.showAll': 'Onyesha yote {count}', 'zone.showFewer': 'Onyesha machache',
+    'zone.outline': 'Mpaka kutoka OpenStreetMap ({year}). Si mpaka wa mafuriko.', 'zone.close': 'Funga maelezo ya kaunti ndogo',
 
     'area.subCounty': 'Kaunti ndogo ya {name}',
     'area.checking': 'Inakagua utabiri wa mvua…',

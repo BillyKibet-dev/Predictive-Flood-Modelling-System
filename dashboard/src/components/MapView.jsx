@@ -1,5 +1,6 @@
+import L from 'leaflet'
 import { useEffect, useMemo, useRef } from 'react'
-import { CircleMarker, GeoJSON, MapContainer, Pane, Popup, TileLayer, useMap } from 'react-leaflet'
+import { CircleMarker, GeoJSON, MapContainer, Pane, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Link } from 'react-router-dom'
 import { riskColor } from '../constants/colors'
 import { getBoundaryBounds, safeSourceUrl } from '../services/boundaries'
@@ -11,7 +12,7 @@ import { HISTORICAL_STYLES } from '../services/historicalFloods'
 import MonitoringAreaMapLayer from './MonitoringAreaMapLayer'
 import CommunityReportLayer from './CommunityReportLayer'
 
-function PopupCloseGuard({ onDismissArea }) {
+function PopupCloseGuard() {
   const map=useMap()
   useEffect(() => {
     // Stop the native event BEFORE Leaflet removes its target from the DOM.
@@ -20,12 +21,31 @@ function PopupCloseGuard({ onDismissArea }) {
     const close=event => {
       if (!event.target.closest?.('.leaflet-popup-close-button')) return
       event.stopPropagation()
-      if (event.type === 'click') { event.preventDefault();map.closePopup();onDismissArea?.() }
+      if (event.type === 'click') { event.preventDefault();map.closePopup() }
     }
     const events=['click','mousedown','pointerdown','touchstart','dblclick']
     for (const name of events) container.addEventListener(name,close,true)
     return () => { for (const name of events) container.removeEventListener(name,close,true) }
-  },[map,onDismissArea])
+  },[map])
+  return null
+}
+
+// A tap on empty map (no pin, no sub-county) closes whatever card is open.
+function MapTap({ onTap }) {
+  useMapEvents({ click: () => onTap?.() })
+  return null
+}
+
+// Fit the selected sub-county into the part of the map the card leaves visible.
+function ZoneExtent({ feature }) {
+  const map=useMap()
+  useEffect(() => {
+    if (!feature) return
+    const bounds=getBoundaryBounds({ type:'FeatureCollection', features:[feature] })
+    if (!bounds) return
+    const phone=map.getSize().x < 768
+    map.fitBounds(bounds,{ animate:false, maxZoom:14, paddingTopLeft:[20,20], paddingBottomRight: phone ? [20, map.getSize().y*0.5] : [420,20] })
+  },[map,feature])
   return null
 }
 
@@ -57,15 +77,24 @@ function HistoricalExtent({ historical }) {
   return null
 }
 
-function accessibleBoundary(feature, layer) {
-  layer.on('add', () => {
-    const element = layer.getElement()
-    element?.setAttribute('tabindex', '0'); element?.setAttribute('role', 'button')
-    element?.setAttribute('aria-label', `${feature.properties.name} sub-county boundary`)
-    if (element) element.onkeydown = event => {
-      if (['Enter', ' '].includes(event.key)) { event.preventDefault(); layer.openPopup(layer.getBounds().getCenter()) }
+// Sub-county outlines open the zone card (or, when a card is already open, a tap just closes it).
+function boundaryHandlers(handlers) {
+  return (feature, layer) => {
+    const select = event => {
+      if (event) L.DomEvent.stopPropagation(event)
+      const { cardOpen, onSelectZone, onDismiss } = handlers.current
+      if (cardOpen) onDismiss?.(); else onSelectZone?.(feature.id)
     }
-  })
+    layer.on('click', select)
+    layer.on('add', () => {
+      const element = layer.getElement()
+      element?.setAttribute('tabindex', '0'); element?.setAttribute('role', 'button')
+      element?.setAttribute('aria-label', `${feature.properties.name} sub-county: show its monitored places`)
+      if (element) element.onkeydown = event => {
+        if (['Enter', ' '].includes(event.key)) { event.preventDefault(); handlers.current.onSelectZone?.(feature.id) }
+      }
+    })
+  }
 }
 
 function BoundaryPopup({ feature, zones, monitoringAreas }) {
@@ -86,21 +115,31 @@ function BoundaryPopup({ feature, zones, monitoringAreas }) {
 export default function MapView({ zones = [], boundaries, boundaryRevision, showPolygons = true, showMarkers = true,
   fitRequest = 0, height = '100%', historical, showModelOutputs = false, pointHref, pointActionLabel = 'Open report inbox',
   monitoringAreas, showMonitoringAreas = false, selectedAreaId, onInspectArea, onDismissArea, monitoringOutlook, susceptibility, outlookDay = 'tomorrow', todayOutlook = null,
-  communityReports, showCommunityReports = false, children }) {
+  communityReports, showCommunityReports = false, selectedZoneId = null, onSelectZone, cardOpen = false, children }) {
   const bounds = useMemo(() => getBoundaryBounds(boundaries), [boundaries])
   const features = boundaries?.features ?? []
   const subcounties = features.filter(f => f.properties.admin_level === 2)
+  const handlers = useRef({})
+  handlers.current = { cardOpen, onSelectZone, onDismiss: onDismissArea }
+  const selectedZone = subcounties.find(f => f.id === selectedZoneId)
+  // Without the zone card (the research map), outlines keep their plain popup.
+  const zoneCards = Boolean(onSelectZone)
   return <MapContainer center={[-1.286, 36.817]} zoom={12} zoomAnimation={false} style={{ height, width: '100%' }}>
     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     <MapExtent bounds={bounds} fitRequest={fitRequest} /><HistoricalExtent historical={historical} />
-    <PopupCloseGuard onDismissArea={onDismissArea} />
+    <PopupCloseGuard />
+    {zoneCards && <><MapTap onTap={() => { if (handlers.current.cardOpen) handlers.current.onDismiss?.() }} /><ZoneExtent feature={selectedZone} /></>}
     <Pane name="subcounties" style={{ zIndex: 390 }}>
-      {showPolygons && subcounties.map(feature => <GeoJSON key={`${feature.id}-${boundaryRevision}`} data={feature}
-        className="subcounty-boundary" style={{ color: '#64748b', weight: 1.5, fillColor: '#64748b', fillOpacity: 0.035 }}
-        onEachFeature={accessibleBoundary}
-        attribution='Sub-county and county outlines: <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL)'>
-        <Popup maxHeight={260}><BoundaryPopup feature={feature} zones={zones} monitoringAreas={monitoringAreas} /></Popup>
-      </GeoJSON>)}
+      {showPolygons && subcounties.map(feature => {
+        const selected = feature.id === selectedZoneId
+        return <GeoJSON key={`${feature.id}-${boundaryRevision}`} data={feature}
+          className={`subcounty-boundary${selected ? ' selected-zone' : ''}`}
+          style={selected ? { color: '#2563eb', weight: 3, fillColor: '#2563eb', fillOpacity: 0.08 } : { color: '#64748b', weight: 1.5, fillColor: '#64748b', fillOpacity: 0.035 }}
+          onEachFeature={zoneCards ? boundaryHandlers(handlers) : undefined}
+          attribution='Sub-county and county outlines: <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL)'>
+          {!zoneCards && <Popup maxHeight={260}><BoundaryPopup feature={feature} zones={zones} monitoringAreas={monitoringAreas} /></Popup>}
+        </GeoJSON>
+      })}
     </Pane>
     <Pane name="county" style={{ zIndex: 395, pointerEvents: 'none' }}>
       {features.filter(f => f.properties.admin_level === 1).map(feature => <GeoJSON key={`${feature.id}-${boundaryRevision}`}
@@ -152,7 +191,7 @@ export default function MapView({ zones = [], boundaries, boundaryRevision, show
       </CircleMarker>
     })}
     <CommunityReportLayer reports={communityReports} visible={showCommunityReports} />
-    <MonitoringAreaMapLayer sites={monitoringAreas || []} visible={showMonitoringAreas} selectedId={selectedAreaId} boundaryRevision={boundaryRevision} onInspect={onInspectArea} outlook={monitoringOutlook} susceptibility={susceptibility} when={outlookDay} today={todayOutlook} />
+    <MonitoringAreaMapLayer sites={monitoringAreas || []} visible={showMonitoringAreas} selectedId={selectedAreaId} boundaryRevision={boundaryRevision} onInspect={onInspectArea} outlook={monitoringOutlook} susceptibility={susceptibility} when={outlookDay} />
     {children}
   </MapContainer>
 }
