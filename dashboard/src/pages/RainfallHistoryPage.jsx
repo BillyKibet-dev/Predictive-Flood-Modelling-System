@@ -1,16 +1,22 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Download } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Download, RefreshCw } from 'lucide-react'
 import ChartTooltip, { ChartLegend, axisProps, useNarrow } from '../components/ChartTooltip'
 import StaffLayout, { PageHeader, buttonClass } from '../components/StaffLayout'
 import { useAuth } from '../context/AuthContext'
 import useStaffList from '../hooks/useStaffList'
-import { historyHighlights, monthlyComparison, parseRainfallHistory, saveFile } from '../services/staffData'
+import { areaGrid, collectedMonthly, dailyWindow, historyHighlights, monthlyComparison, parseObservedRainfall, parseRainfallHistory, recentStats, saveFile } from '../services/staffData'
 
 const AVERAGE = { label: 'Average 2016–2025', color: 'var(--chart-1)' }
+const COLLECTED = { label: 'Collected', color: 'var(--chart-2)' }
 const longDate = value => new Intl.DateTimeFormat('en-KE', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value + 'T12:00:00'))
+const shortDate = value => new Intl.DateTimeFormat('en-KE', { day: 'numeric', month: 'short' }).format(new Date(value + 'T12:00:00'))
+const dayLetter = value => new Intl.DateTimeFormat('en-KE', { weekday: 'narrow' }).format(new Date(value + 'T12:00:00'))
+const when = value => new Intl.DateTimeFormat('en-KE', { timeZone: 'Africa/Nairobi', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 const mm = value => `${Math.round(value).toLocaleString('en-GB')} mm`
+const mm1 = value => `${value < 10 ? value.toFixed(1) : Math.round(value)} mm`
+const RANGES = [[30, '30 days'], [90, '90 days'], [365, '1 year'], [null, 'All']]
 
 function Stat({ label, value, detail }) {
   return <div className="panel p-5"><p className="eyebrow">{label}</p>
@@ -18,7 +24,123 @@ function Stat({ label, value, detail }) {
     {detail && <p className="text-sm text-muted mt-1">{detail}</p>}</div>
 }
 
-export default function RainfallHistoryPage() {
+function Segmented({ label, options, value, onChange }) {
+  return <div role="group" aria-label={label} className="inline-flex p-0.5 rounded-btn bg-surface-2 text-sm">
+    {options.map(([v, text]) => <button key={String(v)} type="button" aria-pressed={value === v} onClick={() => onChange(v)}
+      className={`h-8 px-3 rounded-[6px] whitespace-nowrap ${value === v ? 'bg-surface text-ink font-semibold shadow-card-rest' : 'text-muted hover:text-ink'}`}>{text}</button>)}
+  </div>
+}
+
+// One hue, light to dark: more rain, deeper blue. 40 mm (Extreme on the rule) is the darkest.
+const heat = value => value === null ? 'var(--surface-2)' : value < 0.5 ? 'var(--surface)' : `color-mix(in srgb, #0369a1 ${Math.round(12 + Math.min(value, 40) / 40 * 88)}%, var(--surface))`
+
+function Collected() {
+  const { authorizedDownload } = useAuth()
+  const narrow = useNarrow()
+  const state = useStaffList('/staff/observed-rainfall')
+  const [range, setRange] = useState(90)
+  const [downloading, setDownloading] = useState(false), [downloadError, setDownloadError] = useState('')
+  const [data, invalid] = useMemo(() => {
+    if (!state.data) return [null, '']
+    try { return [parseObservedRainfall(state.data), ''] } catch (error) { return [null, error.message] }
+  }, [state.data])
+  if (!data) return <>
+    {(state.error || invalid) && <p role="alert" className="text-sm">{state.error || invalid}</p>}
+    {state.loading && <p role="status" className="text-sm text-muted">Loading collected rainfall…</p>}
+  </>
+  // Phones: the latest 12 months, so each month stays readable.
+  const stats = recentStats(data), daily = dailyWindow(data, range), months = collectedMonthly(data).slice(narrow ? -12 : 0), grid = areaGrid(data, narrow ? 10 : 14)
+  const heavy = data.thresholds_mm.heavy
+  const tickEvery = Math.max(1, Math.round(daily.length / (narrow ? 4 : 8)))
+  async function download() {
+    setDownloading(true); setDownloadError('')
+    try { saveFile(await authorizedDownload('/exports/observed-rainfall.csv')) } catch (error) { setDownloadError(error.message) } finally { setDownloading(false) }
+  }
+  return <div className="space-y-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <Stat label="Latest day" value={stats.latest ? mm1(stats.latest.nairobi_mm) : '—'} detail={stats.latest ? longDate(stats.latest.date) : 'Not collected yet'} />
+      <Stat label="Last 7 days" value={mm(stats.week.mm)} detail={stats.week.days < 7 ? `${stats.week.days} of 7 days collected` : 'Nairobi average'} />
+      <Stat label="Last 30 days" value={mm(stats.month.mm)} detail={`${stats.rainyDays30} rainy days (1 mm or more)`} />
+      <Stat label="Since heavy rain" value={stats.daysSinceHeavy === null ? 'None yet' : stats.daysSinceHeavy === 0 ? 'Today' : `${stats.daysSinceHeavy} days`}
+        detail={stats.lastHeavy ? `${mm1(stats.lastHeavy.nairobi_mm)} on ${shortDate(stats.lastHeavy.date)}` : `No day of ${heavy} mm or more`} />
+    </div>
+
+    <section className="panel p-5 sm:p-6 space-y-4" aria-labelledby="daily-heading">
+      <div className="flex flex-wrap justify-between gap-3 items-end">
+        <div><h2 id="daily-heading" className="font-semibold">Each day</h2><p className="text-sm text-muted mt-1">Nairobi average. Dashed line: {heavy} mm, a heavy-rain day.</p></div>
+        <Segmented label="Period" options={RANGES} value={range} onChange={setRange} />
+      </div>
+      <div className="h-64" role="img" aria-label={`Daily rainfall over Nairobi for the last ${daily.length} days`}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={daily} barCategoryGap={daily.length > 120 ? 0 : 2} margin={{ left: -12, right: 4, top: 8 }}>
+            <CartesianGrid stroke="var(--border)" vertical={false} />
+            <XAxis dataKey="date" {...axisProps} tickFormatter={shortDate} interval={tickEvery - 1} minTickGap={8} />
+            <YAxis {...axisProps} allowDecimals={false} />
+            <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={<ChartTooltip unit=" mm" format={v => v.toFixed(1)} labelFormat={longDate} />} />
+            <ReferenceLine y={heavy} stroke="var(--text-muted)" strokeDasharray="4 4" />
+            <Bar isAnimationActive={false} dataKey="mm" name="Rainfall" fill={COLLECTED.color} radius={daily.length > 120 ? 0 : [3, 3, 0, 0]} maxBarSize={18} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      {daily.some(d => !d.collected) && <p className="text-xs text-muted">Gaps are days that were not collected; they are not dry days.</p>}
+    </section>
+
+    <section className="panel p-5 sm:p-6 space-y-4" aria-labelledby="grid-heading">
+      <div><h2 id="grid-heading" className="font-semibold">By sub-county</h2><p className="text-sm text-muted mt-1">Last {grid.dates.length} days, wettest first. Darker blue, more rain.</p></div>
+      <div className="overflow-x-auto -mx-1 px-1">
+        <table className="text-xs tabular border-separate" style={{ borderSpacing: 2 }}>
+          <caption className="sr-only">Daily rainfall in millimetres by sub-county</caption>
+          <thead><tr><th scope="col" className="sr-only">Sub-county</th>{grid.dates.map(d => <th key={d} scope="col" className="font-normal text-muted w-9 text-center pb-1">
+            <span className="block">{dayLetter(d)}</span><span className="block">{d.slice(8)}</span></th>)}
+            <th scope="col" className="font-medium text-muted text-right pl-2">Total</th></tr></thead>
+          <tbody>{grid.rows.map(row => <tr key={row.id}>
+            <th scope="row" className="text-left font-normal pr-3 whitespace-nowrap max-w-36 truncate">{row.name}</th>
+            {row.values.map((v, i) => <td key={grid.dates[i]} title={`${row.name}, ${longDate(grid.dates[i])}: ${v === null ? 'not collected' : `${v.toFixed(1)} mm`}`}
+              className="w-9 h-8 text-center rounded-[4px]" style={{ background: heat(v), color: v !== null && v >= 18 ? '#fff' : 'var(--text)' }}>
+              {v === null ? '·' : v >= 1 ? Math.round(v) : ''}</td>)}
+            <td className="text-right pl-2 font-medium">{Math.round(row.total)}</td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+      <p className="flex items-center gap-2 text-xs text-muted" aria-hidden="true">0
+        <span className="h-2.5 w-32 rounded-full" style={{ background: 'linear-gradient(to right, var(--surface-2), #0369a1)' }} />40+ mm
+        <span className="ml-3">· not collected</span></p>
+    </section>
+
+    <section className="panel p-5 sm:p-6 space-y-4" aria-labelledby="months-heading">
+      <div className="flex flex-wrap justify-between gap-3 items-end">
+        <div><h2 id="months-heading" className="font-semibold">Month by month</h2><p className="text-sm text-muted mt-1">Collected totals next to the usual amount for that month. * Not every day collected.</p></div>
+        <ChartLegend items={[COLLECTED, AVERAGE]} />
+      </div>
+      <div className="h-64" role="img" aria-label="Collected monthly rainfall compared with the 2016–2025 average">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={months.map(m => ({ ...m, label: m.complete ? m.label : `${m.label}*` }))} barGap={2} margin={{ left: -12, right: 4 }}>
+            <CartesianGrid stroke="var(--border)" vertical={false} />
+            <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={10} />
+            <YAxis {...axisProps} />
+            <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={<ChartTooltip unit=" mm" format={v => Math.round(v)} />} />
+            <Bar isAnimationActive={false} dataKey="collected" name={COLLECTED.label} fill={COLLECTED.color} radius={[3, 3, 0, 0]} maxBarSize={14} />
+            <Bar isAnimationActive={false} dataKey="average" name={AVERAGE.label} fill={AVERAGE.color} radius={[3, 3, 0, 0]} maxBarSize={14} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </section>
+
+    <section className="text-sm text-muted space-y-2" aria-label="About this data">
+      <p>{data.source}. {data.days_stored.toLocaleString('en-GB')} days since {longDate(data.first_day)}{data.days_missing ? `, ${data.days_missing} missing` : ''}.
+        {data.last_received_at && ` Last collected ${when(data.last_received_at)}. A new day appears each morning.`}</p>
+      <details><summary className="cursor-pointer text-accent font-medium">Limits</summary>
+        <ul className="list-disc pl-5 mt-2 space-y-1">{data.limitations.map(l => <li key={l}>{l}</li>)}</ul></details>
+      <div className="flex flex-wrap gap-3 items-center">
+        <button className={buttonClass} onClick={download} disabled={downloading}><Download size={16} />{downloading ? 'Preparing…' : 'Download collected days (CSV)'}</button>
+        <button className={buttonClass} onClick={state.refresh} disabled={state.loading}><RefreshCw size={15} />Refresh</button>
+        {downloadError && <span role="alert">{downloadError}</span>}
+      </div>
+    </section>
+  </div>
+}
+
+function Archive() {
   const { authorizedDownload } = useAuth()
   const narrow = useNarrow()
   const state = useStaffList('/staff/rainfall-history')
@@ -36,13 +158,10 @@ export default function RainfallHistoryPage() {
     setDownloading('all'); setDownloadError('')
     try { saveFile(await authorizedDownload('/exports/rainfall-history.csv')) } catch (error) { setDownloadError(error.message) } finally { setDownloading('') }
   }
-  return <StaffLayout>
-    <PageHeader title="Rainfall history" description="Daily satellite rainfall over Nairobi since 2016. Rainfall, not flooding: for flood evidence use the 2024 flood map and community reports.">
-      <button className={buttonClass} onClick={download} disabled={!!downloading}><Download size={16} />{downloading ? 'Preparing…' : 'Download CSV'}</button>
-    </PageHeader>
+  return <>
     {(state.error || invalid || downloadError) && <p role="alert" className="text-sm mb-4">{state.error || invalid || downloadError}</p>}
     {!history && state.loading && <p role="status" className="text-sm text-muted">Loading rainfall history…</p>}
-    {history && <div className="space-y-8">
+    {history && <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat label="Average year" value={mm(highlights.averageYear)} detail="Complete years, 2016–2025" />
         <Stat label="Wettest year" value={highlights.wettestYear.year} detail={mm(highlights.wettestYear.total_mm)} />
@@ -105,10 +224,25 @@ export default function RainfallHistoryPage() {
 
       <section className="text-sm text-muted space-y-2" aria-label="About this data">
         <p>{history.source}. {history.limitations.join(' ')}</p>
-        <p className="flex flex-wrap gap-x-5 gap-y-1"><Link className="text-accent font-medium" to="/">Satellite flood map, 1 May 2024 (Map → Map layers)</Link>
-          <Link className="text-accent font-medium" to="/environmental-data">Imported datasets</Link>
-          <Link className="text-accent font-medium" to="/downloads">Download a date range</Link></p>
+        <p className="flex flex-wrap gap-x-5 gap-y-1 items-center">
+          <button className={buttonClass} onClick={download} disabled={!!downloading}><Download size={16} />{downloading ? 'Preparing…' : 'Download archive (CSV)'}</button>
+          <Link className="text-accent font-medium" to="/">Satellite flood map, 1 May 2024 (Map → Map layers)</Link>
+          <Link className="text-accent font-medium" to="/environmental-data">Imported datasets</Link></p>
       </section>
     </div>}
+  </>
+}
+
+// Two views of the same question, "how much rain fell?": the days the system has collected
+// itself (growing daily) and the 2016–2026 archive the models were built on.
+export default function RainfallHistoryPage() {
+  const [params, setParams] = useSearchParams()
+  const view = params.get('view') === 'archive' ? 'archive' : 'collected'
+  return <StaffLayout>
+    <PageHeader title="Rainfall history" description="Rain that fell over Nairobi. Rainfall, not flooding.">
+      <Segmented label="View" value={view} onChange={v => setParams(v === 'archive' ? { view: 'archive' } : {})}
+        options={[['collected', 'Collected daily'], ['archive', 'Since 2016']]} />
+    </PageHeader>
+    {view === 'collected' ? <Collected /> : <Archive />}
   </StaffLayout>
 }

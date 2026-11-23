@@ -53,6 +53,71 @@ export function historyHighlights(history) {
   }
 }
 
+// ---- Rainfall the system collected (NASA IMERG Early), growing by one day each day ----
+
+const isDay = v => /^\d{4}-\d{2}-\d{2}$/.test(v)
+const mmOrNull = v => v === null || (num(v) && v >= 0)
+
+export function parseObservedRainfall(payload) {
+  if (payload?.contract_version !== 'observed-rainfall-v1' || !Array.isArray(payload.daily) || !payload.daily.length ||
+      !Array.isArray(payload.areas) || !Array.isArray(payload.monthly) || !num(payload.thresholds_mm?.heavy) ||
+      !isDay(payload.first_day) || !isDay(payload.last_day))
+    fail('Collected rainfall')
+  for (const d of payload.daily)
+    if (!isDay(d.date) || !mmOrNull(d.nairobi_mm) || !(d.by_area === null || (Array.isArray(d.by_area) && d.by_area.length === payload.areas.length && d.by_area.every(mmOrNull))))
+      fail('Collected rainfall')
+  return payload
+}
+
+const DAY = 86400000
+const addDays = (iso, n) => new Date(Date.parse(iso + 'T00:00:00Z') + n * DAY).toISOString().slice(0, 10)
+const sum = values => values.reduce((s, v) => s + v, 0)
+
+// The last `days` calendar days up to the newest collected day; days never collected are gaps (null).
+export function dailyWindow(data, days) {
+  const byDate = new Map(data.daily.map(d => [d.date, d]))
+  const count = days ?? Math.round((Date.parse(data.last_day) - Date.parse(data.first_day)) / DAY) + 1
+  return Array.from({ length: count }, (_, i) => {
+    const date = addDays(data.last_day, i - count + 1)
+    return { date, mm: byDate.get(date)?.nairobi_mm ?? null, collected: byDate.has(date) }
+  })
+}
+
+// Tiles: newest day, recent totals and the time since the last heavy-rain day.
+export function recentStats(data) {
+  const heavy = data.thresholds_mm.heavy
+  const known = data.daily.filter(d => d.nairobi_mm !== null)
+  const latest = known.at(-1) ?? null
+  const total = n => { const w = dailyWindow(data, n).filter(d => d.mm !== null); return { mm: sum(w.map(d => d.mm)), days: w.length, of: n } }
+  const lastHeavy = [...known].reverse().find(d => d.nairobi_mm >= heavy) ?? null
+  const wettest = known.reduce((a, b) => (b.nairobi_mm > (a?.nairobi_mm ?? -1) ? b : a), null)
+  return {
+    latest, week: total(7), month: total(30), lastHeavy, wettest,
+    daysSinceHeavy: lastHeavy ? Math.round((Date.parse(data.last_day) - Date.parse(lastHeavy.date)) / DAY) : null,
+    rainyDays30: dailyWindow(data, 30).filter(d => d.mm !== null && d.mm >= 1).length,
+  }
+}
+
+// Collected months next to the long-term (2016–2025) average for the same calendar month.
+export function collectedMonthly(data) {
+  const average = Object.fromEntries((data.climatology ?? []).map(m => [m.month, m.average_mm]))
+  return data.monthly.map(m => {
+    const [year, month] = m.month.split('-').map(Number)
+    const inMonth = new Date(Date.UTC(year, month, 0)).getUTCDate()
+    return { key: m.month, label: `${MONTHS[month - 1]} ’${String(year).slice(2)}`, collected: m.total_mm, average: average[month] ?? null,
+      complete: m.days >= inMonth, days: m.days }
+  })
+}
+
+// Sub-county × day grid for the most recent days that carry per-area values; wettest areas first.
+export function areaGrid(data, days = 14) {
+  const recent = data.daily.filter(d => Array.isArray(d.by_area)).slice(-days)
+  const rows = data.areas.map((area, i) => ({ ...area, values: recent.map(d => d.by_area[i]) }))
+    .map(r => ({ ...r, total: sum(r.values.filter(v => v !== null)) }))
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
+  return { dates: recent.map(d => d.date), rows }
+}
+
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const percent = value => `${Math.round(value * 100)}%`
 

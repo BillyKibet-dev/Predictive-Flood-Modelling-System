@@ -1,4 +1,4 @@
-import { CloudRain, Download, History, Inbox } from 'lucide-react'
+import { CloudRain, Download, Droplets, History, Inbox } from 'lucide-react'
 import { useState } from 'react'
 import StaffLayout, { PageHeader, primaryButtonClass } from '../components/StaffLayout'
 import { useAuth } from '../context/AuthContext'
@@ -32,6 +32,7 @@ export default function DownloadsPage() {
   const { authorizedDownload } = useAuth()
   const [reports, setReports] = useState({ start: '', end: '', review_status: '' })
   const [history, setHistory] = useState({ start: '2024-01-01', end: '' })
+  const [observed, setObserved] = useState({ start: '', end: '' })
   const [busy, setBusy] = useState(''), [errors, setErrors] = useState({})
   async function run(key, path) {
     setBusy(key); setErrors(e => ({ ...e, [key]: '' }))
@@ -51,7 +52,12 @@ export default function DownloadsPage() {
       </Row>
       <Row icon={CloudRain} title="Tomorrow's rainfall outlook" description="The category at all 36 monitored places as shown on the map now, with rainfall amounts and forecast times."
         busy={busy === 'outlook'} error={errors.outlook} onDownload={() => run('outlook', '/exports/rainfall-outlook.csv')} />
-      <Row icon={History} title="Rainfall history" description="Daily satellite rainfall (CHIRPS) for the eight original zones, 2016 to September 2026."
+      <Row icon={Droplets} title="Collected rainfall" description="Rain that fell each day for Nairobi and every sub-county, from the NASA satellite data the system collects (grows daily)."
+        busy={busy === 'observed'} error={errors.observed || (backwards(observed) ? 'The end date is before the start date.' : '')}
+        onDownload={() => !backwards(observed) && run('observed', exportPath('/exports/observed-rainfall.csv', observed))}>
+        <DateRange id="Collected rainfall" value={observed} onChange={setObserved} min="2024-03-01" />
+      </Row>
+      <Row icon={History} title="Rainfall archive" description="Daily satellite rainfall (CHIRPS) for the eight original zones, 2016 to September 2026."
         busy={busy === 'history'} error={errors.history || (backwards(history) ? 'The end date is before the start date.' : '')}
         onDownload={() => !backwards(history) && run('history', exportPath('/exports/rainfall-history.csv', history))}>
         <DateRange id="History" value={history} onChange={setHistory} min="2016-01-01" max="2026-09-30" />

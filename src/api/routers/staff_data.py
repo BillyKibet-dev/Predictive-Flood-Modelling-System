@@ -64,6 +64,35 @@ def rainfall_history(response: Response, user: User = Depends(require_staff)):
         raise HTTPException(503, str(exc))
 
 
+@router.get("/staff/observed-rainfall")
+def observed_rainfall(response: Response, user: User = Depends(require_staff)):
+    """Rainfall the system has collected (NASA IMERG Early), growing by one day each day."""
+    from src.api.services import observed_rainfall as observed
+    response.headers["Cache-Control"] = "private, max-age=600"
+    try:
+        climatology = staff_data.rainfall_history()["monthly_average"]
+    except staff_data.StaffDataUnavailable:
+        climatology = None
+    try:
+        return observed.summary(climatology=climatology)
+    except (FileNotFoundError, OSError) as exc:
+        raise HTTPException(503, "No collected rainfall is available yet.") from exc
+
+
+@router.get("/exports/observed-rainfall.csv")
+def export_observed(start: date | None = None, end: date | None = None, user: User = Depends(require_staff)):
+    """Collected daily rainfall for Nairobi and each sub-county (area-weighted IMERG Early)."""
+    from src.api.services import observed_rainfall as observed
+    _window(start, end)
+    try:
+        rows = list(observed.daily_rows(start, end))
+    except (FileNotFoundError, OSError) as exc:
+        raise HTTPException(503, "No collected rainfall is available yet.") from exc
+    body = staff_data.to_csv(["date_utc_day", "area", "rainfall_mm", "source"],
+                             ([d.isoformat(), area, mm, "NASA IMERG Early V07 (FloodWatch collection)"] for d, area, mm in rows))
+    return _download(body, "observed-rainfall")
+
+
 @router.get("/exports/citizen-reports.csv")
 def export_reports(start: date | None = None, end: date | None = None,
                    review_status: str | None = Query(None, pattern="^(New|Reviewed|ActionNeeded|Resolved)$"),
