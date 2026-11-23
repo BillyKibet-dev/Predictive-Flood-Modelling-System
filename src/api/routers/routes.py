@@ -54,6 +54,18 @@ def places(body: PlaceSearch, request: Request, response: Response):
         raise HTTPException(exc.status, str(exc)) from None
 
 
+@router.post("/place-name")
+def place_name(body: Point, request: Request, response: Response):
+    """Name for a point tapped on the map. Shares the search limit; the point is not stored or logged."""
+    response.headers["Cache-Control"] = "no-store"
+    if not SEARCH_LIMIT.allow(_client(request)):
+        raise HTTPException(429, "Too many searches. Wait a few minutes and try again.")
+    try:
+        return dict(label=route_check.name_point(body.latitude, body.longitude))
+    except route_check.RouteError as exc:
+        raise HTTPException(exc.status, str(exc)) from None
+
+
 @router.post("/check")
 def check_route(body: RouteRequest, request: Request, response: Response, db: Session = Depends(get_db)):
     response.headers["Cache-Control"] = "no-store"

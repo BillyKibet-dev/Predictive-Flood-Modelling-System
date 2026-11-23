@@ -89,6 +89,31 @@ def test_endpoint_uses_only_published_recent_reports_and_post_bodies(api, monkey
     assert client.get("/routes/check").status_code == 405
 
 
+class _Reply:
+    def __init__(self, status, payload):
+        self.status_code, self._payload = status, payload
+
+    def json(self):
+        return self._payload
+
+
+def test_tapped_point_gets_a_street_name_without_putting_it_in_the_url(api, monkeypatch):
+    client, _ = api
+    seen = {}
+
+    def fake_get(url, timeout, headers, params):
+        seen.update(url=url, params=params)
+        return _Reply(200, {"features": [{"properties": {"name": "Ole Sangale Road", "neighbourhood": "Madaraka"}}]})
+
+    monkeypatch.setattr(rc.requests, "get", fake_get)
+    reply = client.post("/routes/place-name", json=dict(latitude=STRATHMORE[0], longitude=STRATHMORE[1]))
+    assert reply.status_code == 200 and reply.json() == {"label": "Ole Sangale Road, Madaraka"}
+    assert seen["url"].endswith("/geocode/reverse") and seen["params"]["point.lat"] == STRATHMORE[0]
+    assert client.post("/routes/place-name", json=dict(latitude=-4.04, longitude=39.66)).status_code == 422   # Mombasa
+    monkeypatch.setattr(rc.requests, "get", lambda *a, **k: _Reply(200, {"features": []}))
+    assert client.post("/routes/place-name", json=dict(latitude=CBD[0], longitude=CBD[1])).json() == {"label": None}
+
+
 def test_missing_key_and_rate_limit(api, monkeypatch):
     client, _ = api
     monkeypatch.setattr(settings, "OPENROUTESERVICE_API_KEY", "")

@@ -15,6 +15,26 @@ export async function searchPlaces(text, options) {
   return result.items
 }
 
+// Street or place name for a point tapped on the map; null when nothing is nearby.
+export async function namePoint(latitude, longitude, options) {
+  const result = await post('/routes/place-name', { latitude, longitude }, options)
+  if (result.label !== null && typeof result.label !== 'string') throw new Error('Place name could not be verified.')
+  return result.label
+}
+
+// A tapped point, rounded to about 10 m (enough to route, no more precise than needed).
+export function pinnedPlace(latlng, label) {
+  return { label, latitude: Math.round(latlng.lat * 1e4) / 1e4, longitude: Math.round(latlng.lng * 1e4) / 1e4, pinned: true }
+}
+
+// Which end a tap sets: the one being chosen, else the first empty one, else none.
+export function tapTarget(picking, start, end) {
+  if (picking) return picking
+  if (!start) return 'start'
+  if (!end) return 'end'
+  return null
+}
+
 export function parseRoute(result) {
   if (result?.contract_version !== 'route-check-v1' || !Array.isArray(result.geometry) || result.geometry.length < 2 ||
       !['reports', 'advisories', 'crossings', 'places'].every(k => Array.isArray(result[k])) || !Number.isFinite(result.distance_m))

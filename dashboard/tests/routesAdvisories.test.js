@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { findingsCount, parseRoute } from '../src/services/routes.js'
+import { findingsCount, parseRoute, pinnedPlace, tapTarget } from '../src/services/routes.js'
 import { parseAdvisories } from '../src/services/advisories.js'
 import { checkReportStatus, uploadReportPhoto } from '../src/services/reports.js'
 
@@ -11,6 +11,16 @@ test('a route with only ordinary places reports nothing to know, but never calls
   assert.equal(findingsCount(parseRoute(route)), 0)
   assert.equal(findingsCount({ ...route, crossings: [{ name: 'Ngong River' }], places: [{ category: 'Moderate', susceptibility: 'Higher' }] }), 2)
   assert.throws(() => parseRoute({ ...route, geometry: [[-1.3, 36.8]] }))
+})
+
+test('tapping the map fills the chosen end, else the first empty one, else nothing', () => {
+  const a = { latitude: -1.31, longitude: 36.81 }
+  assert.equal(tapTarget(null, null, null), 'start')
+  assert.equal(tapTarget(null, a, null), 'end')
+  assert.equal(tapTarget(null, a, a), null, 'both set: a stray tap changes nothing')
+  assert.equal(tapTarget('start', a, a), 'start', 'unless the person asked to re-choose one')
+  const pinned = pinnedPlace({ lat: -1.310123456, lng: 36.813749 }, 'Point on the map')
+  assert.deepEqual(pinned, { label: 'Point on the map', latitude: -1.3101, longitude: 36.8137, pinned: true })
 })
 
 test('advisories: expired ones drop out and staff names are refused', () => {
