@@ -211,8 +211,10 @@ class ReportResponse(BaseModel):
 
 
 class ReportStatusRequest(BaseModel):
-    reference: int = Field(ge=1)
-    code: str = Field(min_length=8, max_length=12)
+    """Either the single reference (``{"reference": "FW-K7Q2M9"}``) or, for reports sent before
+    references, the report number and its 8-character code."""
+    reference: int | str
+    code: Optional[str] = Field(default=None, min_length=8, max_length=12)
 
 
 class AdvisoryCreate(BaseModel):

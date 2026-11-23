@@ -141,17 +141,37 @@ export async function uploadReportPhoto(reference, code, file, { signal } = {}) 
   return result
 }
 
-// What happened to my report? The code goes in the body, never the address bar.
-export async function checkReportStatus(reference, code, { signal } = {}) {
-  const number = Number(String(reference).replace(/^#/, '').trim())
-  if (!Number.isInteger(number) || number < 1) throw new Error('Enter the reference number, for example 42.')
-  const clean = String(code).trim()
-  if (clean.replace(/[\s-]/g, '').length !== 8) throw new Error('Enter the 8-character code, for example K7Q2-M9XD.')
+// A resident's reference as typed: FW-K7Q2M9, fw k7q2m9 or K7Q2M9 (or an older 8-character code).
+// Returns the cleaned text, or null when it cannot be a reference.
+export function cleanReference(text) {
+  const value = String(text ?? '').trim().toUpperCase().replace(/[\s#-]/g, '')
+  // Same alphabet as the server: no 0/O or 1/I/L.
+  if (/^(FW)?[A-HJKMNP-Z2-9]{6}$/.test(value)) return `FW-${value.slice(-6)}`
+  if (/^[A-HJKMNP-Z2-9]{8}$/.test(value)) return `${value.slice(0, 4)}-${value.slice(4)}`
+  return null
+}
+
+// What happened to my report? The reference goes in the body, never the address bar.
+// (Reports sent before single references used a number plus a code: pass both.)
+export async function checkReportStatus(reference, code = null, { signal } = {}) {
+  let body
+  if (code !== null) {
+    const number = Number(String(reference).replace(/^#/, '').trim())
+    if (!Number.isInteger(number) || number < 1) throw new Error('Enter the reference number, for example 42.')
+    const clean = String(code).trim()
+    if (clean.replace(/[\s-]/g, '').length !== 8) throw new Error('Enter the 8-character code, for example K7Q2-M9XD.')
+    body = { reference: number, code: clean }
+  } else {
+    const clean = cleanReference(reference)
+    if (!clean) throw new Error('Enter your reference, for example FW-K7Q2M9.')
+    body = { reference: clean }
+  }
   const response = await fetch(`${API_BASE_URL}/citizen-report/status`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, signal, body: JSON.stringify({ reference: number, code: clean }),
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, signal, body: JSON.stringify(body),
   })
   const result = await response.json().catch(() => ({}))
-  if (response.status === 404) throw new Error(result.detail || 'That reference and code do not match a report.')
-  if (!response.ok || result.reference !== number || typeof result.status_text !== 'string') throw new Error('Status could not be checked. Please try again.')
+  if (response.status === 404) throw new Error(result.detail || 'That reference does not match a report.')
+  if (response.status === 429) throw new Error(result.detail || 'Too many checks. Wait a few minutes and try again.')
+  if (!response.ok || typeof result.reference !== 'string' || typeof result.status_text !== 'string') throw new Error('Status could not be checked. Please try again.')
   return result
 }

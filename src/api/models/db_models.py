@@ -104,7 +104,7 @@ class CitizenReport(Base):
     published_at = Column(DateTime(timezone=True), nullable=True)
     published_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     # sha256 of the resident's private tracking code (the code itself is shown once, never stored).
-    tracking_hash = Column(String(64), nullable=True)
+    tracking_hash = Column(String(64), nullable=True, index=True)
     # One photo, re-encoded without metadata; the file is named by this hash (staff only).
     photo_sha256 = Column(String(64), nullable=True)
     photo_bytes = Column(Integer, nullable=True)

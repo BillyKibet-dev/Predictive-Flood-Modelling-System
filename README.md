@@ -47,9 +47,12 @@ validated inundation depth/extent or calibrated flood probabilities.
   map, built-up cover and recorded flooding (`python -m src.scripts.prepare_susceptibility`,
   served at `/monitoring-areas/susceptibility`). Ringed pins flood more easily; staff lists rank
   by tomorrow's category, then susceptibility. A ranking, not a validated probability.
-- **Report tracking, photos and advisories (migration 008):** each new report returns a one-time
-  tracking code (only its hash is stored); residents check status with reference + code
-  (`POST /citizen-report/status`). One photo per report within 2 hours, re-encoded with Pillow so
+- **Report tracking, photos and advisories (migrations 008, 009):** each new report returns one
+  reference such as `FW-K7Q2M9` (only its hash is stored; shown once). The report page remembers
+  it in the resident's browser and shows its status, so nothing has to be typed; a reference from
+  another phone can be entered (`POST /citizen-report/status` with `{"reference": "FW-…"}`,
+  30 checks per 10 minutes per client). Older reports still check with number + 8-character code.
+  One photo per report within 2 hours, re-encoded with Pillow so
   no GPS/camera metadata survives, stored in `REPORT_PHOTO_DIR` and visible to staff only.
   Officers post time-limited advisories for a sub-county (`/advisories`), shown on the public map
   without staff names.
