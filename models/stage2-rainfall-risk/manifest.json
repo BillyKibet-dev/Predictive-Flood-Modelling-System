@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-11-14T22:38:22.889392+00:00",
+  "created_at_utc": "2026-11-18T16:01:25.818172+00:00",
   "feature_version": "stage2-observed-forecast-v1",
   "feature_columns": [
     "tomorrow_rain_mm",
