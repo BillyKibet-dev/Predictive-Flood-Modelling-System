@@ -109,11 +109,13 @@ export default function MapPage() {
       </aside>}
       <RainfallLegend outlook={legendOutlook} when={showingToday ? 'today' : 'tomorrow'} setWhen={setWhen} todayAvailable={Boolean(today.data)} showRing={Boolean(susceptibility.data)} advisoryCount={activeAdvisories.length} hiddenOnMobile={params.has('inspect')} reportCount={showReports ? communityReports.data?.items.length ?? 0 : 0} />
 
-      {!user && <Link to="/route" className={`${params.has('inspect') ? 'hidden' : 'flex'} md:hidden absolute z-[1000] bottom-[88px] right-3 bg-surface text-ink shadow-card-hover border border-border rounded-full px-4 h-10 items-center gap-2 text-sm font-semibold`}>
-        <RouteIcon size={16} />{t('nav.route')}
+      {/* Phones: round icon buttons (named for screen readers) so the legend keeps its width. */}
+      {!user && <Link to="/route" aria-label={t('nav.route')} title={t('nav.route')} className={`${params.has('inspect') ? 'hidden' : 'grid'} md:hidden absolute z-[1000] bottom-[84px] right-3 w-12 h-12 place-items-center bg-surface text-ink shadow-card-hover border border-border rounded-full`}>
+        <RouteIcon size={19} aria-hidden="true" />
       </Link>}
-      <Link to={user ? '/officer/reports' : '/citizen#report'} className={`${params.has('inspect') ? 'hidden md:flex' : 'flex'} absolute z-[1000] bottom-8 right-3 bg-surface text-ink shadow-card-hover border border-border rounded-full px-4 h-11 items-center gap-2 text-sm font-semibold`}>
-        <MessageSquarePlus size={17} />{user ? 'Review reports' : t('nav.report')}
+      <Link to={user ? '/officer/reports' : '/citizen#report'} aria-label={user ? 'Review reports' : t('nav.report')}
+        className={`${params.has('inspect') ? 'hidden md:flex' : 'flex'} absolute z-[1000] bottom-8 right-3 max-md:w-12 h-12 md:h-11 max-md:justify-center md:px-4 items-center gap-2 text-sm font-semibold rounded-full shadow-card-hover border ${user ? 'bg-surface text-ink border-border' : 'bg-brand text-white border-brand'}`}>
+        <MessageSquarePlus size={18} aria-hidden="true" /><span className="hidden md:inline">{user ? 'Review reports' : t('nav.report')}</span>
       </Link>
     </main>
     <footer className="shrink-0 border-t border-border bg-surface text-ink px-4 py-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs">

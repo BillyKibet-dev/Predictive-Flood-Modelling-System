@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Download } from 'lucide-react'
-import ChartTooltip, { ChartLegend, axisProps } from '../components/ChartTooltip'
+import ChartTooltip, { ChartLegend, axisProps, useNarrow } from '../components/ChartTooltip'
 import StaffLayout, { PageHeader, buttonClass } from '../components/StaffLayout'
 import { useAuth } from '../context/AuthContext'
 import useStaffList from '../hooks/useStaffList'
@@ -20,6 +20,7 @@ function Stat({ label, value, detail }) {
 
 export default function RainfallHistoryPage() {
   const { authorizedDownload } = useAuth()
+  const narrow = useNarrow()
   const state = useStaffList('/staff/rainfall-history')
   const [history, invalid] = useMemo(() => {
     if (!state.data) return [null, '']
@@ -79,7 +80,8 @@ export default function RainfallHistoryPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={yearly} margin={{ left: -4, right: 4 }}>
                 <CartesianGrid stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} tick={{ ...axisProps.tick, fontSize: 11 }} interval={0} />
+                <XAxis dataKey="label" {...axisProps} tick={{ ...axisProps.tick, fontSize: 11 }} interval={narrow ? 'preserveStartEnd' : 0}
+                  tickFormatter={label => narrow ? `’${label.slice(2)}` : label} minTickGap={4} />
                 <YAxis {...axisProps} />
                 <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={<ChartTooltip unit=" mm" format={v => Math.round(v).toLocaleString('en-GB')} />} />
                 <Bar isAnimationActive={false} dataKey="total_mm" name="Total" fill="var(--chart-2)" radius={[4, 4, 0, 0]} maxBarSize={28} />
@@ -95,8 +97,9 @@ export default function RainfallHistoryPage() {
           <h2 id="wettest-heading" className="font-semibold">Wettest days</h2>
           <p className="text-sm text-muted mt-1">Nairobi average, with the wettest zone.</p>
           <ol className="mt-3 divide-y divide-border text-sm">{history.wettest_days.map((d, i) => <li key={d.date} className="py-2 flex gap-3 items-baseline">
-            <span className="tabular text-muted w-5">{i + 1}</span><span className="flex-1">{longDate(d.date)}</span>
-            <span className="tabular font-medium">{mm(d.mean_mm)}</span><span className="tabular text-xs text-muted w-28 text-right">{d.wettest_zone} {mm(d.wettest_zone_mm)}</span></li>)}</ol>
+            <span className="tabular text-muted w-5 shrink-0">{i + 1}</span>
+            <span className="flex-1 min-w-0">{longDate(d.date)}<span className="block sm:hidden text-xs text-muted tabular">{d.wettest_zone} {mm(d.wettest_zone_mm)}</span></span>
+            <span className="tabular font-medium">{mm(d.mean_mm)}</span><span className="hidden sm:block tabular text-xs text-muted w-28 text-right">{d.wettest_zone} {mm(d.wettest_zone_mm)}</span></li>)}</ol>
         </section>
       </div>
 

@@ -218,3 +218,26 @@ button, .press { transition: transform 120ms var(--ease-out), background-color 1
   max-width: min(700px, calc(100vw - 20px));
   font-size: 9px;
 }
+
+/* Phones: one line of credits that expands on tap, so it never covers the map controls. */
+@media (max-width: 767px) {
+  .leaflet-container .leaflet-control-attribution {
+    max-width: 46vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .leaflet-container .leaflet-control-attribution:hover,
+  .leaflet-container .leaflet-control-attribution:focus-within {
+    max-width: calc(100vw - 20px);
+    white-space: normal;
+  }
+}
+
+/* Horizontal chip rows scroll without a visible bar. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Room for the phone's home indicator under floating buttons. */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }

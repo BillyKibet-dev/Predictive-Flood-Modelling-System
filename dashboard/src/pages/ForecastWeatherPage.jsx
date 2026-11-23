@@ -58,7 +58,23 @@ function CurrentMonitoringWeather({onArchive}) {
         <option value="">All</option>{areas.data?.groups.filter(g=>g.located_count).map(g=><option key={g.id} value={g.id}>{g.name}</option>)}
       </select></label>
     </div>
-    <div className="panel overflow-x-auto"><table className="w-full text-sm text-left" aria-label="Monitored-area rainfall outlook">
+    {/* Phones: one card per place with the same numbers; the full table from tablet width up. */}
+    <ul className="md:hidden panel divide-y divide-border" aria-label="Monitored-area rainfall outlook (list)">
+      {sites.map(site=>{const row=rows.get(site.id),fresh=row?.status==='AVAILABLE',now=todayPoint(today.data,site.id);return <li key={site.id} className="p-4 space-y-2.5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0"><Link className="font-medium hover:text-accent" to={`/?area=${encodeURIComponent(site.id)}&inspect=1`}>{site.display_name}</Link>
+            <p className="text-xs text-muted">{site.parent_zone_name}{local[site.id]?.level==='Higher'?' · floods easily':''}</p></div>
+          {fresh?<Pill category={row.proxy_class} />:<span className="text-xs text-muted">Unknown</span>}
+        </div>
+        <dl className="grid grid-cols-4 gap-2 text-xs">
+          {[['Next 3 h',now?.windows[0]],['3–6 h',now?.windows[1]]].map(([label,w])=><div key={label}><dt className="text-muted">{label}</dt><dd className={`tabular font-medium ${w?.intensity==='heavy'?'text-risk-high':''}`}>{w&&w.rain_mm!==null?`${w.rain_mm.toFixed(1)} mm`:'—'}</dd></div>)}
+          <div><dt className="text-muted">Tomorrow</dt><dd className="tabular font-medium">{fresh?`${row.rainfall_mm.toFixed(1)} mm`:'—'}</dd></div>
+          <div><dt className="text-muted">7 days</dt><dd className="tabular font-medium">{fresh?`${row.accumulation_complete?'':'≥ '}${row.accumulation_7d_mm.toFixed(0)} mm`:'—'}</dd></div>
+        </dl>
+        {now && <p className="text-xs text-muted flex items-center gap-2">Today <Pill category={now.category} /></p>}
+      </li>})}
+    </ul>
+    <div className="hidden md:block panel overflow-x-auto"><table className="w-full text-sm text-left" aria-label="Monitored-area rainfall outlook">
       <thead><tr className="text-muted">{['Place',today.data?`Next 3 h (${windowLabel(today.data.windows[0])})`:'Next 3 h','3–6 h','Today','Tomorrow','7 days','Category (tomorrow)'].map((h,i)=><th key={h} scope="col" className={`px-4 py-3 font-medium ${[1,2,4,5].includes(i)?'text-right':''}`}>{h}</th>)}</tr></thead>
       <tbody>{sites.map(site=>{const row=rows.get(site.id),fresh=row?.status==='AVAILABLE';return <tr key={site.id} className="border-t border-border hover:bg-surface-2">
         <td className="px-4 py-3"><Link className="font-medium hover:text-accent" to={`/?area=${encodeURIComponent(site.id)}&inspect=1`}>{site.display_name}</Link>
