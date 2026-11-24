@@ -1,4 +1,4 @@
-# Netlify builds the dashboard from this repository (see deploy/AZURE_DEPLOYMENT.md, step 10).
+# Netlify builds the dashboard from this repository.
 # Set VITE_API_BASE_URL (e.g. https://api.example.co.ke) in Netlify: Site configuration > Environment variables.
 [build]
   base = "dashboard"

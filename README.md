@@ -10,6 +10,47 @@ street-flood classifier. Environmental proxy classes, historical satellite-detec
 water and predicted inundation are different things; the application supplies no
 validated inundation depth/extent or calibrated flood probabilities.
 
+**Live:** [nairobifloodwatch.me](https://nairobifloodwatch.me) (frontend, Netlify) ·
+`api.nairobifloodwatch.me` (backend, Azure VM).
+
+## Project structure
+
+```text
+.
+├── src/
+│   ├── api/                  FastAPI backend (entry point: src/api/main.py)
+│   │   ├── routers/          HTTP endpoints: reports, routes, advisories, staff data, monitoring areas, auth
+│   │   ├── services/         the logic: rainfall rule, Stage 2 model, IMERG rain, route check, live verification
+│   │   ├── models/           database tables (SQLAlchemy) and request/response schemas (Pydantic)
+│   │   ├── migrations/       numbered SQL migrations, applied by src/scripts/migrate_*.py, never at startup
+│   │   ├── data/             committed catalogues the API serves: monitoring areas, hotspots, susceptibility
+│   │   ├── utils/            passwords, JWT sign-in and role checks
+│   │   └── config.py         settings read from .env
+│   ├── modeling/
+│   │   ├── stage2/           live rainfall-risk model: dataset, features, training, runtime
+│   │   ├── v1/               frozen 20-feature v1 model (historical replay only)
+│   │   └── binary_rainfall/  staff-only binary research model
+│   └── scripts/              command-line jobs: database setup, migrations, weather collection, data preparation
+├── dashboard/                React + Vite + Leaflet frontend
+│   ├── src/pages/            one file per screen: map, report, route checker, staff pages
+│   ├── src/components/       map layers, cards, charts, staff layout
+│   ├── src/services/         API calls and data shaping
+│   ├── src/i18n/             English and Kiswahili text
+│   ├── tests/                frontend unit tests (node:test)
+│   └── scripts/              headless-browser checks
+├── models/                   served model files: stage2-rainfall-risk, legacy-v2, nextday-rainfall-binary-v1
+├── data/                     pinned inputs: Nairobi boundaries, CHIRPS labels and evaluation, provenance
+├── tests/                    backend tests (pytest)
+├── docs/integration/         runbooks and model notes
+├── deploy/                   systemd and nginx examples, backup and runtime-data scripts
+├── notebooks/                exploratory notebooks and the CHIRPS Colab export
+├── requirements*.txt         Python dependencies (main API, plus separate sets for v1, evaluation, data prep)
+└── netlify.toml              Netlify build settings for the dashboard
+```
+
+Not in Git: `.env` (secrets), `data/model_v1/` and other raw source/model bundles,
+which are restored separately (see [Deployment and backup](#deployment-and-backup)).
+
 ## Current application
 
 - **Map `/`:** 36 monitored records, all located, at 34 physical pins, grouped
