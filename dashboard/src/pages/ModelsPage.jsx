@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import ChartTooltip, { ChartLegend, axisProps } from '../components/ChartTooltip'
+import ChartTooltip, { ChartLegend, axisProps, useNarrow } from '../components/ChartTooltip'
 import StaffLayout, { PageHeader, buttonClass } from '../components/StaffLayout'
 import useStaffList from '../hooks/useStaffList'
 import { parseModelCard, percent } from '../services/staffData'
@@ -39,6 +39,7 @@ function MetricsTable({ v }) {
 
 export default function ModelsPage() {
   const state = useStaffList('/staff/model-card')
+  const narrow = useNarrow()
   const [card, invalid] = useMemo(() => {
     if (!state.data) return [null, '']
     try { return [parseModelCard(state.data), ''] } catch (error) { return [null, error.message] }
@@ -86,7 +87,8 @@ export default function ModelsPage() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={card.validation.seasons} barGap={2} margin={{ left: -16, right: 4 }}>
               <CartesianGrid stroke="var(--border)" vertical={false} />
-              <XAxis dataKey="season" {...axisProps} interval={0} tick={{ ...axisProps.tick, fontSize: 11 }} />
+              <XAxis dataKey="season" {...axisProps} interval={narrow ? 'preserveStartEnd' : 0} minTickGap={6} tick={{ ...axisProps.tick, fontSize: 11 }}
+                tickFormatter={s => narrow ? `${s.slice(5)} ’${s.slice(2, 4)}` : s} />
               <YAxis domain={[0, 1]} ticks={[0, 0.25, 0.5, 0.75, 1]} {...axisProps} />
               <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={<ChartTooltip format={v => v.toFixed(2)} />} />
               <Bar isAnimationActive={false} dataKey="rule_csi" name={RULE.label} fill={RULE.color} radius={[4, 4, 0, 0]} maxBarSize={18} />

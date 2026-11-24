@@ -20,7 +20,7 @@ export default function RainfallLegend({ outlook, hiddenOnMobile = false, report
   useEffect(() => { if (panel.current) panel.current.open=window.matchMedia?.('(min-width: 768px)').matches ?? true },[])
   const data=outlook.data, available=data?.available_count>0
   const counts=outlookCounts(data)
-  return <details ref={panel} className={`rainfall-legend ${hiddenOnMobile ? 'hidden md:block' : ''} absolute bottom-8 left-3 z-[1000] bg-surface border border-border rounded-card text-xs text-ink max-w-[min(20rem,calc(100%-9rem))] shadow-card-hover`}>
+  return <details ref={panel} className={`rainfall-legend ${hiddenOnMobile ? 'hidden md:block' : ''} absolute bottom-8 left-3 z-[1000] bg-surface border border-border rounded-card text-xs text-ink max-w-[calc(100%-5.5rem)] md:max-w-[min(20rem,calc(100%-13rem))] max-h-[calc(100%-7rem)] overflow-y-auto shadow-card-hover`}>
     <summary className="cursor-pointer px-3 py-2 font-semibold">{when === 'today' ? t('legend.titleToday') : t('legend.title')}{available ? ` · ${day(data.collection.target_start)}` : ''}</summary>
     <div className="px-3 pb-3 space-y-2" aria-label="Forecast collection status">
       {setWhen && <div role="group" aria-label={t('when.label')} className="grid grid-cols-2 p-0.5 rounded-btn bg-surface-2 font-semibold">

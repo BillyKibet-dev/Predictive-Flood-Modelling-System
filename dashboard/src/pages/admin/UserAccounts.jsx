@@ -101,12 +101,12 @@ export default function UserAccounts() {
         {rows.map((account) => (
           <article key={account.id} aria-label={`Account ${account.id}`} className="p-4 flex flex-wrap items-center gap-3">
             <span aria-hidden="true" className={`w-9 h-9 rounded-full grid place-items-center text-xs font-semibold ${account.status === 'Active' ? 'bg-brand text-white' : 'bg-surface-2 text-muted'}`}>{initials(account.name)}</span>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 basis-48">
               <p className="font-medium">{account.name}{actor.id === account.id ? <span className="text-muted font-normal"> (you)</span> : ''}</p>
               <p className="text-sm text-muted break-all">{account.email}</p>
             </div>
-            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-surface-2 text-muted">{account.role === 'admin' ? 'Administrator' : 'Officer'} / {account.status}</span>
-            <div className="flex gap-2">
+            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-surface-2 text-muted max-sm:ml-12">{account.role === 'admin' ? 'Administrator' : 'Officer'} · {account.status}</span>
+            <div className="flex gap-2 max-sm:ml-auto">
               <button className={buttonClass} disabled={busy} onClick={() => open(account)}>Edit</button>
               <button className={buttonClass + ' text-risk-extreme'} disabled={busy || actor.id === account.id} onClick={() => remove(account)}>Remove</button>
             </div>

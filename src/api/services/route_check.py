@@ -71,6 +71,26 @@ def search_places(text: str) -> list[dict]:
     return places
 
 
+def name_point(lat: float, lon: float) -> str | None:
+    """Nearest street or place name for a point tapped on the map (None if nothing nearby)."""
+    if not inside_nairobi(lat, lon):
+        raise RouteError("Choose a point inside Nairobi.", 422)
+    try:
+        response = requests.get(f"{ORS}/geocode/reverse", timeout=12, headers={"Authorization": _key()}, params={
+            "point.lat": lat, "point.lon": lon, "size": 1, "boundary.circle.radius": 1})
+    except requests.RequestException:
+        raise RouteError("Place names are unavailable. Try again shortly.") from None
+    if response.status_code != 200:
+        raise RouteError("Place names are unavailable. Try again shortly.")
+    for feature in response.json().get("features", [])[:1]:
+        props = feature.get("properties", {})
+        name, street = props.get("name"), props.get("street")
+        area = props.get("neighbourhood") or props.get("locality")
+        label = ", ".join(dict.fromkeys(p for p in (name or street, area) if p))
+        return label[:120] or None
+    return None
+
+
 def fetch_route(start, end, profile, avoid=None) -> dict:
     body = {"coordinates": [[start[1], start[0]], [end[1], end[0]]], "instructions": False}
     if avoid:

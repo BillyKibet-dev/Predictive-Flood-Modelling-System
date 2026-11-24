@@ -33,7 +33,7 @@ export default function ReportReviewQueue() {
         <button type="button" className={buttonClass} onClick={list.refresh} disabled={list.loading}><RefreshCw size={15} />Refresh inbox</button>
       </PageHeader>
 
-      <div role="group" aria-label="Report review status filter" className="flex gap-1 p-1 rounded-card bg-surface-2 w-full sm:w-fit overflow-x-auto">
+      <div role="group" aria-label="Report review status filter" className="no-scrollbar flex gap-1 p-1 rounded-card bg-surface-2 w-full sm:w-fit overflow-x-auto [&>button]:shrink-0 [&>button]:whitespace-nowrap">
         {['', ...statuses].map(value => <button key={value || 'all'} type="button" aria-pressed={status === value}
           onClick={() => { setFilters(value ? { review_status: value } : {}); setOffset(0) }}
           className={`h-8 px-3 rounded-btn text-sm whitespace-nowrap ${status === value ? 'bg-surface text-ink font-semibold shadow-card-rest' : 'text-muted hover:text-ink'}`}>

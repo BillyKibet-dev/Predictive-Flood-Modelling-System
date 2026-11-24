@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react'
-import { Route as RouteIcon, MessageSquarePlus, X } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
+import { Route as RouteIcon, MessageSquarePlus } from 'lucide-react'
+import MapCard from '../components/MapCard'
+import ZoneCard from '../components/ZoneCard'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import BoundaryControls from '../components/BoundaryControls'
@@ -54,16 +56,24 @@ export default function MapPage() {
   function setZone(id) {
     setParams(previous => { if (id) previous.set('zone',id);else previous.delete('zone');previous.delete('area');previous.delete('inspect');previous.delete('hotspot');return previous })
   }
-  function closeArea(event) {
-    event?.preventDefault(); event?.stopPropagation()
+  const closeArea=useCallback(event => {
+    event?.preventDefault?.(); event?.stopPropagation?.()
     setParams(previous => { const next=new URLSearchParams(previous);next.delete('area');next.delete('hotspot');next.delete('inspect');return next })
-  }
+  },[setParams])
+  // setZone is rebuilt with each setParams, so the callback follows setParams.
+  const closeZone=useCallback(() => setZone(''),[setParams]) // eslint-disable-line react-hooks/exhaustive-deps
+  // One card at a time: a place card sits on top of its sub-county card; closing it returns there.
+  const inspecting=params.has('inspect'), zoneFeature=zone ? boundaries.data?.features.find(f => f.id === zone) : null
+  const cardOpen=inspecting || Boolean(zoneFeature)
+  const dismissTop=useCallback(() => { if (inspecting) closeArea(); else closeZone() },[inspecting,closeArea,closeZone])
+  const siblings=selected?.point ? groupAreaPoints(areas.data?.sites || []).find(g => g.sites.some(s => s.id === selected.id))?.sites ?? [] : []
   return <div className="h-screen h-[100dvh] flex flex-col page-transition">
     <TopNav variant="public" />
     <main className="relative flex-1 min-h-0" aria-label="Nairobi monitoring map">
       <MapView boundaries={boundaries.data} boundaryRevision={boundaries.revision} showMarkers={false}
         showPolygons={showPolygons} fitRequest={fitRequest} historical={historical}
-        monitoringAreas={sites} showMonitoringAreas={showAreas} selectedAreaId={selectedId} onInspectArea={selectArea} onDismissArea={closeArea}
+        monitoringAreas={sites} showMonitoringAreas={showAreas} selectedAreaId={inspecting ? selectedId : null} onInspectArea={selectArea} onDismissArea={dismissTop}
+        selectedZoneId={zoneFeature?.id ?? null} onSelectZone={setZone} cardOpen={cardOpen}
         monitoringOutlook={pinOutlook} outlookDay={showingToday ? 'today' : 'tomorrow'} todayOutlook={today.data} susceptibility={susceptibility.data} communityReports={communityReports.data?.items} showCommunityReports={showReports}>
         <AdvisoryLayer advisories={activeAdvisories} />
       </MapView>
@@ -88,15 +98,18 @@ export default function MapPage() {
         {areas.error && <p role="alert" className="bg-surface border border-border rounded-card p-3 text-xs text-ink max-w-64">
           Monitored areas unavailable. <button className="underline" onClick={areas.refresh}>Retry areas</button>
         </p>}
-        {zone && <p role="status" className="rounded-card bg-surface border border-border px-3 py-2 text-xs text-ink max-w-64">
-          Zone: {areas.data?.groups.find(g => g.id === zone)?.name || 'Not found'} <button className="underline ml-2" onClick={() => setZone('')}>Show all</button>
+        {zone && !zoneFeature && <p role="status" className="rounded-card bg-surface border border-border px-3 py-2 text-xs text-ink max-w-64">
+          {areas.data?.groups.find(g => g.id === zone)?.name || 'Not found'} <button className="underline ml-2" onClick={() => setZone('')}>{t('areas.all')}</button>
         </p>}
       </div>
-      {params.has('inspect') && <aside aria-label="Selected monitored area" onPointerDown={event => event.stopPropagation()} onClick={event => event.stopPropagation()} className="absolute z-[1050] bottom-20 left-3 right-3 md:bottom-auto md:top-3 md:left-auto md:w-96 max-h-[45dvh] md:max-h-[calc(100%-100px)] overflow-y-auto bg-surface text-ink border border-border rounded-card shadow-card-hover p-4">
-        <button type="button" aria-label={t('map.closeArea')} className="sticky z-10 top-0 float-right bg-surface p-2 rounded-btn ml-2" onClick={closeArea}><X size={18} /></button>
+      {inspecting && <MapCard label={selected ? selected.display_name : t('map.closeArea')} closeLabel={t('map.closeArea')} onClose={closeArea}>
         {selected ? <>
+          {zoneFeature && <button type="button" onClick={closeArea} className="text-xs font-medium text-accent mb-2">← {zoneFeature.properties.name}</button>}
           <AreaRiskSummary site={selected} state={pointForecast} showReportLink={!user} local={susceptibility.data?.byArea[selected.id]} advisories={activeAdvisories}
             today={todayPoint(today.data,selected.id)} todayReceived={today.data?.forecast.received_at} />
+          {siblings.length > 1 && <div className="mt-4"><p className="text-xs font-semibold text-muted mb-1.5">{t('map.otherRecords')}</p>
+            <div className="flex flex-wrap gap-1.5">{siblings.filter(s => s.id !== selected.id).map(s => <button key={s.id} type="button" onClick={() => selectArea(s.id)}
+              className="text-xs px-2.5 py-1 rounded-full glass-inset hover:bg-surface-2">{s.display_name}</button>)}</div></div>}
           {user && <NearbyCommunityReports areaId={selected.id} authorizedRequest={authorizedRequest} />}
           {/* Citizens see the short summary first; staff get the full detail open by default. */}
           <details key={selected.id} className="area-more-details mt-4 border-t border-border pt-3" open={Boolean(user)}>
@@ -105,15 +118,20 @@ export default function MapPage() {
               <SusceptibilityDetails row={susceptibility.data?.byArea[selected.id]} />
               <MonitoringAreaProfile site={selected} sources={areas.data.sources} technical={Boolean(user)} /></div>
           </details>
-        </> : <p role="status">{areas.loading ? t('map.loadingArea') : areas.error ? t('map.areaUnavailable') : t('map.areaNotFound')}</p>}
-      </aside>}
-      <RainfallLegend outlook={legendOutlook} when={showingToday ? 'today' : 'tomorrow'} setWhen={setWhen} todayAvailable={Boolean(today.data)} showRing={Boolean(susceptibility.data)} advisoryCount={activeAdvisories.length} hiddenOnMobile={params.has('inspect')} reportCount={showReports ? communityReports.data?.items.length ?? 0 : 0} />
+        </> : <p role="status" className="pr-12">{areas.loading ? t('map.loadingArea') : areas.error ? t('map.areaUnavailable') : t('map.areaNotFound')}</p>}
+      </MapCard>}
+      {!inspecting && zoneFeature && <MapCard label={zoneFeature.properties.name} closeLabel={t('zone.close')} onClose={closeZone}>
+        <ZoneCard feature={zoneFeature} sites={sites} outlook={pinOutlook} when={showingToday ? 'today' : 'tomorrow'} advisories={activeAdvisories} onSelectArea={selectArea} />
+      </MapCard>}
+      <RainfallLegend outlook={legendOutlook} when={showingToday ? 'today' : 'tomorrow'} setWhen={setWhen} todayAvailable={Boolean(today.data)} showRing={Boolean(susceptibility.data)} advisoryCount={activeAdvisories.length} hiddenOnMobile={cardOpen} reportCount={showReports ? communityReports.data?.items.length ?? 0 : 0} />
 
-      {!user && <Link to="/route" className={`${params.has('inspect') ? 'hidden' : 'flex'} md:hidden absolute z-[1000] bottom-[88px] right-3 bg-surface text-ink shadow-card-hover border border-border rounded-full px-4 h-10 items-center gap-2 text-sm font-semibold`}>
-        <RouteIcon size={16} />{t('nav.route')}
+      {/* Phones: round icon buttons (named for screen readers) so the legend keeps its width. */}
+      {!user && <Link to="/route" aria-label={t('nav.route')} title={t('nav.route')} className={`${cardOpen ? 'hidden' : 'grid'} md:hidden absolute z-[1000] bottom-[84px] right-3 w-12 h-12 place-items-center bg-surface text-ink shadow-card-hover border border-border rounded-full`}>
+        <RouteIcon size={19} aria-hidden="true" />
       </Link>}
-      <Link to={user ? '/officer/reports' : '/citizen#report'} className={`${params.has('inspect') ? 'hidden md:flex' : 'flex'} absolute z-[1000] bottom-8 right-3 bg-surface text-ink shadow-card-hover border border-border rounded-full px-4 h-11 items-center gap-2 text-sm font-semibold`}>
-        <MessageSquarePlus size={17} />{user ? 'Review reports' : t('nav.report')}
+      <Link to={user ? '/officer/reports' : '/citizen#report'} aria-label={user ? 'Review reports' : t('nav.report')}
+        className={`${cardOpen ? 'hidden md:flex' : 'flex'} absolute z-[1000] bottom-8 right-3 max-md:w-12 h-12 md:h-11 max-md:justify-center md:px-4 items-center gap-2 text-sm font-semibold rounded-full shadow-card-hover border ${user ? 'bg-surface text-ink border-border' : 'bg-brand text-white border-brand'}`}>
+        <MessageSquarePlus size={18} aria-hidden="true" /><span className="hidden md:inline">{user ? 'Review reports' : t('nav.report')}</span>
       </Link>
     </main>
     <footer className="shrink-0 border-t border-border bg-surface text-ink px-4 py-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs">
