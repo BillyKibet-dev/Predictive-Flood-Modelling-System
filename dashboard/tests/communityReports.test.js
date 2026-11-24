@@ -15,6 +15,8 @@ test('checked reports are shown only during their 24-hour window', () => {
   assert.equal(activeReports([item()], Date.parse('2026-11-16T09:00:00Z')).length, 0)
   assert.equal(timeAgo('2026-11-15T09:00:00Z', now), '3 hours ago')
   assert.equal(timeAgo('2026-11-15T11:20:00Z', now), '40 min ago')
+  assert.equal(timeAgo('2026-11-14T00:00:00Z', now), '36 hours ago')
+  assert.equal(timeAgo('2026-10-31T12:00:00Z', now), '15 days ago', 'past two days, in days')
 })
 
 test('unexpected or private fields are rejected rather than shown', () => {

@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import useStaffList from '../hooks/useStaffList'
+import usePageTitle from '../hooks/usePageTitle'
 
 // Three short groups instead of one long row of links. Admin tools appear only for admins.
 export const STAFF_NAV = [
@@ -108,6 +109,8 @@ export default function StaffLayout({ children, width = 'max-w-6xl' }) {
 
 // One consistent page heading: a title, one short line, and actions on the right.
 export function PageHeader({ title, description, children }) {
+  // The greeting on Overview is personal; the tab just says Overview.
+  usePageTitle(/^Good (morning|afternoon|evening)/.test(title) ? 'Overview' : title)
   return <div className="flex flex-wrap items-end justify-between gap-3 mb-6 sm:mb-8">
     <div className="min-w-0"><h1 className="text-2xl sm:text-[28px] font-semibold tracking-tight">{title}</h1>
       {description && <p className="text-sm text-muted mt-1.5 max-w-2xl">{description}</p>}</div>

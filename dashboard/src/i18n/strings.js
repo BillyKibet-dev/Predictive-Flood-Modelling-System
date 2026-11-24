@@ -90,7 +90,7 @@ export const STRINGS = {
     'condition.Street flooding': 'Street flooding', 'condition.River overflow': 'River overflow',
     'condition.Blocked drainage': 'Blocked drainage', 'condition.Other': 'Other',
     'severity.Mild': 'Mild', 'severity.Serious': 'Serious', 'severity.Dangerous': 'Dangerous',
-    'ago.now': 'just now', 'ago.min': '{n} min ago', 'ago.hour': '1 hour ago', 'ago.hours': '{n} hours ago',
+    'ago.now': 'just now', 'ago.min': '{n} min ago', 'ago.hour': '1 hour ago', 'ago.hours': '{n} hours ago', 'ago.days': '{n} days ago',
 
     'advisory.Advice': 'Officer advice', 'advisory.Warning': 'Officer warning',
     'advisory.until': 'Until {time}',
@@ -280,7 +280,7 @@ export const STRINGS = {
     'condition.Street flooding': 'Mafuriko barabarani', 'condition.River overflow': 'Mto umefurika',
     'condition.Blocked drainage': 'Mtaro umeziba', 'condition.Other': 'Mengineyo',
     'severity.Mild': 'Kidogo', 'severity.Serious': 'Kubwa', 'severity.Dangerous': 'Hatari',
-    'ago.now': 'sasa hivi', 'ago.min': 'dakika {n} zilizopita', 'ago.hour': 'saa 1 iliyopita', 'ago.hours': 'saa {n} zilizopita',
+    'ago.now': 'sasa hivi', 'ago.min': 'dakika {n} zilizopita', 'ago.hour': 'saa 1 iliyopita', 'ago.hours': 'saa {n} zilizopita', 'ago.days': 'siku {n} zilizopita',
 
     'advisory.Advice': 'Ushauri wa afisa', 'advisory.Warning': 'Tahadhari ya afisa',
     'advisory.until': 'Hadi {time}',

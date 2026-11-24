@@ -34,6 +34,8 @@ export function timeAgo(value, now = Date.now(), lang = 'en') {
   if (minutes < 1) return translate(lang, 'ago.now')
   if (minutes < 60) return translate(lang, 'ago.min', { n: minutes })
   const hours = Math.round(minutes / 60)
+  // Past two days, days read better than "386 hours".
+  if (hours >= 48) return translate(lang, 'ago.days', { n: Math.round(hours / 24) })
   return translate(lang, hours === 1 ? 'ago.hour' : 'ago.hours', { n: hours })
 }
 

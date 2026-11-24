@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext'
 import BoundaryControls from '../components/BoundaryControls'
 import MapView from '../components/MapView'
 import TopNav from '../components/TopNav'
+import usePageTitle from '../hooks/usePageTitle'
 import useBoundaries from '../hooks/useBoundaries'
 import useHistoricalFloods from '../hooks/useHistoricalFloods'
 import HistoricalFloodControls from '../components/HistoricalFloodControls'
@@ -42,6 +43,7 @@ export default function MapPage() {
   const distinctPoints=groupAreaPoints(sites).length, unlocated=sites.filter(s => !s.point).length
   const outlook=useMonitoringOutlook(), communityReports=useCommunityReports(), susceptibility=useSusceptibility(), advisories=useAdvisories()
   const { t }=useLanguage(), activeAdvisories=advisories.data?.items ?? []
+  usePageTitle(null)
   // Pins and legend show today (default) or tomorrow; today falls back to tomorrow if unavailable.
   const today=useTodayOutlook(), [when,setWhen]=useState('today')
   const showingToday=when==='today'&&Boolean(today.data)
@@ -78,7 +80,8 @@ export default function MapPage() {
         <AdvisoryLayer advisories={activeAdvisories} />
       </MapView>
       <AdvisoryBanner advisories={activeAdvisories} />
-      <div className="absolute top-3 right-3 z-[1000] flex flex-col items-end gap-2 max-w-[calc(100%-76px)]">
+      {/* Phones: with an advisory strip across the top, the controls sit just below it. */}
+      <div className={`absolute ${activeAdvisories.length ? 'top-[74px] md:top-3' : 'top-3'} right-3 z-[1000] flex flex-col items-end gap-2 max-w-[calc(100%-76px)]`}>
         <MonitoringAreaControls inventory={areas} sites={sites} zone={zone} setZone={setZone}
           query={query} setQuery={setQuery} onSelect={selectArea} selectedId={selectedId} />
         <details className="map-layer-controls bg-surface border border-border shadow-card-hover rounded-card text-xs text-ink max-w-80">
@@ -136,7 +139,7 @@ export default function MapPage() {
     </main>
     <footer className="shrink-0 border-t border-border bg-surface text-ink px-4 py-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs">
       <p>{areas.data ? `${t('map.locations',{count:distinctPoints})}${unlocated ? ` · ${unlocated} records awaiting location review` : ''}` : areas.loading ? 'Loading monitored areas…' : 'Monitored areas unavailable'} · {t('map.outlines')}</p>
-      {user ? <Link to="/research" className="text-brand underline">Experimental model results →</Link>
+      {user ? <Link to="/research" className="text-brand underline">Model checks →</Link>
         : <p className="text-muted">{t('map.footerPins')}</p>}
     </footer>
   </div>

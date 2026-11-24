@@ -49,7 +49,7 @@ export function AdvisoryBanner({ advisories }) {
     <div className="bg-surface border rounded-card shadow-card-hover text-ink" style={{ borderColor: ADVISORY_COLOR[warning ? 'Warning' : 'Advice'] }}>
       <button type="button" onClick={() => setOpen(o => !o)} aria-expanded={open} className="w-full flex items-start gap-2 p-3 text-left">
         <Megaphone size={16} className="shrink-0 mt-0.5" style={{ color: ADVISORY_COLOR[warning ? 'Warning' : 'Advice'] }} aria-hidden="true" />
-        <span className="text-sm min-w-0"><span className="font-semibold">{first.place_label || first.area_name}: </span>{first.message}
+        <span className={`text-sm min-w-0 ${open ? '' : 'max-md:line-clamp-2'}`}><span className="font-semibold">{first.place_label || first.area_name}: </span>{first.message}
           {advisories.length > 1 && <span className="text-muted"> · +{advisories.length - 1}</span>}</span>
       </button>
       {open && advisories.length > 1 && <div className="px-3 pb-3 space-y-3 border-t border-border pt-3 max-h-64 overflow-y-auto">

@@ -1,25 +1,32 @@
-import { useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import Toast from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { LanguageProvider } from './context/LanguageContext'
-import AdminPage from './pages/AdminPage'
 import CitizenPage from './pages/CitizenPage'
 import LoginPage from './pages/LoginPage'
 import MapPage from './pages/MapPage'
-import OfficerAlertsPage from './pages/OfficerAlertsPage'
-import OfficerDashboardPage from './pages/OfficerDashboardPage'
-import EnvironmentalDataPage from './pages/EnvironmentalDataPage'
-import ForecastWeatherPage from './pages/ForecastWeatherPage'
-import ModelResearchPage from './pages/ModelResearchPage'
-import StaffReportsPage from './pages/StaffReportsPage'
-import ModelsPage from './pages/ModelsPage'
-import RainfallHistoryPage from './pages/RainfallHistoryPage'
-import DownloadsPage from './pages/DownloadsPage'
-import AdvisoriesPage from './pages/AdvisoriesPage'
-import RoutePage from './pages/RoutePage'
+
+// Residents load only the map, report form and route checker; staff pages (and their
+// charts) download on first visit.
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+const OfficerAlertsPage = lazy(() => import('./pages/OfficerAlertsPage'))
+const OfficerDashboardPage = lazy(() => import('./pages/OfficerDashboardPage'))
+const EnvironmentalDataPage = lazy(() => import('./pages/EnvironmentalDataPage'))
+const ForecastWeatherPage = lazy(() => import('./pages/ForecastWeatherPage'))
+const ModelResearchPage = lazy(() => import('./pages/ModelResearchPage'))
+const StaffReportsPage = lazy(() => import('./pages/StaffReportsPage'))
+const ModelsPage = lazy(() => import('./pages/ModelsPage'))
+const RainfallHistoryPage = lazy(() => import('./pages/RainfallHistoryPage'))
+const DownloadsPage = lazy(() => import('./pages/DownloadsPage'))
+const AdvisoriesPage = lazy(() => import('./pages/AdvisoriesPage'))
+const RoutePage = lazy(() => import('./pages/RoutePage'))
+
+function Loading() {
+  return <div role="status" className="min-h-screen grid place-items-center bg-bg text-sm text-muted">Loading…</div>
+}
 
 function LegacyAreaRedirect() {
   const [params] = useSearchParams(), next = new URLSearchParams()
@@ -46,6 +53,7 @@ export default function App() {
       <LanguageProvider>
       <AuthProvider>
         <BrowserRouter>
+          <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<MapPage />} />
             <Route path="/hotspots" element={<LegacyAreaRedirect />} />
@@ -81,6 +89,7 @@ export default function App() {
             <Route path="/admin/models" element={<ProtectedRoute role="admin"><ModelsPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </Suspense>
           <Toast toasts={toasts} />
         </BrowserRouter>
       </AuthProvider>
