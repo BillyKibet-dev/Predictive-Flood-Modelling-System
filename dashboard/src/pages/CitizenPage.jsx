@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { formatNairobi, useLanguage } from '../context/LanguageContext'
 import TopNav from '../components/TopNav'
+import usePageTitle from '../hooks/usePageTitle'
 import {
   MAX_DESCRIPTION_LENGTH, MAX_PHOTO_BYTES, PHOTO_TYPES, REPORT_CONDITIONS, checkReportStatus, fetchReportingAreas,
   locateReportingArea, submitCitizenReport, uploadReportPhoto, validateCitizenReport,
@@ -100,6 +101,7 @@ function MyReports({ saved, onForget }) {
 export default function CitizenPage({ showToast }) {
   const { user } = useAuth()
   const { lang, t } = useLanguage()
+  usePageTitle(t('citizen.title'))
   const [reportZones,setReportZones] = useState([]), [zoneError,setZoneError] = useState(''), [zoneReload,setZoneReload] = useState(0)
   const [locating,setLocating] = useState(false), [locationMessage,setLocationMessage] = useState(''), [pinArea,setPinArea] = useState(null)
   const [photo, setPhoto] = useState(null), [photoUrl, setPhotoUrl] = useState(''), [photoError, setPhotoError] = useState('')

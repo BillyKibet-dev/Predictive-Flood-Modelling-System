@@ -1,5 +1,8 @@
 import { ArrowRight, RefreshCw } from 'lucide-react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { Bar, BarChart, ResponsiveContainer } from 'recharts'
+import { dailyWindow, parseObservedRainfall, parseVerification, percent, recentStats, trackRecordHeadline } from '../services/staffData'
 import StaffLayout, { PageHeader, buttonClass } from '../components/StaffLayout'
 import { riskColor } from '../constants/colors'
 import { useAuth } from '../context/AuthContext'
@@ -37,6 +40,39 @@ function OutlookBar({ counts, total }) {
       {total > 0 && <li className="text-muted">of {total} places</li>}
     </ul>
   </div>
+}
+
+const shortDate = value => new Intl.DateTimeFormat('en-KE', { day: 'numeric', month: 'short' }).format(new Date(value + 'T12:00:00'))
+
+// Rain that fell lately (the system's own daily satellite record), with a 14-day strip.
+function RecentRain() {
+  const state = useStaffList('/staff/observed-rainfall')
+  const data = useMemo(() => { try { return state.data ? parseObservedRainfall(state.data) : null } catch { return null } }, [state.data])
+  if (!data) return <section className="panel p-5 text-sm text-muted">{state.loading ? 'Loading recent rain…' : 'Recent rain unavailable.'}</section>
+  const stats = recentStats(data), days = dailyWindow(data, 14)
+  return <Link to="/history" className="panel card-hover p-5 flex flex-col gap-3 group" aria-label="Recent rain: open rainfall history">
+    <div className="flex items-baseline justify-between gap-3"><h2 className="font-semibold">Rain that fell</h2><span className="text-xs text-muted">to {shortDate(data.last_day)}</span></div>
+    <div className="flex items-end gap-6">
+      <p><span className="text-3xl font-semibold tabular">{Math.round(stats.week.mm)}</span><span className="text-sm text-muted"> mm, last 7 days</span></p>
+      <div className="flex-1 h-12" aria-hidden="true">
+        <ResponsiveContainer width="100%" height="100%"><BarChart data={days} margin={{ top: 0, bottom: 0, left: 0, right: 0 }}>
+          <Bar isAnimationActive={false} dataKey="mm" fill="var(--chart-2)" radius={[2, 2, 0, 0]} /></BarChart></ResponsiveContainer>
+      </div>
+    </div>
+    <span className="text-xs text-muted flex items-center gap-1 group-hover:text-accent">{stats.daysSinceHeavy === null ? 'No heavy-rain day collected yet' : `Last heavy-rain day ${stats.daysSinceHeavy} days ago`}<ArrowRight size={12} aria-hidden="true" /></span>
+  </Link>
+}
+
+// Are the map's categories right lately? One line from the live track record.
+function ModelCheck() {
+  const state = useStaffList('/staff/model-verification')
+  const data = useMemo(() => { try { return state.data ? parseVerification(state.data) : null } catch { return null } }, [state.data])
+  if (!data) return <section className="panel p-5 text-sm text-muted">{state.loading ? 'Checking past forecasts…' : 'Model checks unavailable.'}</section>
+  return <Link to="/research" className="panel card-hover p-5 flex flex-col gap-3 group" aria-label="Model checks: open">
+    <div className="flex items-baseline justify-between gap-3"><h2 className="font-semibold">Model checks</h2><span className="text-xs text-muted">{data.days_verified} days checked</span></div>
+    <p><span className="text-3xl font-semibold tabular">{data.shown.exact === null ? '—' : percent(data.shown.exact)}</span><span className="text-sm text-muted"> right category</span></p>
+    <span className="text-xs text-muted flex items-center gap-1 group-hover:text-accent">{trackRecordHeadline(data).split('. ').slice(1).join('. ') || 'See the details'}<ArrowRight size={12} aria-hidden="true" /></span>
+  </Link>
 }
 
 export default function OfficerDashboardPage() {
@@ -110,5 +146,6 @@ export default function OfficerDashboardPage() {
         <p className="text-xs text-muted">Rainfall categories, not flood warnings. Reviewing a report does not issue a public warning.</p>
       </section>
     </div>
+    <div className="grid md:grid-cols-2 gap-4 mt-4"><RecentRain /><ModelCheck /></div>
   </StaffLayout>
 }

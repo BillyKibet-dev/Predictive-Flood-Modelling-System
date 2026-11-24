@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CircleMarker, MapContainer, Marker, Polyline, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Link, useNavigate } from 'react-router-dom'
 import TopNav from '../components/TopNav'
+import usePageTitle from '../hooks/usePageTitle'
 import { REPORT_ICON_SVG } from '../components/CommunityReportLayer'
 import { riskColor } from '../constants/colors'
 import { useLanguage } from '../context/LanguageContext'
@@ -71,6 +72,7 @@ function Finding({ icon, color, children }) {
 
 export default function RoutePage() {
   const { lang, t } = useLanguage()
+  usePageTitle(t('route.title'))
   const navigate = useNavigate()
   const [start, setStart] = useState(null), [end, setEnd] = useState(null), [picking, setPicking] = useState(null)
   const [profile, setProfile] = useState('driving-car'), [avoid, setAvoid] = useState(true)

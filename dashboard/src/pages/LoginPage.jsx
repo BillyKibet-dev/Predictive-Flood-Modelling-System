@@ -2,16 +2,18 @@ import { Check, Droplets, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import usePageTitle from '../hooks/usePageTitle'
 
 const FEATURES = [
-  'Weather-based risk indications across Nairobi',
-  'Eight monitored zones across Nairobi County',
-  'Traceable historical environmental data',
+  'Rainfall-risk categories for 36 monitored places, every hour',
+  'Community flood reports, checked by officers',
+  'Daily rainfall record and live model checks',
 ]
 
 // Login uses the backend and confirms the active account via /auth/me.
 export default function LoginPage() {
   const { login } = useAuth()
+  usePageTitle('Staff sign in')
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -48,7 +50,7 @@ export default function LoginPage() {
             NairobiFloodWatch
           </div>
           <h2 className="text-3xl font-bold tracking-tight">
-            Environmental proxy-risk research for Nairobi County
+            Flood watch for Nairobi County
           </h2>
           <ul className="space-y-6">
             {FEATURES.map((f) => (
