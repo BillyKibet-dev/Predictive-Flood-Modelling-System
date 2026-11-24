@@ -9,6 +9,7 @@ import {
   MAX_DESCRIPTION_LENGTH, MAX_PHOTO_BYTES, PHOTO_TYPES, REPORT_CONDITIONS, checkReportStatus, fetchReportingAreas,
   locateReportingArea, submitCitizenReport, uploadReportPhoto, validateCitizenReport,
 } from '../services/reports'
+import { forgetReport, rememberReport, savedReports } from '../services/myReports'
 
 const SEVERITY_OPTIONS = [
   { label: 'Mild', color: '#16A34A' },
@@ -33,33 +34,65 @@ function Step({ n, title, children }) {
   </div>
 }
 
-// "What happened to my report?" with the reference and private code.
-function StatusCheck() {
+const STATUS_TONE = { New: 'var(--text-muted)', Reviewed: 'var(--accent)', ActionNeeded: 'var(--risk-high)', Resolved: 'var(--risk-low)' }
+
+// One report's live status: a coloured dot and the decision in plain words.
+function StatusLine({ result }) {
   const { lang, t } = useLanguage()
-  const [reference, setReference] = useState(''), [code, setCode] = useState('')
+  return <div className="space-y-1">
+    <p className="flex items-center gap-2 text-sm font-medium"><span className="w-2 h-2 rounded-full shrink-0" style={{ background: STATUS_TONE[result.review_status] ?? 'var(--text-muted)' }} aria-hidden="true" />
+      {t(`status.${result.review_status}`)}</p>
+    <p className="text-xs text-muted">{t(`condition.${result.observed_condition}`)} · {t('citizen.statusReported', { date: formatNairobi(lang, result.reported_at, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), area: result.sub_county })}</p>
+    {result.on_public_map && <p className="text-xs" style={{ color: '#7c3aed' }}>{t('citizen.statusOnMap')}</p>}
+  </div>
+}
+
+// "What happened to my report?" Reports sent from this phone are listed and checked
+// automatically; a reference from another phone can be typed in.
+function MyReports({ saved, onForget }) {
+  const { t } = useLanguage()
+  const [statuses, setStatuses] = useState({}), [typed, setTyped] = useState('')
   const [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
+  useEffect(() => {
+    const controller = new AbortController()
+    // One at a time, newest first: a handful of quick checks, well inside the server's limit.
+    ;(async () => {
+      for (const item of saved) {
+        if (controller.signal.aborted) return
+        try { const r = await checkReportStatus(item.reference, null, { signal: controller.signal }); setStatuses(s => ({ ...s, [item.reference]: r })) }
+        catch (failure) { if (!controller.signal.aborted) setStatuses(s => ({ ...s, [item.reference]: { error: failure.message } })) }
+      }
+    })()
+    return () => controller.abort()
+  }, [saved])
   async function check(event) {
     event.preventDefault()
     setBusy(true); setError(''); setResult(null)
-    try { setResult(await checkReportStatus(reference, code)) } catch (failure) { setError(failure.message) } finally { setBusy(false) }
+    try { setResult(await checkReportStatus(typed)) } catch (failure) { setError(failure.message) } finally { setBusy(false) }
   }
-  return <section id="check" aria-labelledby="check-heading" className="panel p-5 space-y-3 scroll-mt-20">
-    <h2 id="check-heading" className="font-semibold text-ink">{t('citizen.checkTitle')}</h2>
-    <p className="text-sm text-muted">{t('citizen.checkIntro')}</p>
-    <form onSubmit={check} className="space-y-3">
-      <div className="grid grid-cols-[5.5rem_1fr] gap-2">
-        <label className="text-xs text-muted">{t('citizen.reference')}<input aria-label={t('citizen.reference')} inputMode="numeric" value={reference} onChange={e => setReference(e.target.value)} placeholder={t('citizen.referencePlaceholder')} className={inputCls + ' mt-1 tabular'} /></label>
-        <label className="text-xs text-muted">{t('citizen.code')}<input aria-label={t('citizen.code')} autoCapitalize="characters" autoComplete="off" value={code} onChange={e => setCode(e.target.value)} placeholder={t('citizen.codePlaceholder')} className={inputCls + ' mt-1 font-mono uppercase'} /></label>
+  return <section id="check" aria-labelledby="check-heading" className="panel p-5 space-y-4 scroll-mt-20">
+    <h2 id="check-heading" className="font-semibold text-ink">{t('citizen.myReports')}</h2>
+    {saved.length ? <ul className="divide-y divide-border -my-1">{saved.map(item => {
+      const status = statuses[item.reference]
+      return <li key={item.reference} className="py-3 space-y-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-sm font-semibold tracking-wide">{item.reference}</span>
+          <button type="button" onClick={() => onForget(item.reference)} className="text-xs text-muted hover:text-ink">{t('citizen.forget')}</button>
+        </div>
+        {!status ? <p className="text-xs text-muted" role="status">{t('citizen.checking')}</p>
+          : status.error ? <p className="text-xs text-muted">{status.error}</p> : <StatusLine result={status} />}
+      </li>
+    })}</ul> : <p className="text-sm text-muted">{t('citizen.noReports')}</p>}
+    <form onSubmit={check} className="space-y-2 pt-1 border-t border-border">
+      <label htmlFor="check-reference" className="block text-xs font-medium text-muted pt-3">{t('citizen.checkOther')}</label>
+      <div className="flex gap-2">
+        <input id="check-reference" autoCapitalize="characters" autoComplete="off" spellCheck={false} value={typed} onChange={e => setTyped(e.target.value)}
+          placeholder={t('citizen.referencePlaceholder')} className={inputCls + ' font-mono uppercase placeholder:normal-case placeholder:font-sans'} />
+        <button disabled={busy || !typed.trim()} className="press shrink-0 h-10 px-4 rounded-btn border border-border bg-surface text-sm font-medium hover:bg-surface-2 disabled:opacity-50">{busy ? t('citizen.checking') : t('citizen.checkButton')}</button>
       </div>
-      <button disabled={busy} className="press w-full h-10 rounded-btn border border-border bg-surface text-sm font-medium hover:bg-surface-2 disabled:opacity-50">{busy ? t('citizen.checking') : t('citizen.checkButton')}</button>
     </form>
     {error && <p role="alert" className="text-sm text-risk-extreme">{error}</p>}
-    {result && <div role="status" className="rounded-btn bg-surface-2 p-3 space-y-1 text-sm">
-      <p className="font-semibold">#{result.reference} · {t(`condition.${result.observed_condition}`)}</p>
-      <p>{t(`status.${result.review_status}`)}</p>
-      <p className="text-xs text-muted">{t('citizen.statusReported', { date: formatNairobi(lang, result.reported_at, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), area: result.sub_county })}</p>
-      {result.on_public_map && <p className="text-xs" style={{ color: '#7c3aed' }}>{t('citizen.statusOnMap')}</p>}
-    </div>}
+    {result && <div role="status" className="rounded-btn bg-surface-2 p-3 space-y-1"><p className="font-mono text-sm font-semibold">{result.reference}</p><StatusLine result={result} /></div>}
   </section>
 }
 
@@ -71,6 +104,7 @@ export default function CitizenPage({ showToast }) {
   const [locating,setLocating] = useState(false), [locationMessage,setLocationMessage] = useState(''), [pinArea,setPinArea] = useState(null)
   const [photo, setPhoto] = useState(null), [photoUrl, setPhotoUrl] = useState(''), [photoError, setPhotoError] = useState('')
   const [photoResult, setPhotoResult] = useState(''), [copied, setCopied] = useState(false)
+  const [saved, setSaved] = useState(() => savedReports())
   useEffect(() => {
     const controller = new AbortController()
     setZoneError('')
@@ -153,6 +187,8 @@ export default function CitizenPage({ showToast }) {
         catch (failure) { setPhotoResult(t('citizen.photoFailed', { reason: failure.message })) }
       }
       setSubmittedReport({ ...report, zoneName })
+      // Remember it on this phone so the resident never has to type the reference.
+      if (report.tracking_code) setSaved(rememberReport({ reference: report.tracking_code, sentAt: report.timestamp, condition: report.observed_condition, area: zoneName }))
       clearPhoto()
       showToast?.(t('citizen.thanks'), 'success')
       requestAnimationFrame(() => document.getElementById('report-success')?.focus())
@@ -174,7 +210,7 @@ export default function CitizenPage({ showToast }) {
   }
 
   async function copyCode() {
-    try { await navigator.clipboard.writeText(`#${submittedReport.id} ${submittedReport.tracking_code}`); setCopied(true) } catch { /* the code stays on screen */ }
+    try { await navigator.clipboard.writeText(submittedReport.tracking_code); setCopied(true) } catch { /* the reference stays on screen */ }
   }
 
   const chip = active => `cursor-pointer text-center text-sm font-medium rounded-btn border px-3 h-10 grid place-items-center transition-colors focus-within:ring-2 focus-within:ring-accent ${active ? 'bg-brand text-white border-brand' : 'border-border text-ink hover:bg-surface-2'}`
@@ -199,11 +235,9 @@ export default function CitizenPage({ showToast }) {
               <h2 className="text-xl font-semibold text-ink">{t('citizen.thanks')}</h2>
               <p className="text-sm text-muted">{submittedReport.zoneName} · {formatNairobi(lang, submittedReport.timestamp, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
               {submittedReport.tracking_code && <div className="mx-auto max-w-sm rounded-card border border-border bg-surface-2 p-4 space-y-2">
-                <div className="flex justify-center gap-8">
-                  <div><p className="eyebrow">{t('citizen.reference')}</p><p className="text-2xl font-semibold tabular mt-1">#{submittedReport.id}</p></div>
-                  <div><p className="eyebrow">{t('citizen.code')}</p><p className="text-2xl font-semibold font-mono mt-1" data-testid="tracking-code">{submittedReport.tracking_code}</p></div>
-                </div>
-                <p className="text-xs text-muted">{t('citizen.saveCode')}</p>
+                <p className="eyebrow">{t('citizen.yourReference')}</p>
+                <p className="text-3xl font-semibold font-mono tracking-wider" data-testid="tracking-code">{submittedReport.tracking_code}</p>
+                <p className="text-xs text-muted">{t('citizen.savedHere')}</p>
                 <button type="button" onClick={copyCode} className="press inline-flex items-center gap-1.5 text-sm font-medium text-accent"><Copy size={14} aria-hidden="true" />{copied ? t('citizen.copied') : t('citizen.copy')}</button>
               </div>}
               {photoResult && <p className="text-sm">{photoResult}</p>}
@@ -315,7 +349,7 @@ export default function CitizenPage({ showToast }) {
                 {t('citizen.call', { a: '999', b: '112', c: '1199' }).split(/(999|112|1199)/).map((part, i) => /^(999|112|1199)$/.test(part)
                   ? <a key={i} className="font-semibold text-risk-extreme tabular" href={`tel:${part}`}>{part}</a> : part)}</p>
             </div>
-            <StatusCheck />
+            <MyReports saved={saved} onForget={reference => setSaved(forgetReport(reference))} />
             <p className="text-xs text-muted px-1">{t('citizen.notEmergency')}</p>
           </aside>
         </div>

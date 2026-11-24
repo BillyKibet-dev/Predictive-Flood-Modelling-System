@@ -5,6 +5,7 @@ import useStaffList from '../hooks/useStaffList'
 import { useAuth } from '../context/AuthContext'
 import { timeAgo } from '../services/communityReports'
 import { formatPredictionTime } from '../services/predictions'
+import { cleanReference } from '../services/reports'
 import { PageHeader, buttonClass, primaryButtonClass } from './StaffLayout'
 
 const statuses = ['New', 'ActionNeeded', 'Reviewed', 'Resolved']
@@ -22,9 +23,15 @@ export default function ReportReviewQueue() {
   const { authorizedRequest } = useAuth()
   const [filters, setFilters] = useSearchParams()
   const status = statuses.includes(filters.get('review_status')) ? filters.get('review_status') : ''
-  const [offset, setOffset] = useState(0)
-  useEffect(() => setOffset(0), [status])
-  const query = new URLSearchParams({ limit: String(PAGE), offset: String(offset), ...(status ? { review_status: status } : {}) })
+  const reference = filters.get('reference') || ''
+  const [offset, setOffset] = useState(0), [typed, setTyped] = useState(reference)
+  useEffect(() => setOffset(0), [status, reference])
+  const query = new URLSearchParams({ limit: String(PAGE), offset: String(offset), ...(status ? { review_status: status } : {}), ...(reference ? { reference } : {}) })
+  function findReference(event) {
+    event.preventDefault()
+    const clean = cleanReference(typed)
+    setFilters(clean ? { reference: clean } : {})
+  }
   const list = useStaffList('/citizen-reports?' + query)
   const total = list.data?.total ?? 0
   return (
@@ -40,6 +47,14 @@ export default function ReportReviewQueue() {
           {value ? label(value) : 'All'}
         </button>)}
       </div>
+      {/* A resident quoting their reference (e.g. on the phone) can be found directly. */}
+      <form onSubmit={findReference} className="mt-3 flex flex-wrap items-center gap-2" role="search" aria-label="Find a report by the resident's reference">
+        <input value={typed} onChange={e => setTyped(e.target.value)} placeholder="Resident's reference, e.g. FW-K7Q2M9" autoComplete="off" spellCheck={false}
+          className={`${field} h-9 w-64 max-w-full font-mono uppercase placeholder:normal-case placeholder:font-sans`} />
+        <button type="submit" className={buttonClass}>Find</button>
+        {reference && <button type="button" className="text-sm text-accent" onClick={() => { setTyped(''); setFilters({}) }}>Clear · showing {reference}</button>}
+        {typed.trim() && !cleanReference(typed) && <span className="text-xs text-muted">References look like FW-K7Q2M9.</span>}
+      </form>
 
       <div className="mt-5 space-y-3">
         {list.loading && !list.data && <p role="status" className="text-sm text-muted">Loading reports…</p>}

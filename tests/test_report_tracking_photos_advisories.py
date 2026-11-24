@@ -7,6 +7,7 @@ from PIL import Image
 
 from src.api.config import settings
 from src.api.models.db_models import AreaAdvisory, CitizenReport
+from src.api.routers import reports as reports_router
 from src.api.utils.security import create_access_token
 from tests.test_api import api, password_hash  # noqa: F401  (fixtures)
 
@@ -42,25 +43,63 @@ def photos(tmp_path, monkeypatch):
     return tmp_path / "photos"
 
 
-def test_code_is_shown_once_and_status_needs_reference_and_code(api):
+@pytest.fixture(autouse=True)
+def fresh_status_limit():
+    reports_router.STATUS_LIMIT.calls.clear()
+
+
+def test_one_reference_is_shown_once_and_is_all_a_resident_needs(api):
     client, db = api
     saved = send(client)
     code = saved["tracking_code"]
-    assert len(code) == 9 and code[4] == "-"
+    assert code.startswith("FW-") and len(code) == 9
     stored = db.get(CitizenReport, saved["id"])
-    assert stored.tracking_hash and code.replace("-", "") not in stored.tracking_hash
+    assert stored.tracking_hash and code[3:] not in stored.tracking_hash
     staff_view = client.get("/citizen-reports", headers=token()).json()["items"][0]
-    assert staff_view["tracking_code"] is None, "staff lists never show the code"
+    assert staff_view["tracking_code"] is None, "staff lists never show the reference"
 
-    status = client.post("/citizen-report/status", json=dict(reference=saved["id"], code=code.lower().replace("-", " ")))
-    assert status.status_code == 200 and status.headers["cache-control"] == "no-store"
-    body = status.json()
-    assert body["status_text"].startswith("Received") and body["sub_county"] == "Kibra"
-    assert "review_note" not in body and "description" not in body
+    # The reference alone, however it is typed.
+    for typed in (code, code.lower(), code.replace("-", " "), code[3:], f"#{code}"):
+        status = client.post("/citizen-report/status", json=dict(reference=typed))
+        assert status.status_code == 200, typed
+        assert status.headers["cache-control"] == "no-store"
+        body = status.json()
+        assert body["reference"] == code and body["status_text"].startswith("Received") and body["sub_county"] == "Kibra"
+        assert "review_note" not in body and "description" not in body
 
-    for wrong in (dict(reference=saved["id"], code="AAAA-AAAA"), dict(reference=999, code=code)):
+    # The older number-plus-code form still works for the same report.
+    assert client.post("/citizen-report/status", json=dict(reference=saved["id"], code=code)).status_code == 200
+    for wrong in (dict(reference="FW-AAAAAA"), dict(reference="not a code!"), dict(reference=saved["id"], code="AAAA-AAAA"),
+                  dict(reference=999, code=code)):
         miss = client.post("/citizen-report/status", json=wrong)
-        assert miss.status_code == 404 and "do not match" in miss.json()["detail"]
+        assert miss.status_code == 404 and "does not match" in miss.json()["detail"]
+
+
+def test_staff_can_find_a_report_from_the_reference_a_resident_quotes(api):
+    client, _ = api
+    saved, other = send(client), send(client)
+    found = client.get("/citizen-reports", params=dict(reference=saved["tracking_code"].lower()), headers=token()).json()
+    assert [r["id"] for r in found["items"]] == [saved["id"]] and other["id"] != saved["id"]
+    assert client.get("/citizen-reports", params=dict(reference="FW-AAAAAA"), headers=token()).json()["total"] == 0
+    assert client.get("/citizen-reports", params=dict(reference=saved["tracking_code"])).status_code == 401
+
+
+def test_reports_sent_before_references_still_check_with_their_old_code(api):
+    client, db = api
+    saved = send(client)
+    stored = db.get(CitizenReport, saved["id"])
+    stored.tracking_hash = reports_router.hashlib.sha256(b"FWQ2M9XD").hexdigest()   # an old 8-character code starting FW
+    db.commit()
+    assert client.post("/citizen-report/status", json=dict(reference=saved["id"], code="FWQ2-M9XD")).status_code == 200
+    alone = client.post("/citizen-report/status", json=dict(reference="fwq2-m9xd"))
+    assert alone.status_code == 200 and alone.json()["reference"] == "FWQ2-M9XD"
+
+
+def test_status_checks_are_rate_limited(api):
+    client, _ = api
+    for _ in range(30):
+        client.post("/citizen-report/status", json=dict(reference="FW-AAAAAA"))
+    assert client.post("/citizen-report/status", json=dict(reference="FW-AAAAAA")).status_code == 429
 
 
 def test_status_follows_the_officer_decision_in_plain_words(api):
@@ -68,7 +107,7 @@ def test_status_follows_the_officer_decision_in_plain_words(api):
     saved = send(client)
     client.patch(f"/citizen-reports/{saved['id']}/review", headers=token(),
                  json=dict(status="ActionNeeded", note="Private staff note", expected_version=0))
-    body = client.post("/citizen-report/status", json=dict(reference=saved["id"], code=saved["tracking_code"])).json()
+    body = client.post("/citizen-report/status", json=dict(reference=saved["tracking_code"])).json()
     assert body["review_status"] == "ActionNeeded" and "following it up" in body["status_text"]
     assert "Private staff note" not in str(body)
 

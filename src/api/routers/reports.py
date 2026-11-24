@@ -14,6 +14,7 @@ from src.api.models.db_models import CitizenReport, ReportReviewEvent, User, Zon
 from src.api.models.schemas import PaginatedResponse, ReportCreate, ReportResponse, ReportReview, ReportStatusRequest, ReportingArea, ZoneResponse
 from src.api.services import report_photos
 from src.api.services import reporting_areas
+from src.api.services.route_check import RateLimiter
 from pydantic import BaseModel, Field
 
 
@@ -48,7 +49,7 @@ def submit_citizen_report(payload: ReportCreate, request: Request, db: Session =
             location_description=payload.location_description, latitude=payload.latitude,
             longitude=payload.longitude, location_accuracy_m=payload.location_accuracy_m,
         )
-        code = new_tracking_code()
+        code = _unused_reference(db)
         report.tracking_hash = code_hash(code)
         db.add(report)
         db.commit()
@@ -68,46 +69,98 @@ def aware(value):
 
 
 CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"   # no 0/O, 1/I/L confusion
+REFERENCE_PREFIX = "FW"
+REFERENCE_LENGTH = 6          # 31^6 ≈ 890 million references; status checks are rate-limited
 PHOTO_WINDOW = timedelta(hours=2)
+STATUS_LIMIT = RateLimiter(30, timedelta(minutes=10))
 STATUS_TEXT = {
     "New": "Received. Waiting for an officer to check it.",
     "Reviewed": "Checked by an officer.",
     "ActionNeeded": "Checked. Officers are following it up.",
     "Resolved": "Closed. An officer marked it resolved.",
 }
-UNRECOGNISED = "That reference and code do not match a report. Check both and try again."
+UNRECOGNISED = "That reference does not match a report. Check it and try again."
 
 
 def new_tracking_code() -> str:
-    raw = "".join(secrets.choice(CODE_ALPHABET) for _ in range(8))
-    return f"{raw[:4]}-{raw[4:]}"
+    """The resident's one reference, e.g. FW-K7Q2M9. Shown once; only its hash is kept."""
+    raw = "".join(secrets.choice(CODE_ALPHABET) for _ in range(REFERENCE_LENGTH))
+    return f"{REFERENCE_PREFIX}-{raw}"
+
+
+def _normalised(code: str) -> str:
+    return code.strip().upper().replace("-", "").replace(" ", "").replace("#", "")
 
 
 def code_hash(code: str) -> str:
-    normalised = code.strip().upper().replace("-", "").replace(" ", "")
-    return hashlib.sha256(normalised.encode()).hexdigest()
+    """Hash of a reference without its FW prefix (FW-K7Q2M9, fw k7q2m9 and K7Q2M9 all match),
+    or of an older 8-character code (K7Q2-M9XD) unchanged."""
+    value = _normalised(code)
+    if len(value) == REFERENCE_LENGTH + len(REFERENCE_PREFIX) and value.startswith(REFERENCE_PREFIX):
+        value = value[len(REFERENCE_PREFIX):]
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+def _candidate_hashes(code: str) -> list[str]:
+    """An older 8-character code may itself begin with FW, so try it both ways."""
+    return list(dict.fromkeys([code_hash(code), hashlib.sha256(_normalised(code).encode()).hexdigest()]))
+
+
+def _unused_reference(db: Session) -> str:
+    for _ in range(5):
+        code = new_tracking_code()
+        if db.query(CitizenReport.id).filter(CitizenReport.tracking_hash == code_hash(code)).first() is None:
+            return code
+    raise HTTPException(500, "Could not issue a report reference. Please try again.")
 
 
 def _owned_report(db: Session, reference: int, code: str) -> CitizenReport:
     report = db.get(CitizenReport, reference)
     # Same answer for a wrong reference and a wrong code; constant-time comparison.
     expected = report.tracking_hash if report is not None and report.tracking_hash else "0" * 64
-    if not hmac.compare_digest(expected, code_hash(code)) or report is None:
+    matched = any([hmac.compare_digest(expected, h) for h in _candidate_hashes(code)])
+    if not matched or report is None:
+        raise HTTPException(404, UNRECOGNISED)
+    return report
+
+
+def _report_by_reference(db: Session, reference: str) -> CitizenReport:
+    value = _normalised(reference)
+    if not 6 <= len(value) <= 10 or any(c not in CODE_ALPHABET for c in value):
+        raise HTTPException(404, UNRECOGNISED)
+    report = db.query(CitizenReport).filter(CitizenReport.tracking_hash.in_(_candidate_hashes(reference))).first()
+    if report is None:
         raise HTTPException(404, UNRECOGNISED)
     return report
 
 
 @router.post("/citizen-report/status")
-def report_status(body: ReportStatusRequest, response: Response, db: Session = Depends(get_db)):
-    """What happened to my report? Needs the reference and private code (sent in the body, never a URL).
+def report_status(body: ReportStatusRequest, request: Request, response: Response, db: Session = Depends(get_db)):
+    """What happened to my report? Needs the resident's reference (sent in the body, never a URL);
+    reports sent before references existed use their number plus the 8-character code.
 
     Shows the decision in plain words only: never staff notes, reviewer names or other reports.
     """
     response.headers["Cache-Control"] = "no-store"
-    report = _owned_report(db, body.reference, body.code)
+    client = hashlib.sha256((request.client.host if request.client else "unknown").encode()).hexdigest()
+    if not STATUS_LIMIT.allow(client):
+        raise HTTPException(429, "Too many checks. Wait a few minutes and try again.")
+    if isinstance(body.reference, int) and body.code:
+        if body.reference < 1:
+            raise HTTPException(404, UNRECOGNISED)
+        report, shown = _owned_report(db, body.reference, body.code), str(body.reference)
+    elif isinstance(body.reference, str) and not body.code:
+        report = _report_by_reference(db, body.reference)
+        value = _normalised(body.reference)
+        if report.tracking_hash == code_hash(body.reference) and len(value) in (REFERENCE_LENGTH, REFERENCE_LENGTH + len(REFERENCE_PREFIX)):
+            shown = f"{REFERENCE_PREFIX}-{value[-REFERENCE_LENGTH:]}"
+        else:   # an older 8-character code typed on its own
+            shown = f"{value[:4]}-{value[4:]}"
+    else:
+        raise HTTPException(422, "Send the reference, for example FW-K7Q2M9.")
     reported = aware(report.timestamp)
     on_map = bool(report.public_visible) and report.review_status != "Resolved" and datetime.now(timezone.utc) < reported + PUBLIC_WINDOW
-    return dict(reference=report.id, review_status=report.review_status, status_text=STATUS_TEXT.get(report.review_status, report.review_status),
+    return dict(reference=shown, review_status=report.review_status, status_text=STATUS_TEXT.get(report.review_status, report.review_status),
                 sub_county=report.zone_name, observed_condition=report.observed_condition, reported_at=reported.isoformat(),
                 checked_at=aware(report.reviewed_at).isoformat() if report.reviewed_at else None,
                 on_public_map=on_map, photo_attached=report.photo_attached)
@@ -156,11 +209,14 @@ def list_citizen_reports(
     zone_id: str | None = None,
     area_id: str | None = None,
     review_status: str | None = None,
+    reference: str | None = Query(None, max_length=16, description="A resident's reference (FW-K7Q2M9), e.g. quoted on the phone"),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_staff),
 ):
     try:
         query = db.query(CitizenReport)
+        if reference:
+            query = query.filter(CitizenReport.tracking_hash.in_(_candidate_hashes(reference)))
         if zone_id:
             query = query.filter(CitizenReport.zone_id == zone_id)
         if area_id:

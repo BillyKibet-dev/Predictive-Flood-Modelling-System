@@ -37,12 +37,13 @@ def migrate(connection, *, schema="public", downgrade=False, allow_data_loss=Fal
             raise ValueError("Rollback refused: advisories exist")
     # 004: locations and staff review; 006: staff publication to the public map (24 hours);
     # 007: reports filed under the 17 sub-counties instead of the original eight zones;
-    # 008: report tracking codes, photos and officer advisories.
-    names=(['008_report_tracking_photos_advisories_down.sql','007_report_areas_down.sql','006_report_publication_down.sql','004_report_locations_down.sql'] if downgrade
-           else ['004_report_locations.sql','006_report_publication.sql','007_report_areas.sql','008_report_tracking_photos_advisories.sql'])
+    # 008: report tracking codes, photos and officer advisories;
+    # 009: index so a single resident reference (FW-XXXXXX) is found by its hash.
+    names=(['009_report_reference_index_down.sql','008_report_tracking_photos_advisories_down.sql','007_report_areas_down.sql','006_report_publication_down.sql','004_report_locations_down.sql'] if downgrade
+           else ['004_report_locations.sql','006_report_publication.sql','007_report_areas.sql','008_report_tracking_photos_advisories.sql','009_report_reference_index.sql'])
     for name in names:
         sql=(Path(__file__).resolve().parents[1]/'api/migrations'/name).read_text(encoding='utf-8')
-        for table in ('citizen_reports','users','report_review_events','ix_citizen_reports_review_status','ix_citizen_reports_public_recent','ix_citizen_reports_area','area_advisories','ix_area_advisories_active'):
+        for table in ('citizen_reports','users','report_review_events','ix_citizen_reports_review_status','ix_citizen_reports_public_recent','ix_citizen_reports_area','area_advisories','ix_area_advisories_active','ix_citizen_reports_tracking_hash'):
             # Index names following ON are table-qualified indirectly; DROP must target this schema.
             if table.startswith('ix_') and not downgrade:
                 continue

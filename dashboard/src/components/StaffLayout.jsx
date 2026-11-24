@@ -24,7 +24,7 @@ export const STAFF_NAV = [
     { to: '/admin', label: 'System', icon: Activity },
   ] },
 ]
-const RESEARCH = { to: '/research', label: 'Research', icon: FlaskConical }
+const RESEARCH = { to: '/research', label: 'Model checks', icon: FlaskConical }
 
 function isActive(pathname, to) {
   if (to === '/officer') return pathname === '/officer'
